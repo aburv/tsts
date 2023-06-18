@@ -1,0 +1,27 @@
+name: takbuff
+description: A sepak takraw community app
+
+publish_to: 'none'
+
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# In Windows, build-name is used as the major, minor, and patch parts
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
