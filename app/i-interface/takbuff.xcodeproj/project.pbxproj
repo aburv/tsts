@@ -1,0 +1,582 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5962A9625DF00D73EA0 /* takbuffApp.swift */; };
+		4741C5992A9625DF00D73EA0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5982A9625DF00D73EA0 /* ContentView.swift */; };
+		4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4741C59A2A9625E000D73EA0 /* Assets.xcassets */; };
+		4741C59E2A9625E000D73EA0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4741C59D2A9625E000D73EA0 /* Preview Assets.xcassets */; };
+		4741C5A82A9625E000D73EA0 /* takbuffTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5A72A9625E000D73EA0 /* takbuffTests.swift */; };
+		4741C5B22A9625E000D73EA0 /* takbuffUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5B12A9625E000D73EA0 /* takbuffUITests.swift */; };
+		4741C5B42A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4741C5A42A9625E000D73EA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4741C58B2A9625DF00D73EA0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4741C5922A9625DF00D73EA0;
+			remoteInfo = takbuff;
+		};
+		4741C5AE2A9625E000D73EA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4741C58B2A9625DF00D73EA0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4741C5922A9625DF00D73EA0;
+			remoteInfo = takbuff;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4741C5932A9625DF00D73EA0 /* takbuff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = takbuff.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4741C5962A9625DF00D73EA0 /* takbuffApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffApp.swift; sourceTree = "<group>"; };
+		4741C5982A9625DF00D73EA0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4741C59A2A9625E000D73EA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4741C59D2A9625E000D73EA0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4741C5A32A9625E000D73EA0 /* takbuffTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = takbuffTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4741C5A72A9625E000D73EA0 /* takbuffTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffTests.swift; sourceTree = "<group>"; };
+		4741C5AD2A9625E000D73EA0 /* takbuffUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = takbuffUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4741C5B12A9625E000D73EA0 /* takbuffUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffUITests.swift; sourceTree = "<group>"; };
+		4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4741C5902A9625DF00D73EA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4741C5A02A9625E000D73EA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4741C5AA2A9625E000D73EA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4741C58A2A9625DF00D73EA0 = {
+			isa = PBXGroup;
+			children = (
+				4741C5952A9625DF00D73EA0 /* takbuff */,
+				4741C5A62A9625E000D73EA0 /* takbuffTests */,
+				4741C5B02A9625E000D73EA0 /* takbuffUITests */,
+				4741C5942A9625DF00D73EA0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4741C5942A9625DF00D73EA0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4741C5932A9625DF00D73EA0 /* takbuff.app */,
+				4741C5A32A9625E000D73EA0 /* takbuffTests.xctest */,
+				4741C5AD2A9625E000D73EA0 /* takbuffUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4741C5952A9625DF00D73EA0 /* takbuff */ = {
+			isa = PBXGroup;
+			children = (
+				4741C5962A9625DF00D73EA0 /* takbuffApp.swift */,
+				4741C5982A9625DF00D73EA0 /* ContentView.swift */,
+				4741C59A2A9625E000D73EA0 /* Assets.xcassets */,
+				4741C59C2A9625E000D73EA0 /* Preview Content */,
+			);
+			path = takbuff;
+			sourceTree = "<group>";
+		};
+		4741C59C2A9625E000D73EA0 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				4741C59D2A9625E000D73EA0 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4741C5A62A9625E000D73EA0 /* takbuffTests */ = {
+			isa = PBXGroup;
+			children = (
+				4741C5A72A9625E000D73EA0 /* takbuffTests.swift */,
+			);
+			path = takbuffTests;
+			sourceTree = "<group>";
+		};
+		4741C5B02A9625E000D73EA0 /* takbuffUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4741C5B12A9625E000D73EA0 /* takbuffUITests.swift */,
+				4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */,
+			);
+			path = takbuffUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4741C5922A9625DF00D73EA0 /* takbuff */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4741C5B72A9625E000D73EA0 /* Build configuration list for PBXNativeTarget "takbuff" */;
+			buildPhases = (
+				4741C58F2A9625DF00D73EA0 /* Sources */,
+				4741C5902A9625DF00D73EA0 /* Frameworks */,
+				4741C5912A9625DF00D73EA0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = takbuff;
+			productName = takbuff;
+			productReference = 4741C5932A9625DF00D73EA0 /* takbuff.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4741C5A22A9625E000D73EA0 /* takbuffTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4741C5BA2A9625E000D73EA0 /* Build configuration list for PBXNativeTarget "takbuffTests" */;
+			buildPhases = (
+				4741C59F2A9625E000D73EA0 /* Sources */,
+				4741C5A02A9625E000D73EA0 /* Frameworks */,
+				4741C5A12A9625E000D73EA0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4741C5A52A9625E000D73EA0 /* PBXTargetDependency */,
+			);
+			name = takbuffTests;
+			productName = takbuffTests;
+			productReference = 4741C5A32A9625E000D73EA0 /* takbuffTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4741C5AC2A9625E000D73EA0 /* takbuffUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4741C5BD2A9625E000D73EA0 /* Build configuration list for PBXNativeTarget "takbuffUITests" */;
+			buildPhases = (
+				4741C5A92A9625E000D73EA0 /* Sources */,
+				4741C5AA2A9625E000D73EA0 /* Frameworks */,
+				4741C5AB2A9625E000D73EA0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4741C5AF2A9625E000D73EA0 /* PBXTargetDependency */,
+			);
+			name = takbuffUITests;
+			productName = takbuffUITests;
+			productReference = 4741C5AD2A9625E000D73EA0 /* takbuffUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4741C58B2A9625DF00D73EA0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					4741C5922A9625DF00D73EA0 = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
+					4741C5A22A9625E000D73EA0 = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = 4741C5922A9625DF00D73EA0;
+					};
+					4741C5AC2A9625E000D73EA0 = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = 4741C5922A9625DF00D73EA0;
+					};
+				};
+			};
+			buildConfigurationList = 4741C58E2A9625DF00D73EA0 /* Build configuration list for PBXProject "takbuff" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4741C58A2A9625DF00D73EA0;
+			productRefGroup = 4741C5942A9625DF00D73EA0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4741C5922A9625DF00D73EA0 /* takbuff */,
+				4741C5A22A9625E000D73EA0 /* takbuffTests */,
+				4741C5AC2A9625E000D73EA0 /* takbuffUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4741C5912A9625DF00D73EA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4741C59E2A9625E000D73EA0 /* Preview Assets.xcassets in Resources */,
+				4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4741C5A12A9625E000D73EA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4741C5AB2A9625E000D73EA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4741C58F2A9625DF00D73EA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4741C5992A9625DF00D73EA0 /* ContentView.swift in Sources */,
+				4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4741C59F2A9625E000D73EA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4741C5A82A9625E000D73EA0 /* takbuffTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4741C5A92A9625E000D73EA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4741C5B42A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift in Sources */,
+				4741C5B22A9625E000D73EA0 /* takbuffUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4741C5A52A9625E000D73EA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4741C5922A9625DF00D73EA0 /* takbuff */;
+			targetProxy = 4741C5A42A9625E000D73EA0 /* PBXContainerItemProxy */;
+		};
+		4741C5AF2A9625E000D73EA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4741C5922A9625DF00D73EA0 /* takbuff */;
+			targetProxy = 4741C5AE2A9625E000D73EA0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4741C5B52A9625E000D73EA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4741C5B62A9625E000D73EA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4741C5B82A9625E000D73EA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"takbuff/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aburv.takbuff;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4741C5B92A9625E000D73EA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"takbuff/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aburv.takbuff;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		4741C5BB2A9625E000D73EA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aburv.takbuffTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/takbuff.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/takbuff";
+			};
+			name = Debug;
+		};
+		4741C5BC2A9625E000D73EA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aburv.takbuffTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/takbuff.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/takbuff";
+			};
+			name = Release;
+		};
+		4741C5BE2A9625E000D73EA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aburv.takbuffUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = takbuff;
+			};
+			name = Debug;
+		};
+		4741C5BF2A9625E000D73EA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aburv.takbuffUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = takbuff;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4741C58E2A9625DF00D73EA0 /* Build configuration list for PBXProject "takbuff" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4741C5B52A9625E000D73EA0 /* Debug */,
+				4741C5B62A9625E000D73EA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4741C5B72A9625E000D73EA0 /* Build configuration list for PBXNativeTarget "takbuff" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4741C5B82A9625E000D73EA0 /* Debug */,
+				4741C5B92A9625E000D73EA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4741C5BA2A9625E000D73EA0 /* Build configuration list for PBXNativeTarget "takbuffTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4741C5BB2A9625E000D73EA0 /* Debug */,
+				4741C5BC2A9625E000D73EA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4741C5BD2A9625E000D73EA0 /* Build configuration list for PBXNativeTarget "takbuffUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4741C5BE2A9625E000D73EA0 /* Debug */,
+				4741C5BF2A9625E000D73EA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4741C58B2A9625DF00D73EA0 /* Project object */;
+}
