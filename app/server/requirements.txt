@@ -1,0 +1,9 @@
+# Server
+gunicorn==20.1.0
+
+# Web Frameworks
+Flask==2.2.2
+Flask-Cors==3.0.10
+
+# MongoDB Driver
+pymongo==4.3.3

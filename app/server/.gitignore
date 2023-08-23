@@ -1,0 +1,22 @@
+# IDEs
+.vscode/
+.idea/
+
+# Chunks
+.pytest_cache/
+node_modules/
+*.pyc
+
+# ENV
+.env
+env/
+venv/
+/env
+/venv
+
+/htmlcov
+.coverage
+
+# MacOS
+*/.DS_Store
+.DS_Store

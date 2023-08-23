@@ -1,0 +1,22 @@
+version: '3'
+services:
+  web:
+    build: .
+    container_name: data
+    restart: unless-stopped
+    env_file: server.env
+    ports:
+      - "80:5000"
+    links:
+      - "mongodb:mongodb"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    command: [ "--replSet", "dbrs", "--bind_ip_all", "mongod --auth" ]
+    ports:
+      - "27017:27017"
+    env_file: db.env
+
