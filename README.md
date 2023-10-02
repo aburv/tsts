@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://www.takbuff.com">
-<img src="static/logo_app.png" alt="takbuff_logo" width="350">
+<img src="static/logo_app.png" alt="takbuff_logo" width="200">
 <h3 align="center">Takbuff</h3>
 </a>
 </p>
