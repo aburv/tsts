@@ -8,15 +8,13 @@ services:
     ports:
       - "80:5000"
     links:
-      - "mongodb:mongodb"
+      - "postgresDb:postgresDb"
     depends_on:
-      - mongodb
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: unless-stopped
-    command: [ "--replSet", "dbrs", "--bind_ip_all", "mongod --auth" ]
+      - postgresDb
+  postgresDb:
+    image: postgres:latest
+    container_name: postgresDb
     ports:
-      - "27017:27017"
+      - "5432:5432"
     env_file: db.env
-
+    restart: unless-stopped
