@@ -1,0 +1,195 @@
+:host {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.screen {
+  width: 99vw;
+  height: 99vh;
+}
+
+.layout {
+  display: flex;
+  justify-content: center;
+}
+
+.splashLayout {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  animation: fadeIn ease 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.header-layout {
+  display: flex;
+  padding: 5px 20px;
+  margin-bottom: 10px;
+  align-items: center;
+  background-color: #707070;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.title>img {
+  width: 60px;
+  height: 60px;
+}
+
+.search {
+  display: flex;
+  margin: 5px 10px;
+  align-items: center;
+  background-color: var(--bg);
+  border-radius: 20px;
+}
+
+.search>input {
+  display: none;
+}
+
+.search .disp-input {
+  display: block;
+  width: 200px;
+  padding: 5px 10px;
+  margin: 10px 2px;
+  background-color: var(--bg);
+  border: 0px;
+  outline: none;
+  color: var(--dark);
+}
+
+.search>app-icon {
+  margin: 5px;
+}
+
+.search-result-item {
+  padding: 20px;
+  border-bottom: 2px solid var(--less-bright);
+}
+
+.profile>img {
+  width: 50px;
+  height: 50px;
+}
+
+.main-layout {
+  height: 87vh;
+  width: 700px;
+  padding: 0px 5px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-wrap: wrap;
+  flex-direction: row;
+  background-color: var(--mild-bg);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.side-bar-layout {
+  min-height: 200px;
+  height: fit-content;
+  width: 200px;
+  margin: 10px;
+  padding: 10px;
+  background-color: var(--mild-bg);
+  border-radius: 20px;
+}
+
+.loader-layout {
+  position: absolute;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  background-color: #0000007e;
+}
+
+.loader {
+  animation: spin 1s infinite linear;
+  width: 150px;
+  height: 150px;
+}
+
+.app-support-layout {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+app-support-layout>app-icon {
+  margin: 5px;
+}
+
+.footer-layout {
+  width: 100vw;
+  position: absolute;
+  bottom: 0;
+}
+
+.footer {
+  width: inherit;
+  line-height: 24px;
+  text-align: center;
+}
+
+.break{
+  display: none;
+}
+
+@media only screen and (max-width: 1200px) {
+  .main-layout{
+    width: 500px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .main-layout{
+    width: 700px;
+  }
+
+  .side-bar-layout{
+    display: none;
+  }
+
+  .search .disp-input{
+    width: 200px;
+  }
+}
+
+@media only screen and (max-width: 750px) {
+  .main-layout{
+    width: 500px;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .main-layout{
+    width: 90vw;
+    height: 84vh;
+  }
+
+  .footer > .break{
+    display: block;
+  }
+
+  .footer-layout{
+    height: 60px;
+  }
+
+  .search .disp-input{
+    width: 100px;
+  }
+}

@@ -1,10 +1,22 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes, RouterModule, Router } from '@angular/router';
 
-const routes: Routes = [];
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+
+export const routes: Routes = [
+  {
+    path: 'home', component: DashboardComponent,
+  },
+  { path: '**', redirectTo: 'home' },
+];
+
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    onSameUrlNavigation: 'reload'
+  })],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  public constructor(private router: Router) { }
+}

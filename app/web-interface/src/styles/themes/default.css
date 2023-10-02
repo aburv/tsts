@@ -1,0 +1,9 @@
+:root[theme=light] {
+  --mild-bg: #bdbdbd;
+  --bg: #eee;
+  --primary: #00A9EB; /* 5856D6 #00A9EB , rgb(137, 100, 249)*/
+  --less-dark: #797979;
+  --dark: #333;
+  --less-bright: #EEE;
+  --bright: #FFF;
+}

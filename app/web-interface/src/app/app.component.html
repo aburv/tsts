@@ -1,0 +1,62 @@
+<div class="screen layout">
+    <div class="splashLayout" *ngIf="isInInit">
+        <div>
+            <img class="loader" src="../assets/logo_app.png" />
+            <div style="text-align: center; font-size: 30px;">Takbuff</div>
+        </div>
+    </div>
+
+    <div class="content" *ngIf="!isInInit">
+        <div class="header-layout">
+            <div class="title" (click)="navigateToDashboard()">
+                <img src="../assets/logo_app.png" />
+                <b>Takbuff</b>
+            </div>
+
+            <div class="spacer"></div>
+
+            <div class="search">
+                <app-icon name="search" [size]=30 [ngStyle]="{'cursor': !isSearching ? 'pointer': 'default'}"
+                    (click)="!isSearching && isSearching=true"></app-icon>
+                <input [ngClass]="{'disp-input': isSearching}" placeholder="Search here" [value]="searchText()"
+                    (keyup)="onChange($event)" />
+                <app-icon name="cross" [size]=20 style="cursor: pointer;"  *ngIf="isSearching"
+                    (click)="searchText() === ''? isSearching=false : searchText.set('') "></app-icon>
+            </div>
+        </div>
+
+        <div class="layout">
+            <div class="side-bar-layout">
+
+            </div>
+
+            <div class="main-layout" *ngIf="!isSearching">
+                <router-outlet></router-outlet>
+            </div>
+
+            <div class="main-layout" *ngIf="isSearching">
+                <div class="search-result-item" *ngFor="let result of searchResult">
+
+                </div>
+            </div>
+
+            <div class="side-bar-layout">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="app-support-layout">
+        <app-icon name="android" [size]=30></app-icon>
+        <br />
+        <app-icon name="ios" [size]=30></app-icon>
+    </div>
+
+    <div class="footer-layout">
+        <div class="footer">Powered by Aburv | Takbuff © 2023 <br class="break"/>An open source application</div>
+    </div>
+
+    <div class="loader-layout" *ngIf="isLoading">
+        <img class="loader" src="../assets/logo_app.png" />
+    </div>
+</div>
