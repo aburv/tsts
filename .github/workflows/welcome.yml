@@ -1,0 +1,16 @@
+name: Welcome Contributor
+
+on: [pull_request_target, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: "Welcome to the Takbuff community! we appriciate your interest in the perfecting our project by raising this issue. We believe you can contribute more by raising Pull Request. Looking forward to learn, build and grow together"
+        pr-message: "Welcome to the Takbuff community! we appriciate your contribution to our project by raising this Pull request. Looking forward to learn, build and grow together by more and more PRs"
