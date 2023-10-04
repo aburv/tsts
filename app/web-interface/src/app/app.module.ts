@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { IconComponent } from './compoments/icon/icon.component';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     IconComponent,
-    DashboardComponent
+    DashboardComponent,
+    PlayerComponent
   ],
   imports: [
     BrowserModule,
