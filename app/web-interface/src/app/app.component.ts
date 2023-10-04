@@ -30,7 +30,6 @@ export class AppComponent {
     this.themeOptions = this.themeService.getOptions();
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
     this.initTheme(isThemeDark.matches);
-    // this.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {
       this.initTheme(e.matches);
     });

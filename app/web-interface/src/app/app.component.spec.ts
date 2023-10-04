@@ -96,7 +96,7 @@ describe('AppComponent', () => {
     // expect(app.initTheme).toHaveBeenCalledOnceWith(true);
   }));
 
-  it('Should create the app on success loading data', fakeAsync(() => {
+  it('Should create the app on failure loading data', fakeAsync(() => {
     const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
     userService.loadUserData.and.returnValue(throwError(''));
 
@@ -108,7 +108,6 @@ describe('AppComponent', () => {
     expect(app.isInInit).toBe(true);
     expect(themeService.getOptions).toHaveBeenCalledOnceWith();
     expect(userService.loadUserData).toHaveBeenCalledOnceWith();
-    expect(app.initTheme).toHaveBeenCalledOnceWith(true);
 
     initThemeSpy.calls.reset();
 

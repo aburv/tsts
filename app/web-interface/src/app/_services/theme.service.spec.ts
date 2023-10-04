@@ -9,7 +9,7 @@ describe('ThemeServices', () => {
     expect(document.documentElement.setAttribute).toHaveBeenCalledOnceWith('theme', 'theme');
   });
 
-  it('Should set theme attribute on setTheme call', () => {    
+  it('Should return the theme options', () => {    
     const options = new ThemeService().getOptions();
 
     expect(options).toEqual(['Light', 'Dark']);
