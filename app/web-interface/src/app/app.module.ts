@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { IconComponent } from './compoments/icon/icon.component';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { PlayerComponent } from './player/player.component';
+import { PlayerComponent } from './pages/player/player.component';
 
 @NgModule({
   declarations: [
