@@ -2,15 +2,15 @@
     <!-- Base application theme. -->
     <style name="Theme.Takbuff" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnBackground">@color/black</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/whiteLess</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="backgroundColor">@color/grey</item>
+        <item name="colorSecondary">@color/blackBright</item>
+        <item name="colorSecondaryVariant">@color/blackLess</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/banner</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>
