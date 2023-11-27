@@ -13,4 +13,15 @@
         <item name="android:statusBarColor">@color/banner</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.Takbuff.Fullscreen" parent="Theme.Takbuff">
+        <item name="android:actionBarStyle">@style/Widget.Theme.Takbuff.ActionBar.Fullscreen</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.Takbuff.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/banner</item>
+        <item name="fullscreenTextColor">@color/white</item>
+    </style>
 </resources>

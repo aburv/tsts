@@ -13,4 +13,9 @@
         <item name="android:statusBarColor">@color/banner</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="ThemeOverlay.Takbuff.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/banner</item>
+        <item name="fullscreenTextColor">@color/white</item>
+    </style>
 </resources>

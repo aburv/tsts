@@ -1,0 +1,10 @@
+<resources>
+    <style name="Widget.Theme.Takbuff.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/banner</item>
+    </style>
+
+    <style name="Widget.Theme.Takbuff.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/banner</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+</resources>
