@@ -203,7 +203,7 @@ describe('AppComponent', () => {
 
     expect(root.children[0].children[0].children[0]).toEqual(img);
     expect(root.children[0].children[0].children[0].classes['loader']).toBe(true);
-    expect(img.attributes['src']).toBe('../assets/logo_app.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
     expect(root.children[0].children[0].children[1].nativeElement.textContent).toBe('Takbuff');
     expect(root.children[0].children[0].children[1].styles['text-align']).toBe('center');
     expect(root.children[0].children[0].children[1].styles['font-size']).toEqual('30px');
@@ -230,7 +230,7 @@ describe('AppComponent', () => {
 
     expect(root.children[2].children.length).toBe(1);
     expect(root.children[2].children[0].classes['footer']).toBe(true);
-    expect(root.children[2].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2023 An open source application');
+    expect(root.children[2].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2023 An Open Source Application');
 
     initThemeSpy.calls.reset();
   }));
@@ -261,7 +261,7 @@ describe('AppComponent', () => {
     const img = root.children[0].children[0].children[0].query(By.css('img'));
     const bold = root.children[0].children[0].children[0].query(By.css('b'));
     expect(root.children[0].children[0].children[0].children[0]).toBe(img);
-    expect(img.attributes['src']).toBe('../assets/logo_app.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
     expect(root.children[0].children[0].children[0].children[1]).toBe(bold);
     expect(bold.nativeElement.textContent).toBe('Takbuff');
 
@@ -348,7 +348,7 @@ describe('AppComponent', () => {
     const img = root.children[3].query(By.css('img'));
     expect(root.children[3].children[0]).toEqual(img);
     expect(root.children[3].children[0].classes['loader']).toBe(true);
-    expect(img.attributes['src']).toBe('../assets/logo_app.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
 
 
     initThemeSpy.calls.reset();
