@@ -4,4 +4,7 @@
     <string name="company_name">Aburv</string>
     <string name="text_app_logo">Takbuff Logo</string>
     <string name="app_subtitle">An Open Source Application</string>
+    <string name="text_back">back</string>
+    <string name="text_search">search</string>
+    <string name="text_clear">clear</string>
 </resources>
