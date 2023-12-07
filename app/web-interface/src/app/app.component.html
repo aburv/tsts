@@ -1,15 +1,15 @@
 <div class="screen layout">
     <div class="splashLayout" *ngIf="isInInit">
         <div>
-            <img class="loader" src="../assets/logo_app_164.png" />
+            <img class="loader" src="../assets/logo_app_164.png" alt="logo"/>
             <div style="text-align: center; font-size: 30px;">Takbuff</div>
         </div>
     </div>
 
     <div class="content" *ngIf="!isInInit">
         <div class="header-layout">
-            <div class="title" (click)="navigateToDashboard()">
-                <img src="../assets/logo_app_164.png" />
+            <div class="title" (click)="navigateToDashboard()" >
+                <img src="../assets/logo_app_164.png" alt="logo"/>
                 <b style="color: #EEE;">Takbuff</b>
             </div>
 
@@ -57,6 +57,6 @@
     </div>
 
     <div class="loader-layout" *ngIf="isLoading">
-        <img class="loader" src="../assets/logo_app_164.png" />
+        <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
     </div>
 </div>
