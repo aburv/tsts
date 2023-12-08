@@ -15,10 +15,10 @@ describe('AppComponent', () => {
   userService.loadUserData.and.returnValue(of(''));
 
   const themeService = jasmine.createSpyObj('ThemeService', [
-    'getOptions',
+    'initTheme',
     'setTheme',
   ]);
-  themeService.getOptions.and.returnValue(['light', 'dark']);
+  themeService.initTheme.and.returnValue(null);
   themeService.setTheme.and.returnValue(null);
 
   const router = {
@@ -47,12 +47,11 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     userService.loadUserData.calls.reset();
-    themeService.getOptions.calls.reset();
+    themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
   })
 
   it('Should create the app on success loading data', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
     class Media implements MediaQueryList {
       matches: boolean = true;
       media: string = '';
@@ -80,24 +79,20 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
 
     expect(app.isInInit).toBe(true);
-    expect(themeService.getOptions).toHaveBeenCalledOnceWith();
     expect(userService.loadUserData).toHaveBeenCalledOnceWith();
-    expect(app.initTheme).toHaveBeenCalledOnceWith(true);
+    expect(themeService.initTheme).toHaveBeenCalledOnceWith(true);
     expect(window.matchMedia).toHaveBeenCalledOnceWith("(prefers-color-scheme: dark)");
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
 
     tick(1100);
 
     expect(app.isInInit).toBe(false);
 
     expect(media.addEventListener).toHaveBeenCalledWith('change', jasmine.any(Function))
-
-    // expect(app.initTheme).toHaveBeenCalledOnceWith(true);
   }));
 
   it('Should create the app on failure loading data', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
     userService.loadUserData.and.returnValue(throwError(''));
 
     const fixture = TestBed.createComponent(AppComponent);
@@ -106,10 +101,9 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
 
     expect(app.isInInit).toBe(true);
-    expect(themeService.getOptions).toHaveBeenCalledOnceWith();
     expect(userService.loadUserData).toHaveBeenCalledOnceWith();
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
 
     tick(1100);
 
@@ -118,72 +112,28 @@ describe('AppComponent', () => {
     userService.loadUserData.calls.reset();
   }));
 
-  it('Should set dark theme on initTheme ', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-
-    const selectThemeSpy = spyOn(app, 'selectTheme');
-
-    app.initTheme(true);
-
-    expect(app.selectTheme).toHaveBeenCalledOnceWith('dark');
-    selectThemeSpy.calls.reset();
-  });
-
-  it('Should set light theme on initTheme ', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-
-    const selectThemeSpy = spyOn(app, 'selectTheme');
-
-    app.initTheme(false);
-
-    expect(app.selectTheme).toHaveBeenCalledOnceWith('light');
-    selectThemeSpy.calls.reset();
-  });
-
-  it('Should set theme on selected theme', () => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-
-    app.selectTheme('dark');
-
-    expect(themeService.setTheme).toHaveBeenCalledOnceWith('dark');
-    expect(app.themeSelected).toBe('dark')
-    initThemeSpy.calls.reset();
-  });
-
   it('Should set search text on onChange call', () => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
     app.onChange({ target: { value: 'value' } });
 
     expect(app.searchText()).toBe('value')
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   });
 
   it('Should navigate to dashboard', () => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
     app.navigateToDashboard();
 
     expect(router.navigate).toHaveBeenCalledOnceWith(['home']);
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   });
 
   it('View: Should set root with screen and layout classes and its children', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
 
     fixture.detectChanges();
 
@@ -232,12 +182,10 @@ describe('AppComponent', () => {
     expect(root.children[2].children[0].classes['footer']).toBe(true);
     expect(root.children[2].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2023 An Open Source Application');
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   }));
 
   it('View: Should set content and its children', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
@@ -321,12 +269,10 @@ describe('AppComponent', () => {
       expect(root.children[0].children[1].children[1].children[i].classes['search-result-item']).toBe(true);
     }
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   }));
 
   it('View: Should set loading layout', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
@@ -350,8 +296,7 @@ describe('AppComponent', () => {
     expect(root.children[3].children[0].classes['loader']).toBe(true);
     expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
 
-
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   }));
 
 });

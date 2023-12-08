@@ -15,9 +15,6 @@ export class AppComponent {
 
   isSearching = false;
 
-  themeOptions: Array<string> = [];
-  themeSelected!: string;
-
   searchText = signal<string>('');
 
   searchResult: Array<String> = []
@@ -25,13 +22,12 @@ export class AppComponent {
   constructor(
     private router: Router,
     private themeService: ThemeService,
-    private userService: UserService
+        private userService: UserService
   ) {
-    this.themeOptions = this.themeService.getOptions();
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
-    this.initTheme(isThemeDark.matches);
+    this.themeService.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {
-      this.initTheme(e.matches);
+      this.themeService.initTheme(e.matches);
     });
 
     userService.loadUserData().subscribe(() => {
@@ -43,19 +39,6 @@ export class AppComponent {
         this.isInInit = false;
       }, 500);
     })
-  }
-
-  initTheme(isDark: boolean): void {
-    if (isDark) {
-      this.selectTheme(this.themeOptions[1]);
-    } else {
-      this.selectTheme(this.themeOptions[0]);
-    }
-  }
-
-  selectTheme(theme: string): void {
-    this.themeSelected = theme;
-    this.themeService.setTheme(this.themeSelected);
   }
 
   onChange(event: any): void {

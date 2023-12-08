@@ -9,9 +9,25 @@ describe('ThemeServices', () => {
     expect(document.documentElement.setAttribute).toHaveBeenCalledOnceWith('theme', 'theme');
   });
 
-  it('Should return the theme options', () => {    
-    const options = new ThemeService().getOptions();
+  it('Should set dark theme on initTheme ', () => {
+    const service = new ThemeService();
 
-    expect(options).toEqual(['Light', 'Dark']);
+    const setThemeSpy = spyOn(service, 'setTheme');
+
+    service.initTheme(true);
+
+    expect(service.setTheme).toHaveBeenCalledOnceWith('Dark');
+    setThemeSpy.calls.reset();
+  });
+
+  it('Should set light theme on initTheme ', () => {
+    const service = new ThemeService();
+
+    const setThemeSpy = spyOn(service, 'setTheme');
+
+    service.initTheme(false);
+
+    expect(service.setTheme).toHaveBeenCalledOnceWith('Light');
+    setThemeSpy.calls.reset();
   });
 });
