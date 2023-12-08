@@ -9,6 +9,10 @@ body {
     margin: 0px;
 }
 
+.layout {
+    display: flex;
+}
+
 .spacer {
     flex: 1;
 }
@@ -27,18 +31,20 @@ body {
     0% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
-     }
+    }
 }
 
-@keyframes fadeOut{
+@keyframes fadeOut {
     0% {
         opacity: 1;
     }
+
     100% {
         opacity: 0;
-     }
+    }
 }
 
 ::-webkit-scrollbar {

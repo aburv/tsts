@@ -61,17 +61,17 @@ describe('AppComponent', () => {
 
   it('Should create the app on success loading data', fakeAsync(() => {
     class Media implements MediaQueryList {
-      matches: boolean = true;
-      media: string = '';
+      matches = true;
+      media = '';
       onchange: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null = null;
-      addListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { }
-      removeListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { }
+      addListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { return }
+      removeListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { return }
       addEventListener<K extends 'change'>(type: K, listener: (this: MediaQueryList, ev: MediaQueryListEventMap[K]) => any, options?: boolean | AddEventListenerOptions | undefined): void;
       addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void;
-      addEventListener(type: unknown, listener: unknown, options?: unknown): void { }
+      addEventListener(type: unknown, listener: unknown, options?: unknown): void { return }
       removeEventListener<K extends 'change'>(type: K, listener: (this: MediaQueryList, ev: MediaQueryListEventMap[K]) => any, options?: boolean | EventListenerOptions | undefined): void;
       removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions | undefined): void;
-      removeEventListener(type: unknown, listener: unknown, options?: unknown): void { }
+      removeEventListener(type: unknown, listener: unknown, options?: unknown): void { return }
       dispatchEvent(event: Event): boolean {
         return false;
       }
@@ -116,7 +116,7 @@ describe('AppComponent', () => {
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    
+
     expect(app.isLoading).toBe(false);
   });
 

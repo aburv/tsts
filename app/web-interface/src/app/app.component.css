@@ -120,9 +120,10 @@
 
 .loader-layout {
   position: absolute;
+  z-index: 2;
   display: flex;
   height: 100vh;
-  width: 100vw;
+  width: 101vw;
   justify-content: center;
   align-items: center;
   background-color: #0000007e;
@@ -140,7 +141,7 @@
   right: 0;
 }
 
-app-support-layout>app-icon {
+.app-support-layout>app-icon {
   margin: 5px;
 }
 
@@ -188,8 +189,8 @@ app-support-layout>app-icon {
 
 @media only screen and (max-width: 550px) {
   .main-layout{
-    width: 90vw;
-    height: 84vh;
+    width: 95vw;
+    height: 76vh;
   }
 
   .footer > .break{
@@ -202,5 +203,6 @@ app-support-layout>app-icon {
 
   .search .disp-input{
     width: 100px;
+    padding: 0px ;
   }
 }
