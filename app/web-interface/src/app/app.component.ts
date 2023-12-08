@@ -2,6 +2,7 @@ import { Component, computed, signal } from '@angular/core';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
+import { LoaderService } from './_services/loader.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,8 @@ export class AppComponent {
   constructor(
     private router: Router,
     private themeService: ThemeService,
-        private userService: UserService
+    private loaderService: LoaderService,
+    private userService: UserService
   ) {
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
     this.themeService.initTheme(isThemeDark.matches);
@@ -39,6 +41,10 @@ export class AppComponent {
         this.isInInit = false;
       }, 500);
     })
+
+    loaderService.getIsLoading().subscribe((status)=>{
+      this.isLoading = status;
+    })
   }
 
   onChange(event: any): void {
@@ -47,5 +53,5 @@ export class AppComponent {
 
   navigateToDashboard(): void {
     this.router.navigate(['home']);
-  }
+    }
 }

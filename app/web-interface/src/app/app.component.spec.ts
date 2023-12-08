@@ -7,12 +7,15 @@ import { UserService } from './_services/user.service';
 import { of, throwError } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { LoaderService } from './_services/loader.service';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
     'loadUserData'
   ]);
   userService.loadUserData.and.returnValue(of(''));
+
+  const loaderService = jasmine.createSpyObj('LoaderService', ['getIsLoading']);
 
   const themeService = jasmine.createSpyObj('ThemeService', [
     'initTheme',
@@ -39,6 +42,10 @@ describe('AppComponent', () => {
       {
         provide: UserService,
         useValue: userService,
+      },
+      {
+        provide: LoaderService,
+        useValue: loaderService,
       }
     ],
     declarations: [AppComponent],
@@ -49,6 +56,7 @@ describe('AppComponent', () => {
     userService.loadUserData.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
+    loaderService.getIsLoading.and.returnValue(of(false));
   })
 
   it('Should create the app on success loading data', fakeAsync(() => {
@@ -91,6 +99,26 @@ describe('AppComponent', () => {
 
     expect(media.addEventListener).toHaveBeenCalledWith('change', jasmine.any(Function))
   }));
+
+  it('Should set the isLoading to true on call', ()=>{
+    loaderService.getIsLoading.calls.reset();
+    loaderService.getIsLoading.and.returnValue(of(true));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    expect(app.isLoading).toBe(true);
+  });
+
+  it('Should set the isLoading false on call', ()=>{
+    loaderService.getIsLoading.calls.reset();
+    loaderService.getIsLoading.and.returnValue(of(false));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    
+    expect(app.isLoading).toBe(false);
+  });
 
   it('Should create the app on failure loading data', fakeAsync(() => {
     userService.loadUserData.and.returnValue(throwError(''));
