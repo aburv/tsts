@@ -19,7 +19,6 @@ def client_auth(func):
 
     @wraps(func)
     def decorated(*args, **kwargs):
-        print("sfvdf")
         client_key = request.headers.get('x-api-key')
 
         if client_key != Config.get_api_key():
