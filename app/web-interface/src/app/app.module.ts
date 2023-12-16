@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { IconComponent } from './compoments/icon/icon.component';
+import { IconComponent } from './components/icon/icon.component';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
