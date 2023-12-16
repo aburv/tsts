@@ -11,6 +11,7 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import { IconComponent } from './components/icon/icon.component';
 import { InputDateComponent } from './components/input-date/input-date.component';
 import { InputComponent } from './components/input-text/input.component';
+import { TogglerComponent } from './components/toggler/toggler.component';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
@@ -23,6 +24,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     IconComponent,
     InputDateComponent,
     InputComponent,
+    TogglerComponent,
     DashboardComponent
   ],
   imports: [
