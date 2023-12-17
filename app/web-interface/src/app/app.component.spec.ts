@@ -7,6 +7,7 @@ import { UserService } from './_services/user.service';
 import { of, throwError } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { LoaderService } from './_services/loader.service';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
@@ -14,11 +15,13 @@ describe('AppComponent', () => {
   ]);
   userService.loadUserData.and.returnValue(of(''));
 
+  const loaderService = jasmine.createSpyObj('LoaderService', ['getIsLoading']);
+
   const themeService = jasmine.createSpyObj('ThemeService', [
-    'getOptions',
+    'initTheme',
     'setTheme',
   ]);
-  themeService.getOptions.and.returnValue(['light', 'dark']);
+  themeService.initTheme.and.returnValue(null);
   themeService.setTheme.and.returnValue(null);
 
   const router = {
@@ -39,6 +42,10 @@ describe('AppComponent', () => {
       {
         provide: UserService,
         useValue: userService,
+      },
+      {
+        provide: LoaderService,
+        useValue: loaderService,
       }
     ],
     declarations: [AppComponent],
@@ -47,24 +54,24 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     userService.loadUserData.calls.reset();
-    themeService.getOptions.calls.reset();
+    themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
+    loaderService.getIsLoading.and.returnValue(of(false));
   })
 
   it('Should create the app on success loading data', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
     class Media implements MediaQueryList {
-      matches: boolean = true;
-      media: string = '';
+      matches = true;
+      media = '';
       onchange: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null = null;
-      addListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { }
-      removeListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { }
+      addListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { return }
+      removeListener(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void { return }
       addEventListener<K extends 'change'>(type: K, listener: (this: MediaQueryList, ev: MediaQueryListEventMap[K]) => any, options?: boolean | AddEventListenerOptions | undefined): void;
       addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void;
-      addEventListener(type: unknown, listener: unknown, options?: unknown): void { }
+      addEventListener(type: unknown, listener: unknown, options?: unknown): void { return }
       removeEventListener<K extends 'change'>(type: K, listener: (this: MediaQueryList, ev: MediaQueryListEventMap[K]) => any, options?: boolean | EventListenerOptions | undefined): void;
       removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions | undefined): void;
-      removeEventListener(type: unknown, listener: unknown, options?: unknown): void { }
+      removeEventListener(type: unknown, listener: unknown, options?: unknown): void { return }
       dispatchEvent(event: Event): boolean {
         return false;
       }
@@ -80,24 +87,40 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
 
     expect(app.isInInit).toBe(true);
-    expect(themeService.getOptions).toHaveBeenCalledOnceWith();
     expect(userService.loadUserData).toHaveBeenCalledOnceWith();
-    expect(app.initTheme).toHaveBeenCalledOnceWith(true);
+    expect(themeService.initTheme).toHaveBeenCalledOnceWith(true);
     expect(window.matchMedia).toHaveBeenCalledOnceWith("(prefers-color-scheme: dark)");
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
 
     tick(1100);
 
     expect(app.isInInit).toBe(false);
 
     expect(media.addEventListener).toHaveBeenCalledWith('change', jasmine.any(Function))
-
-    // expect(app.initTheme).toHaveBeenCalledOnceWith(true);
   }));
 
-  it('Should create the app on success loading data', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
+  it('Should set the isLoading to true on call', ()=>{
+    loaderService.getIsLoading.calls.reset();
+    loaderService.getIsLoading.and.returnValue(of(true));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    expect(app.isLoading).toBe(true);
+  });
+
+  it('Should set the isLoading false on call', ()=>{
+    loaderService.getIsLoading.calls.reset();
+    loaderService.getIsLoading.and.returnValue(of(false));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    expect(app.isLoading).toBe(false);
+  });
+
+  it('Should create the app on failure loading data', fakeAsync(() => {
     userService.loadUserData.and.returnValue(throwError(''));
 
     const fixture = TestBed.createComponent(AppComponent);
@@ -106,11 +129,9 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
 
     expect(app.isInInit).toBe(true);
-    expect(themeService.getOptions).toHaveBeenCalledOnceWith();
     expect(userService.loadUserData).toHaveBeenCalledOnceWith();
-    expect(app.initTheme).toHaveBeenCalledOnceWith(true);
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
 
     tick(1100);
 
@@ -119,72 +140,28 @@ describe('AppComponent', () => {
     userService.loadUserData.calls.reset();
   }));
 
-  it('Should set dark theme on initTheme ', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-
-    const selectThemeSpy = spyOn(app, 'selectTheme');
-
-    app.initTheme(true);
-
-    expect(app.selectTheme).toHaveBeenCalledOnceWith('dark');
-    selectThemeSpy.calls.reset();
-  });
-
-  it('Should set light theme on initTheme ', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-
-    const selectThemeSpy = spyOn(app, 'selectTheme');
-
-    app.initTheme(false);
-
-    expect(app.selectTheme).toHaveBeenCalledOnceWith('light');
-    selectThemeSpy.calls.reset();
-  });
-
-  it('Should set theme on selected theme', () => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-
-    app.selectTheme('dark');
-
-    expect(themeService.setTheme).toHaveBeenCalledOnceWith('dark');
-    expect(app.themeSelected).toBe('dark')
-    initThemeSpy.calls.reset();
-  });
-
   it('Should set search text on onChange call', () => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
     app.onChange({ target: { value: 'value' } });
 
     expect(app.searchText()).toBe('value')
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   });
 
   it('Should navigate to dashboard', () => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
     app.navigateToDashboard();
 
     expect(router.navigate).toHaveBeenCalledOnceWith(['home']);
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   });
 
   it('View: Should set root with screen and layout classes and its children', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
 
     fixture.detectChanges();
 
@@ -204,7 +181,7 @@ describe('AppComponent', () => {
 
     expect(root.children[0].children[0].children[0]).toEqual(img);
     expect(root.children[0].children[0].children[0].classes['loader']).toBe(true);
-    expect(img.attributes['src']).toBe('../assets/logo_app.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
     expect(root.children[0].children[0].children[1].nativeElement.textContent).toBe('Takbuff');
     expect(root.children[0].children[0].children[1].styles['text-align']).toBe('center');
     expect(root.children[0].children[0].children[1].styles['font-size']).toEqual('30px');
@@ -231,14 +208,12 @@ describe('AppComponent', () => {
 
     expect(root.children[2].children.length).toBe(1);
     expect(root.children[2].children[0].classes['footer']).toBe(true);
-    expect(root.children[2].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2023 An open source application');
+    expect(root.children[2].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2023 An Open Source Application');
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   }));
 
   it('View: Should set content and its children', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
@@ -262,7 +237,7 @@ describe('AppComponent', () => {
     const img = root.children[0].children[0].children[0].query(By.css('img'));
     const bold = root.children[0].children[0].children[0].query(By.css('b'));
     expect(root.children[0].children[0].children[0].children[0]).toBe(img);
-    expect(img.attributes['src']).toBe('../assets/logo_app.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
     expect(root.children[0].children[0].children[0].children[1]).toBe(bold);
     expect(bold.nativeElement.textContent).toBe('Takbuff');
 
@@ -322,12 +297,10 @@ describe('AppComponent', () => {
       expect(root.children[0].children[1].children[1].children[i].classes['search-result-item']).toBe(true);
     }
 
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   }));
 
   it('View: Should set loading layout', fakeAsync(() => {
-    const initThemeSpy = spyOn(AppComponent.prototype, 'initTheme');
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
@@ -349,10 +322,9 @@ describe('AppComponent', () => {
     const img = root.children[3].query(By.css('img'));
     expect(root.children[3].children[0]).toEqual(img);
     expect(root.children[3].children[0].classes['loader']).toBe(true);
-    expect(img.attributes['src']).toBe('../assets/logo_app.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
 
-
-    initThemeSpy.calls.reset();
+    themeService.initTheme.calls.reset();
   }));
 
 });

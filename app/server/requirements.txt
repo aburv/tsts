@@ -1,9 +1,9 @@
 # Server
-gunicorn==20.1.0
+gunicorn==21.2.0
 
 # Web Frameworks
-Flask==2.3.3
+Flask==3.0.0
 Flask-Cors==3.0.10
 
 # postgres Driver
-psycopg2==2.9.7
+psycopg2==2.9.9

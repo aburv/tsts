@@ -2,6 +2,7 @@ import { Component, computed, signal } from '@angular/core';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
+import { LoaderService } from './_services/loader.service';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +16,6 @@ export class AppComponent {
 
   isSearching = false;
 
-  themeOptions: Array<string> = [];
-  themeSelected!: string;
-
   searchText = signal<string>('');
 
   searchResult: Array<String> = []
@@ -25,14 +23,13 @@ export class AppComponent {
   constructor(
     private router: Router,
     private themeService: ThemeService,
+    private loaderService: LoaderService,
     private userService: UserService
   ) {
-    this.themeOptions = this.themeService.getOptions();
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
-    this.initTheme(isThemeDark.matches);
-    // this.initTheme(isThemeDark.matches);
+    this.themeService.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {
-      this.initTheme(e.matches);
+      this.themeService.initTheme(e.matches);
     });
 
     userService.loadUserData().subscribe(() => {
@@ -44,19 +41,10 @@ export class AppComponent {
         this.isInInit = false;
       }, 500);
     })
-  }
 
-  initTheme(isDark: boolean): void {
-    if (isDark) {
-      this.selectTheme(this.themeOptions[1]);
-    } else {
-      this.selectTheme(this.themeOptions[0]);
-    }
-  }
-
-  selectTheme(theme: string): void {
-    this.themeSelected = theme;
-    this.themeService.setTheme(this.themeSelected);
+    loaderService.getIsLoading().subscribe((status)=>{
+      this.isLoading = status;
+    })
   }
 
   onChange(event: any): void {
@@ -65,5 +53,5 @@ export class AppComponent {
 
   navigateToDashboard(): void {
     this.router.navigate(['home']);
-  }
+    }
 }

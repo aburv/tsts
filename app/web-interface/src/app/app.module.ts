@@ -5,17 +5,27 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { IconComponent } from './compoments/icon/icon.component';
+import { ButtonComponent } from './components/button/button.component';
+import { ChipSetComponent } from './components/chip-set/chip-set.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import { IconComponent } from './components/icon/icon.component';
+import { InputDateComponent } from './components/input-date/input-date.component';
+import { InputComponent } from './components/input-text/input.component';
+import { TogglerComponent } from './components/toggler/toggler.component';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { PlayerComponent } from './pages/player/player.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ButtonComponent,
+    ChipSetComponent,
+    DialogComponent,
     IconComponent,
-    DashboardComponent,
-    PlayerComponent
+    InputDateComponent,
+    InputComponent,
+    TogglerComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

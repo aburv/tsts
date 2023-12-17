@@ -17,7 +17,7 @@ describe('UserService', () => {
         const actual = service.loadUserData();
 
         expect(httpSpy.get).toHaveBeenCalledOnceWith(
-            'https://localhost/api/user/',
+            'https://localhost/api/user/app',
             {
                 headers: { header: 'header' }
             }

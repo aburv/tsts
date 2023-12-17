@@ -43,8 +43,9 @@
 }
 
 .title>img {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
+  padding: 10px;
 }
 
 .search {
@@ -62,12 +63,22 @@
 .search .disp-input {
   display: block;
   width: 200px;
-  padding: 5px 10px;
+  padding: 1px 10px;
   margin: 10px 2px;
+  font-size: 15px;
   background-color: var(--bg);
   border: 0px;
   outline: none;
   color: var(--dark);
+}
+
+.search>input > ::placeholder {
+  color: #eee;
+  opacity: 1; /* Firefox */
+}
+
+.search>input > ::-ms-input-placeholder { /* Edge 12-18 */
+  color: #eee;
 }
 
 .search>app-icon {
@@ -109,9 +120,10 @@
 
 .loader-layout {
   position: absolute;
+  z-index: 2;
   display: flex;
   height: 100vh;
-  width: 100vw;
+  width: 101vw;
   justify-content: center;
   align-items: center;
   background-color: #0000007e;
@@ -119,8 +131,8 @@
 
 .loader {
   animation: spin 1s infinite linear;
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
 }
 
 .app-support-layout {
@@ -129,7 +141,7 @@
   right: 0;
 }
 
-app-support-layout>app-icon {
+.app-support-layout>app-icon {
   margin: 5px;
 }
 
@@ -177,8 +189,8 @@ app-support-layout>app-icon {
 
 @media only screen and (max-width: 550px) {
   .main-layout{
-    width: 90vw;
-    height: 84vh;
+    width: 95vw;
+    height: 76vh;
   }
 
   .footer > .break{
@@ -191,5 +203,6 @@ app-support-layout>app-icon {
 
   .search .disp-input{
     width: 100px;
+    padding: 0px ;
   }
 }
