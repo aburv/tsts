@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.aburv.takbuff1"
+        applicationId = "com.aburv.takbuff"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
