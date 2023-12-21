@@ -1,0 +1,3 @@
+<div>
+    <p>dashboard works!</p>
+</div>

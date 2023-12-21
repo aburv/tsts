@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web:
+    build: .
+    container_name: data
+    restart: unless-stopped
+    env_file: server.env
+    ports:
+      - "80:5000"
+    links:
+      - "postgresDb:postgresDb"
+    depends_on:
+      - postgresDb
+  postgresDb:
+    image: postgres:latest
+    container_name: postgresDb
+    ports:
+      - "5432:5432"
+    env_file: db.env
+    restart: unless-stopped
