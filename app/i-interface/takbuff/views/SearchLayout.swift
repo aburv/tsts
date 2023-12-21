@@ -18,7 +18,7 @@ struct SearchLayout: View {
                     cornerRadius: isSearching ? 0.0 : 25.0,
                     style: .continuous
                 )
-                .foregroundColor(Color("bright"))
+                .foregroundColor(Color(isSearching ? "background" : "bright"))
             }
             .frame(width: isSearching ? 400.0 : 45.0, height: isSearching ? 70.0 : 45.0)
             .foregroundColor(Color("dark"))

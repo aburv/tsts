@@ -1,14 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Takbuff" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorOnBackground">@color/white</item>
-        <item name="colorPrimary">@color/greyBright</item>
-        <item name="colorPrimaryVariant">@color/greyLess</item>
-        <!-- Secondary brand color. -->
-        <item name="backgroundColor">@color/cream</item>
-        <item name="colorSecondary">@color/whiteBright</item>
-        <item name="colorSecondaryVariant">@color/white</item>
+        <item name="background">@color/white</item>
+        <item name="mildBackground">@color/cream</item>
+        <item name="bright">@color/whiteBright</item>
+        <item name="lessBright">@color/white</item>
+        <item name="dark">@color/greyBright</item>
+        <item name="lessDark">@color/greyLess</item>
+
+        <item name="colorButtonNormal">@color/blue</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/banner</item>
         <!-- Customize your theme here. -->

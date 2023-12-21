@@ -5,11 +5,14 @@
     <color name="whiteLess">#D5D5D5</color>
     <color name="cream">#BDBDBD</color>
     <color name="greyLess">#797979</color>
-    <color name="grey">#6565658E</color>
+    <color name="grey">#656565</color>
     <color name="greyBright">#333</color>
     <color name="blackLess">#393939</color>
-    <color name="black">#22222C</color>
+    <color name="black">#222222</color>
     <color name="blackBright">#000</color>
 
     <color name="banner">#707070</color>
+
+    <color name="blue">#5856D6</color>
+    <color name="creamLess">#E6E6E6</color>
 </resources>
