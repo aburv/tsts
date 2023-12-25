@@ -12,13 +12,28 @@ class ConfigTest(unittest.TestCase):
         "POSTGRES_USER": 'user',
         "POSTGRES_PASSWORD": 'pass',
         "POSTGRES_HOST": 'host',
-        "POSTGRES_PORT": 'port'
+        "POSTGRES_PORT": 'port',
+        "POSTGRES_SCHEMA_META": 'meta',
+        "POSTGRES_SCHEMA": 'data'
     }, clear=True)
     def test_should_get_mongo_parameters(self):
+        expected = {
+            'db': 'DB',
+            'host': 'host',
+            'pass': 'pass',
+            'port': 'port',
+            'user': 'user',
+            'meta_schema': 'meta',
+            'schema': 'data',
+        }
         actual = Config.get_db_parameters()
-        self.assertEqual({'db': 'DB', 'host': 'host', 'pass': 'pass', 'port': 'port', 'user': 'user'}, actual)
+        self.assertEqual(expected, actual)
 
-    @mock.patch.dict(os.environ, {"API_KEY": "test_api_key"}, clear=True)
+    @mock.patch.dict(os.environ, {
+        "WEB_CLIENT_KEY": "test_web_key",
+        "ANDROID_CLIENT_KEY": "test_android_key",
+        "IOS_CLIENT_KEY": "test_ios_key",
+        "DEV_KEY": "test_dev_key"}, clear=True)
     def test_should_get_api_key(self):
-        actual = Config.get_api_key()
-        self.assertEqual("test_api_key", actual)
+        actual = Config.get_api_keys()
+        self.assertEqual(["test_web_key", "test_android_key", "test_ios_key", "test_dev_key"], actual)
