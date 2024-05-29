@@ -45,31 +45,12 @@
 
                 </div>
                 <div class="links side">
-                    <a target="_blank" class="link" href="http://localhost:3002/">
-                        Terms & Conditions
-                    </a>
-                    <span>|</span>
-                    <a target="_blank" class="link" href="http://localhost:3002/">
-                        Privacy Policies
-                    </a>
-                    <a target="_blank" class="link" href="http://localhost:3002/">
-                        Help
-                    </a>
-                    <span>|</span>
-                    <a target="_blank" class="link" href="http://localhost:3002/">
-                        FAQ
-                    </a>
-                    <span>|</span>
-                    <a target="_blank" class="link" href="http://localhost:3002/">
-                        Blog
-                    </a>
-                    <span>|</span>
-                    <a target="_blank" class="link" href="http://localhost:3002/">
-                        Newsletters
-                    </a>
-                    <a target="_blank" class="link" href="http://localhost:3002/">
-                        About Sepak Takraw Game
-                    </a>
+                    <div *ngFor="let link of links; let i = index">
+                        <a target="_blank" class="link" [href]="link['link']">
+                            {{ link['title'] }}
+                        </a>
+                        <span *ngIf="i === 0 || i === 2 || i === 3 || i === 4" class="separator">|</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,35 +65,18 @@
     <div class="footer-layout">
         <div class="footer">
             <div class="links bottom">
-                <a target="_blank" class="link" href="http://localhost:3002/">
-                    Terms & Conditions
-                </a>
-                <span>|</span>
-                <a target="_blank" class="link" href="http://localhost:3002/">
-                    Privacy Policies
-                </a>
-                <span>|</span>
-                <a target="_blank" class="link" href="http://localhost:3002/">
-                    Help
-                </a>
-                <span>|</span>
-                <a target="_blank" class="link" href="http://localhost:3002/">
-                    FAQ
-                </a>
-                <span>|</span>
-                <a target="_blank" class="link" href="http://localhost:3002/">
-                    Blog
-                </a>
-                <span>|</span>
-                <a target="_blank" class="link" href="http://localhost:3002/">
-                    Newsletters
-                </a>
-                <span>|</span>
-                <a target="_blank" class="link" href="http://localhost:3002/">
-                    About Sepak Takraw Game
-                </a>
+                <div *ngFor="let link of links; let lastItem = last;">
+                    <a target="_blank" class="link" [href]="link['link']">
+                        {{ link['title'] }} 
+                    </a>
+                    <span *ngIf="!lastItem" class="separator">|</span>
+                </div>
             </div>
-            Powered by <b>Aburv</b> | <b>Takbuff</b> © 2023 <br class="break" /> <span style="font-size: 12px;">An Open Source Application</span>
+            <div>
+                <span>Powered by <b>Aburv</b> | <b>Takbuff</b> © {{ thisyear }}</span>
+                <br class="break" />
+                <span style="font-size: 12px;"> An Open Source Application</span>
+            </div>
         </div>
     </div>
 

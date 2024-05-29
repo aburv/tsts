@@ -20,6 +20,39 @@ export class AppComponent {
 
   searchResult: Array<String> = []
 
+  thisyear = new Date().getFullYear();
+
+  links = [
+    {
+      title: 'Terms & Conditions',
+      link: ''
+    },
+    {
+      title: 'Privacy Policies',
+      link: ''
+    },
+    {
+      title: 'Help',
+      link: ''
+    },
+    {
+      title: 'FAQ',
+      link: ''
+    },
+    {
+      title: 'Blog',
+      link: ''
+    },
+    {
+      title: 'Newsletters',
+      link: ''
+    },
+    {
+      title: 'About Sepak Takraw Game',
+      link: ''
+    },
+  ]
+
   constructor(
     private router: Router,
     private themeService: ThemeService,
