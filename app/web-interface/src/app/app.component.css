@@ -58,6 +58,7 @@
 
 .search>input {
   display: none;
+  transition: 0.3s ease-in;
 }
 
 .search .disp-input {
@@ -70,6 +71,7 @@
   border: 0px;
   outline: none;
   color: var(--dark);
+  transition: 0.3s ease-in;
 }
 
 .search>input > ::placeholder {
