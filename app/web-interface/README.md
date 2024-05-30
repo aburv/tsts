@@ -1,27 +1,40 @@
-# WebInterface
+![Generic badge](https://img.shields.io/badge/Build-PASSED-green.svg)  ![Generic badge](https://img.shields.io/badge/Coverage-100%25-green.svg) ![Generic badge](https://img.shields.io/badge/Angular-Typescript-green.svg)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
+# Browser Interface
+   An Angular application -V17.0.7
+
+   Typescript -V5.2.2
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Prerequisites:
+* Env configs
+setup the values at `/src/environments/environment.ts`
 
-## Code scaffolding
+* Install Dependencies
+```
+npm install
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+* Run locally.
+```
+npm run start
+```
 
-## Build
+Check ` http://localhost:4200/ ` in any browser
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Testing
+### Unit Testing
+Unit tests are present in same folder next to actual file. 
+Component and functional level testing.
+```
+npm run test
+```
 
-## Running unit tests
+set ` --watch=true ` to test script in package.json
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+View Code Coverage in html format
 
-## Running end-to-end tests
+`/coverage/web-interface/index.html`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Happy UI coding
