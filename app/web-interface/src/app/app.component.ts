@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
@@ -18,7 +18,7 @@ export class AppComponent {
 
   searchText = signal<string>('');
 
-  searchResult: Array<String> = []
+  searchResult: Array<string> = []
 
   thisyear = new Date().getFullYear();
 

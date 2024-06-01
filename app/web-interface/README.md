@@ -8,25 +8,41 @@
 ## Development server
 
 ### Prerequisites:
+
 * Env configs
 setup the values at `/src/environments/environment.ts`
 
 * Install Dependencies
+
 ```
 npm install
 ```
 
 * Run locally.
+
 ```
 npm run start
 ```
 
 Check ` http://localhost:4200/ ` in any browser
 
+## Code Quality
+
+### Lint
+
+```
+npm run lint
+```
+
+Maintain 0 errors and minimize the warnings as much as possible
+
 ## Testing
+
 ### Unit Testing
+
 Unit tests are present in same folder next to actual file. 
 Component and functional level testing.
+
 ```
 npm run test
 ```
