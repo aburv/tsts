@@ -11,7 +11,7 @@ class UserControllerTest(unittest.TestCase):
     @mock.patch.object(ValidResponse, 'get_response_json', return_value='response_json')
     @mock.patch.object(ValidResponse, '__init__', return_value=None)
     @mock.patch.object(Config, 'get_api_keys')
-    def test_should_return_valid_instances_response(self,
+    def test_should_return_valid_user_data_response(self,
                                                     mock_secret_config,
                                                     mock_response_init,
                                                     mock_response
