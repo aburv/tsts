@@ -1,0 +1,16 @@
+<resources>
+    <style name="Widget.Theme.Takbuff.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/banner</item>
+    </style>
+
+    <style name="Widget.Theme.Takbuff.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/banner</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowContentTransitions">true</item>
+        ...
+    </style>
+</resources>

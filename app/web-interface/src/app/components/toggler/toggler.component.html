@@ -1,0 +1,4 @@
+<div class="content">
+    <span class="item" [ngClass]="{'selected' : selected === option}" *ngFor="let option of options"
+        (click)="childEmitter.emit(option)">{{option}}</span>
+</div>
