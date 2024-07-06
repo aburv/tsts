@@ -1,12 +1,24 @@
 version: '3'
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: data
     restart: unless-stopped
     env_file: server.env
     ports:
       - "80:5000"
+    links:
+      - "postgresDb:postgresDb"
+    depends_on:
+      - postgresDb
+  init:
+    build:
+      context: .
+      dockerfile: ./init/Dockerfile
+    container_name: init
+    env_file: server.env
     links:
       - "postgresDb:postgresDb"
     depends_on:

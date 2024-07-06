@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundColor"
+    android:background="?attr/mildBackground"
     tools:context=".SplashActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,14 +56,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorPrimary"
+            app:tint="?attr/dark"
             android:contentDescription="@string/text_search" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_search"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:background="?attr/colorOnBackground"
+            android:background="?attr/background"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +81,7 @@
                 app:layout_constraintEnd_toStartOf="@id/search_input_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="?attr/colorPrimary"
+                app:tint="?attr/dark"
                 android:contentDescription="@string/text_back" />
 
             <EditText
@@ -112,7 +112,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/search_input_text"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="?attr/colorPrimary"
+                app:tint="?attr/dark"
                 android:contentDescription="@string/text_clear" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
