@@ -6,22 +6,25 @@
 </p>
 
 <p align="center">
- An open-source <b>Sepak Takraw</b> community application licensed by Aburv. It features news, articles and live coverage of sepak takraw matches including text commentary, player stats and team rankings.
+ An opensource <b>Sepak Takraw</b> community application licensed by Aburv. It features news, articles and live coverage of sepak takraw matches including text commentary, player stats and team rankings.
 </p>
 
 ## Our AIM
 
-A approach to converge Sepak Takraw with software excellence to
+A approach to converge Sepak Takraw with digital experience using software excellence to
 - Publicize and promote the game
-- Experience the digitalized scoring  
+- Redine the scoring experience digitally  
 - Insightful stats on players and matches
 
 ## Contributions
 
 We appreciate our contributors. This codebase is focused towards openness of developer community.
 
-🤝We expect everyone, trying to help our community to develop robust app, to agree to our Code of Conduct.</br>
-  Begin with our Contributor's Guide. will get updated soon!</br>
+🤝We expect everyone, trying to help our community to develop robust app, to agree to our Code of Conduct.
+
+Begin with our Contributor's Guide. 
+
+* will get updated soon!
 
 At Aburv, we believe
 
