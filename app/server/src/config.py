@@ -1,6 +1,7 @@
 """
 Methods returning system config
 """
+import enum
 import os
 
 
@@ -35,5 +36,33 @@ class Config:
             os.environ.get("WEB_CLIENT_KEY"),
             os.environ.get("ANDROID_CLIENT_KEY"),
             os.environ.get("IOS_CLIENT_KEY"),
-            os.environ.get("DEV_KEY")
+            os.environ.get("KEY")
         ]
+
+
+class Table:
+    """
+    Table
+    """
+    _name: str
+    schemaType: bool
+
+    def __init__(self, name: str, is_main: bool) -> None:
+        self._name = name
+        self.schema_type = is_main
+
+    def get_name(self) -> str:
+        """
+        return table name
+        """
+        return self._name
+
+
+class Relation(enum.Enum):
+    """
+    Relation defining the table
+    """
+    INIT = Table("", True)
+    MIGRATION = Table("migration", False)
+    AUDIT = Table("audit", False)
+    AUDIT_FIELD = Table("audit_field", False)
