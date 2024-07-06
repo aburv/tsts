@@ -100,7 +100,7 @@ describe('AppComponent', () => {
     expect(media.addEventListener).toHaveBeenCalledWith('change', jasmine.any(Function))
   }));
 
-  it('Should set the isLoading to true on call', ()=>{
+  it('Should set the isLoading to true on call', () => {
     loaderService.getIsLoading.calls.reset();
     loaderService.getIsLoading.and.returnValue(of(true));
 
@@ -110,7 +110,7 @@ describe('AppComponent', () => {
     expect(app.isLoading).toBe(true);
   });
 
-  it('Should set the isLoading false on call', ()=>{
+  it('Should set the isLoading false on call', () => {
     loaderService.getIsLoading.calls.reset();
     loaderService.getIsLoading.and.returnValue(of(false));
 
@@ -162,6 +162,7 @@ describe('AppComponent', () => {
 
   it('View: Should set root with screen and layout classes and its children', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
 
     fixture.detectChanges();
 
@@ -208,7 +209,26 @@ describe('AppComponent', () => {
 
     expect(root.children[2].children.length).toBe(1);
     expect(root.children[2].children[0].classes['footer']).toBe(true);
-    expect(root.children[2].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2023 An Open Source Application');
+    expect(root.children[2].children[0].children.length).toBe(2);
+    expect(root.children[2].children[0].children[0].classes['links']).toBe(true);
+    expect(root.children[2].children[0].children[0].classes['bottom']).toBe(true);
+    expect(root.children[2].children[0].children[0].children.length).toBe(app.links.length);
+
+    for (let i = 0; i < root.children[2].children[0].children[0].children.length; i++) {
+      expect(root.children[2].children[0].children[0].children[i].children[0].nativeElement.textContent).toBe(" " + app.links[i].title + " ");
+      if (i !== app.links.length - 1) { 
+        expect(root.children[2].children[0].children[0].children[i].children[1].nativeElement.textContent).toBe("|"); 
+      }
+      expect(root.children[2].children[0].children[0].children[i].children[0].classes['link']).toBe(true);
+      expect(root.children[2].children[0].children[0].children[i].children[0].attributes['href']).toBe(app.links[i].link);
+      expect(root.children[2].children[0].children[0].children[i].children[0].attributes['target']).toBe('_blank');
+    }
+    expect(root.children[2].children[0].children[1].children.length).toBe(3);
+    expect(root.children[2].children[0].children[1].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2024');
+    expect(root.children[2].children[0].children[1].children[1].attributes['class']).toBe('break');
+    expect(root.children[2].children[0].children[1].children[2].nativeElement.textContent).toBe(' An Open Source Application');
+    expect(root.children[2].children[0].children[1].children[2].styles["font-size"]).toBe('12px');
+
 
     themeService.initTheme.calls.reset();
   }));
@@ -263,7 +283,7 @@ describe('AppComponent', () => {
     expect(root.children[0].children[1].children[1].children.length).toBe(1);
     const router = root.children[0].children[1].children[1].query(By.css('router-outlet'))
     expect(root.children[0].children[1].children[1].children[0]).toBe(router);
-    expect(root.children[0].children[1].children[2].classes['side-bar-layout']).toBe(true);
+    expect(root.children[0].children[1].children[2].children[0].classes['side-bar-layout']).toBe(true);
 
     icon[0].triggerEventHandler('click');
     app.searchText.set('value')
@@ -324,6 +344,36 @@ describe('AppComponent', () => {
     expect(root.children[3].children[0].classes['loader']).toBe(true);
     expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
 
+    themeService.initTheme.calls.reset();
+  }));
+
+  it('View: Should set links below the right side layout', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    tick(1100);
+
+    app.isLoading = true;
+
+    fixture.detectChanges();
+
+    const root = fixture.debugElement.query(By.css('div'));
+
+    expect(root.children[0].children[1].children[2].children[1].classes['links']).toBe(true);
+    expect(root.children[0].children[1].children[2].children[1].classes['side']).toBe(true);
+
+    expect(root.children[0].children[1].children[2].children[1].children.length).toBe(app.links.length);
+
+    expect(root.children[0].children[1].children[2].children[1].children.length).toBe(app.links.length);
+    for (let i = 0; i < root.children[0].children[1].children[2].children[1].children.length; i++){
+      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].nativeElement.textContent).toBe(" " + app.links[i].title + " ");
+      if (i === 0 || i === 2 || i === 3 || i === 4) { 
+        expect(root.children[0].children[1].children[2].children[1].children[i].children[1].nativeElement.textContent).toBe("|"); 
+      }
+      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].classes['link']).toBe(true);
+      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['href']).toBe(app.links[i].link);
+      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['target']).toBe('_blank');
+    }
     themeService.initTheme.calls.reset();
   }));
 

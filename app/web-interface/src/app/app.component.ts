@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
@@ -18,7 +18,40 @@ export class AppComponent {
 
   searchText = signal<string>('');
 
-  searchResult: Array<String> = []
+  searchResult: Array<string> = []
+
+  thisyear = new Date().getFullYear();
+
+  links = [
+    {
+      title: 'Terms & Conditions',
+      link: ''
+    },
+    {
+      title: 'Privacy Policies',
+      link: ''
+    },
+    {
+      title: 'Help',
+      link: ''
+    },
+    {
+      title: 'FAQ',
+      link: ''
+    },
+    {
+      title: 'Blog',
+      link: ''
+    },
+    {
+      title: 'Newsletters',
+      link: ''
+    },
+    {
+      title: 'About Sepak Takraw Game',
+      link: ''
+    },
+  ]
 
   constructor(
     private router: Router,
