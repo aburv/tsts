@@ -1,8 +1,7 @@
-import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DialogComponent } from './dialog.component';
-import { By } from '@angular/platform-browser';
 
 describe('DialogComponent', () => {
   let component: DialogComponent;

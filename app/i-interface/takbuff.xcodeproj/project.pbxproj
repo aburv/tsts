@@ -8,12 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5962A9625DF00D73EA0 /* takbuffApp.swift */; };
-		4741C5992A9625DF00D73EA0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5982A9625DF00D73EA0 /* ContentView.swift */; };
+		4741C5992A9625DF00D73EA0 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5982A9625DF00D73EA0 /* SplashScreen.swift */; };
 		4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4741C59A2A9625E000D73EA0 /* Assets.xcassets */; };
 		4741C59E2A9625E000D73EA0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4741C59D2A9625E000D73EA0 /* Preview Assets.xcassets */; };
 		4741C5A82A9625E000D73EA0 /* takbuffTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5A72A9625E000D73EA0 /* takbuffTests.swift */; };
 		4741C5B22A9625E000D73EA0 /* takbuffUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5B12A9625E000D73EA0 /* takbuffUITests.swift */; };
 		4741C5B42A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */; };
+		4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8402B3355AD000C6B06 /* AppLogo.swift */; };
+		4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8412B3355AD000C6B06 /* SearchLayout.swift */; };
+		4776B8472B3355AD000C6B06 /* SearchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8422B3355AD000C6B06 /* SearchList.swift */; };
+		4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */; };
+		4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8442B3355AD000C6B06 /* ScalingButton.swift */; };
+		4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84A2B3355EF000C6B06 /* HomeScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +42,7 @@
 /* Begin PBXFileReference section */
 		4741C5932A9625DF00D73EA0 /* takbuff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = takbuff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4741C5962A9625DF00D73EA0 /* takbuffApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffApp.swift; sourceTree = "<group>"; };
-		4741C5982A9625DF00D73EA0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4741C5982A9625DF00D73EA0 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		4741C59A2A9625E000D73EA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4741C59D2A9625E000D73EA0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4741C5A32A9625E000D73EA0 /* takbuffTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = takbuffTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +50,12 @@
 		4741C5AD2A9625E000D73EA0 /* takbuffUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = takbuffUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4741C5B12A9625E000D73EA0 /* takbuffUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffUITests.swift; sourceTree = "<group>"; };
 		4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4776B8402B3355AD000C6B06 /* AppLogo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppLogo.swift; sourceTree = "<group>"; };
+		4776B8412B3355AD000C6B06 /* SearchLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchLayout.swift; sourceTree = "<group>"; };
+		4776B8422B3355AD000C6B06 /* SearchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchList.swift; sourceTree = "<group>"; };
+		4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubScreenLayout.swift; sourceTree = "<group>"; };
+		4776B8442B3355AD000C6B06 /* ScalingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalingButton.swift; sourceTree = "<group>"; };
+		4776B84A2B3355EF000C6B06 /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +106,9 @@
 		4741C5952A9625DF00D73EA0 /* takbuff */ = {
 			isa = PBXGroup;
 			children = (
+				4776B83E2B33552C000C6B06 /* screens */,
+				4776B83F2B33553A000C6B06 /* views */,
 				4741C5962A9625DF00D73EA0 /* takbuffApp.swift */,
-				4741C5982A9625DF00D73EA0 /* ContentView.swift */,
 				4741C59A2A9625E000D73EA0 /* Assets.xcassets */,
 				4741C59C2A9625E000D73EA0 /* Preview Content */,
 			);
@@ -125,6 +138,27 @@
 				4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */,
 			);
 			path = takbuffUITests;
+			sourceTree = "<group>";
+		};
+		4776B83E2B33552C000C6B06 /* screens */ = {
+			isa = PBXGroup;
+			children = (
+				4776B84A2B3355EF000C6B06 /* HomeScreen.swift */,
+				4741C5982A9625DF00D73EA0 /* SplashScreen.swift */,
+			);
+			path = screens;
+			sourceTree = "<group>";
+		};
+		4776B83F2B33553A000C6B06 /* views */ = {
+			isa = PBXGroup;
+			children = (
+				4776B8402B3355AD000C6B06 /* AppLogo.swift */,
+				4776B8442B3355AD000C6B06 /* ScalingButton.swift */,
+				4776B8412B3355AD000C6B06 /* SearchLayout.swift */,
+				4776B8422B3355AD000C6B06 /* SearchList.swift */,
+				4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */,
+			);
+			path = views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,8 +291,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4741C5992A9625DF00D73EA0 /* ContentView.swift in Sources */,
+				4741C5992A9625DF00D73EA0 /* SplashScreen.swift in Sources */,
+				4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */,
 				4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */,
+				4776B8472B3355AD000C6B06 /* SearchList.swift in Sources */,
+				4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */,
+				4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */,
+				4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */,
+				4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

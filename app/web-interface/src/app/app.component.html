@@ -40,8 +40,18 @@
                 </div>
             </div>
 
-            <div class="side-bar-layout">
+            <div>
+                <div class="side-bar-layout">
 
+                </div>
+                <div class="links side">
+                    <div *ngFor="let link of links; let i = index">
+                        <a target="_blank" class="link" [href]="link['link']">
+                            {{ link['title'] }}
+                        </a>
+                        <span *ngIf="i === 0 || i === 2 || i === 3 || i === 4" class="separator">|</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -53,7 +63,21 @@
     </div>
 
     <div class="footer-layout">
-        <div class="footer">Powered by Aburv | Takbuff © 2023 <br class="break" />An Open Source Application</div>
+        <div class="footer">
+            <div class="links bottom">
+                <div *ngFor="let link of links; let lastItem = last;">
+                    <a target="_blank" class="link" [href]="link['link']">
+                        {{ link['title'] }} 
+                    </a>
+                    <span *ngIf="!lastItem" class="separator">|</span>
+                </div>
+            </div>
+            <div>
+                <span>Powered by <b>Aburv</b> | <b>Takbuff</b> © {{ thisyear }}</span>
+                <br class="break" />
+                <span style="font-size: 12px;"> An Open Source Application</span>
+            </div>
+        </div>
     </div>
 
     <div class="loader-layout" *ngIf="isLoading">

@@ -1,27 +1,56 @@
-# WebInterface
+![Generic badge](https://img.shields.io/badge/Build-PASSED-green.svg)  ![Generic badge](https://img.shields.io/badge/Coverage-100%25-green.svg) ![Generic badge](https://img.shields.io/badge/Angular-Typescript-green.svg)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
+# Browser Interface
+   An Angular application -V17.0.7
+
+   Typescript -V5.2.2
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Prerequisites:
 
-## Code scaffolding
+* Env configs
+setup the values at `/src/environments/environment.ts`
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+* Install Dependencies
 
-## Build
+```
+npm install
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+* Run locally.
 
-## Running unit tests
+```
+npm run start
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Check ` http://localhost:4200/ ` in any browser
 
-## Running end-to-end tests
+## Code Quality
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Lint
 
-## Further help
+```
+npm run lint
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Maintain 0 errors and minimize the warnings as much as possible
+
+## Testing
+
+### Unit Testing
+
+Unit tests are present in same folder next to actual file. 
+Component and functional level testing.
+
+```
+npm run test
+```
+
+set ` --watch=true ` to test script in package.json
+
+View Code Coverage in html format
+
+`/coverage/web-interface/index.html`
+
+## Happy UI coding
