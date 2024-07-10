@@ -37,7 +37,7 @@ class LoggerTest(unittest.TestCase):
 
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     @mock.patch.object(Logger, 'error')
-    def test_should_error_info(self,
+    def test_should_log_error(self,
                                mock_error,
                                mock_init_logger):
         message = 'message'
