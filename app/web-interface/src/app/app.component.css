@@ -100,7 +100,7 @@
 }
 
 .main-layout {
-  height: 87vh;
+  height: calc(100vh - 100px);
   width: 700px;
   padding: 0px 5px;
   overflow-x: hidden;
@@ -203,7 +203,7 @@
 @media only screen and (max-width: 1000px) {
   .main-layout {
     width: 700px;
-    height: 85vh;
+    height: calc(100vh - 125px);
   }
 
   .side-bar-layout,
@@ -229,7 +229,7 @@
 @media only screen and (max-width: 550px) {
   .main-layout {
     width: 95vw;
-    height: 81vh;
+    height: calc(100vh - 150px);
   }
 
   .footer>.break {
