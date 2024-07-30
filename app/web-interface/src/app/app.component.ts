@@ -28,19 +28,19 @@ export class AppComponent {
       link: ''
     },
     {
-      title: 'Privacy Policies',
-      link: ''
-    },
-    {
       title: 'Help',
       link: ''
     },
     {
-      title: 'FAQ',
+      title: 'Blog',
       link: ''
     },
     {
-      title: 'Blog',
+      title: 'Privacy Policies',
+      link: ''
+    },
+    {
+      title: 'FAQ',
       link: ''
     },
     {
