@@ -43,6 +43,8 @@ Maintain 0 errors and minimize the warnings as much as possible
 Unit tests are present in same folder next to actual file. 
 Component and functional level testing.
 
+Install chrome.exe to run the test 
+
 ```
 npm run test
 ```
