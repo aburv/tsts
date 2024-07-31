@@ -194,6 +194,17 @@
   display: none;
 }
 
+.toast {
+  position: absolute;
+  left: 0px;
+  bottom: 20px;
+  background-color: var(--mild-bg);
+  border-radius: 15px;
+  color: var(--dark);
+  margin: 15px;
+  padding: 15px 20px;
+}
+
 @media only screen and (max-width: 1200px) {
   .main-layout {
     width: 500px;
@@ -218,11 +229,24 @@
   .search .disp-input {
     width: 200px;
   }
+
+  .toast {
+    bottom: 40px;
+  }
 }
 
 @media only screen and (max-width: 750px) {
   .main-layout {
     width: 500px;
+  }
+
+  .toast {
+    background-color: var(--bg);
+    border-radius: 15px;
+    color: var(--dark);
+    margin-bottom: 50px;
+    left: auto;
+    justify-self: center;
   }
 }
 

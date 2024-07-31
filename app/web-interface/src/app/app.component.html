@@ -17,7 +17,7 @@
 
             <div class="search" [ngClass]="{'is-searching': isSearching}">
                 <app-icon name="search" [size]=30 [ngStyle]="{'cursor': !isSearching ? 'pointer': 'default'}"
-                    (click)="toggleSearch()"></app-icon>
+                    (click)="turnToSearching()"></app-icon>
                 <input #searchInput type="text" [ngClass]="{'disp-input': isSearching}" placeholder="Search here"
                     [value]="searchText()" (keyup)="onChange($event)" />
                 <app-icon name="cross" [size]=20 style="cursor: pointer;" *ngIf="isSearching"
@@ -82,5 +82,9 @@
 
     <div class="loader-layout" *ngIf="isLoading">
         <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
+    </div>
+
+    <div class="toast" *ngIf="isServerDown()">
+        No Internet connection
     </div>
 </div>
