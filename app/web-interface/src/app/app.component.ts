@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { LoaderService } from './_services/loader.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  @ViewChild('searchInput') searchInput!: ElementRef;
 
   isInInit = true;
   isLoading = false;
@@ -17,6 +18,15 @@ export class AppComponent {
   isSearching = false;
 
   searchText = signal<string>('');
+
+  toggleSearch(): void {
+    if (!this.isSearching) {
+      this.isSearching = true;
+      setTimeout(() => {
+        this.searchInput.nativeElement.focus();
+      }, 500)
+    }
+  }
 
   searchResult: Array<string> = []
 
@@ -75,16 +85,21 @@ export class AppComponent {
       }, 500);
     })
 
-    loaderService.getIsLoading().subscribe((status)=>{
+    loaderService.getIsLoading().subscribe((status: boolean) => {
       this.isLoading = status;
-    })
+    });
   }
 
   onChange(event: any): void {
     this.searchText.set(event.target.value);
   }
 
+  onSearchClose(): void {
+    this.searchText.set('');
+    this.isSearching = false;
+  }
+
   navigateToDashboard(): void {
     this.router.navigate(['home']);
-    }
+  }
 }
