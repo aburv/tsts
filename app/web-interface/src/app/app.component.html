@@ -15,13 +15,13 @@
 
             <div class="spacer"></div>
 
-            <div class="search">
+            <div class="search" [ngClass]="{'is-searching': isSearching}">
                 <app-icon name="search" [size]=30 [ngStyle]="{'cursor': !isSearching ? 'pointer': 'default'}"
-                    (click)="!isSearching && isSearching=true"></app-icon>
-                <input [ngClass]="{'disp-input': isSearching}" placeholder="Search here" [value]="searchText()"
-                    (keyup)="onChange($event)" />
+                    (click)="turnToSearching()"></app-icon>
+                <input #searchInput type="text" [ngClass]="{'disp-input': isSearching}" placeholder="Search here"
+                    [value]="searchText()" (keyup)="onChange($event)" />
                 <app-icon name="cross" [size]=20 style="cursor: pointer;" *ngIf="isSearching"
-                    (click)="searchText() === ''? isSearching=false : searchText.set('') "></app-icon>
+                    (click)="onSearchClose()"></app-icon>
             </div>
         </div>
 
@@ -49,7 +49,7 @@
                         <a target="_blank" class="link" [href]="link['link']">
                             {{ link['title'] }}
                         </a>
-                        <span *ngIf="i === 0 || i === 2 || i === 3 || i === 4" class="separator">|</span>
+                        <span *ngIf="i === 0 || i === 1 || i === 3 || i === 4" class="separator">|</span>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
             <div class="links bottom">
                 <div *ngFor="let link of links; let lastItem = last;">
                     <a target="_blank" class="link" [href]="link['link']">
-                        {{ link['title'] }} 
+                        {{ link['title'] }}
                     </a>
                     <span *ngIf="!lastItem" class="separator">|</span>
                 </div>
@@ -82,5 +82,9 @@
 
     <div class="loader-layout" *ngIf="isLoading">
         <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
+    </div>
+
+    <div class="toast" *ngIf="isServerDown()">
+        No Internet connection
     </div>
 </div>

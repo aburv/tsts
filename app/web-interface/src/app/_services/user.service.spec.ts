@@ -1,27 +1,17 @@
 import { of } from "rxjs";
 import { UserService } from "./user.service";
-import { Config } from "../config";
 
 describe('UserService', () => {
-    it('Should fetch data on getUserData call', () => {
-
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
-        spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' }});
-
+    it('Should make a get call on getUserData call', () => {
         const responseData = { 'data': [] };
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
-        httpSpy.get.and.returnValue(of(responseData));
+        const dataSpy = jasmine.createSpyObj('DataService', ['get']);
+        dataSpy.get.and.returnValue(of(responseData));
 
-        const service = new UserService(httpSpy);
+        const service = new UserService(dataSpy);
 
-        const actual = service.loadUserData();
+        const actual = service.getUserData();
 
-        expect(httpSpy.get).toHaveBeenCalledOnceWith(
-            'https://localhost/api/user/app',
-            {
-                headers: { header: 'header' }
-            }
-        );
+        expect(dataSpy.get).toHaveBeenCalledOnceWith('user/app');
 
         actual.subscribe(res => {
             expect(res).toBe(responseData);
