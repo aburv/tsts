@@ -1,19 +1,26 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { Router } from '@angular/router';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { of, throwError } from 'rxjs';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
+import { PingService } from './_services/ping.service';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
-    'loadUserData'
+    'getUserData'
   ]);
-  userService.loadUserData.and.returnValue(of(''));
+  userService.getUserData.and.returnValue(of(''));
+
+  const pingService = jasmine.createSpyObj('PingService', [
+    'ping',
+    'getIsServerDown',
+  ]);
+  pingService.ping.and.returnValue(of(''));
 
   const loaderService = jasmine.createSpyObj('LoaderService', ['getIsLoading']);
 
@@ -46,6 +53,10 @@ describe('AppComponent', () => {
       {
         provide: LoaderService,
         useValue: loaderService,
+      },
+      {
+        provide: PingService,
+        useValue: pingService,
       }
     ],
     declarations: [AppComponent],
@@ -53,10 +64,11 @@ describe('AppComponent', () => {
   }));
 
   beforeEach(() => {
-    userService.loadUserData.calls.reset();
+    userService.getUserData.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
     loaderService.getIsLoading.and.returnValue(of(false));
+    pingService.getIsServerDown.and.returnValue(signal(false));
   })
 
   it('Should create the app on success loading data', fakeAsync(() => {
@@ -87,7 +99,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
 
     expect(app.isInInit).toBe(true);
-    expect(userService.loadUserData).toHaveBeenCalledOnceWith();
+    expect(userService.getUserData).toHaveBeenCalledOnceWith();
     expect(themeService.initTheme).toHaveBeenCalledOnceWith(true);
     expect(window.matchMedia).toHaveBeenCalledOnceWith("(prefers-color-scheme: dark)");
 
@@ -121,7 +133,7 @@ describe('AppComponent', () => {
   });
 
   it('Should create the app on failure loading data', fakeAsync(() => {
-    userService.loadUserData.and.returnValue(throwError(''));
+    userService.getUserData.and.returnValue(throwError(''));
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
@@ -129,7 +141,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
 
     expect(app.isInInit).toBe(true);
-    expect(userService.loadUserData).toHaveBeenCalledOnceWith();
+    expect(userService.getUserData).toHaveBeenCalledOnceWith();
 
     themeService.initTheme.calls.reset();
 
@@ -137,7 +149,7 @@ describe('AppComponent', () => {
 
     expect(app.isInInit).toBe(false);
 
-    userService.loadUserData.calls.reset();
+    userService.getUserData.calls.reset();
   }));
 
   it('Should set search text on onChange call', () => {
@@ -147,7 +159,43 @@ describe('AppComponent', () => {
     app.onChange({ target: { value: 'value' } });
 
     expect(app.searchText()).toBe('value')
-    themeService.initTheme.calls.reset();
+  });
+
+  it('Should set isSearching to true and focus on searchInput on turnToSearching call', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.searchInput = {
+      nativeElement: jasmine.createSpyObj('nativeElement', ['focus'])
+    }
+    app.isSearching = false;
+
+    app.turnToSearching();
+
+    expect(app.isSearching).toBe(true);
+    tick(500);
+    expect(app.searchInput.nativeElement.focus).toHaveBeenCalled();
+    flush();
+  }));
+
+  it('Should set nothing on turnToSearching call', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.isSearching = true;
+
+    app.turnToSearching();
+
+    expect(app.isSearching).toBe(true);
+  });
+
+  it('Should set search text to empty and isSearching to false on onSearchClose call', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.isSearching = true;
+
+    app.onSearchClose();
+
+    expect(app.searchText()).toBe('');
+    expect(app.isSearching).toBe(false);
   });
 
   it('Should navigate to dashboard', () => {
@@ -157,7 +205,6 @@ describe('AppComponent', () => {
     app.navigateToDashboard();
 
     expect(router.navigate).toHaveBeenCalledOnceWith(['home']);
-    themeService.initTheme.calls.reset();
   });
 
   it('View: Should set root with screen and layout classes and its children', fakeAsync(() => {
@@ -172,7 +219,8 @@ describe('AppComponent', () => {
     expect(root.classes['layout']).toBe(true);
 
     expect(root.children.length).toBe(3);
-    expect(root.children[0].classes['splashLayout']).toBe(true);
+
+    expect(root.children[0].classes['splash-layout']).toBe(true);
     expect(root.children[1].classes['app-support-layout']).toBe(true);
     expect(root.children[2].classes['footer-layout']).toBe(true);
 
@@ -216,8 +264,8 @@ describe('AppComponent', () => {
 
     for (let i = 0; i < root.children[2].children[0].children[0].children.length; i++) {
       expect(root.children[2].children[0].children[0].children[i].children[0].nativeElement.textContent).toBe(" " + app.links[i].title + " ");
-      if (i !== app.links.length - 1) { 
-        expect(root.children[2].children[0].children[0].children[i].children[1].nativeElement.textContent).toBe("|"); 
+      if (i !== app.links.length - 1) {
+        expect(root.children[2].children[0].children[0].children[i].children[1].nativeElement.textContent).toBe("|");
       }
       expect(root.children[2].children[0].children[0].children[i].children[0].classes['link']).toBe(true);
       expect(root.children[2].children[0].children[0].children[i].children[0].attributes['href']).toBe(app.links[i].link);
@@ -228,9 +276,6 @@ describe('AppComponent', () => {
     expect(root.children[2].children[0].children[1].children[1].attributes['class']).toBe('break');
     expect(root.children[2].children[0].children[1].children[2].nativeElement.textContent).toBe(' An Open Source Application');
     expect(root.children[2].children[0].children[1].children[2].styles["font-size"]).toBe('12px');
-
-
-    themeService.initTheme.calls.reset();
   }));
 
   it('View: Should set content and its children', fakeAsync(() => {
@@ -238,6 +283,8 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
 
     spyOn(app, 'navigateToDashboard')
+    spyOn(app, 'turnToSearching')
+    spyOn(app, 'onSearchClose')
     spyOn(app, 'onChange')
 
     tick(1100);
@@ -286,9 +333,12 @@ describe('AppComponent', () => {
     expect(root.children[0].children[1].children[2].children[0].classes['side-bar-layout']).toBe(true);
 
     icon[0].triggerEventHandler('click');
+    expect(app.turnToSearching).toHaveBeenCalledOnceWith();
     app.searchText.set('value')
     const result = ['']
     app.searchResult = result;
+
+    app.isSearching = true;
 
     fixture.detectChanges();
 
@@ -302,9 +352,7 @@ describe('AppComponent', () => {
     expect(icon[1].styles['cursor']).toBe('pointer');
     expect(app.searchText()).toBe('value');
     icon[1].triggerEventHandler('click');
-    expect(app.searchText()).toBe('');
-    icon[1].triggerEventHandler('click');
-    expect(app.isSearching).toBe(false);
+    expect(app.onSearchClose).toHaveBeenCalledOnceWith();
 
     expect(root.children[0].children[0].children[2].children[1].classes['disp-input']).toBe(true);
 
@@ -316,8 +364,7 @@ describe('AppComponent', () => {
     for (let i = 0; i < result.length; i++) {
       expect(root.children[0].children[1].children[1].children[i].classes['search-result-item']).toBe(true);
     }
-
-    themeService.initTheme.calls.reset();
+    flush();
   }));
 
   it('View: Should set loading layout', fakeAsync(() => {
@@ -344,7 +391,6 @@ describe('AppComponent', () => {
     expect(root.children[3].children[0].classes['loader']).toBe(true);
     expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
 
-    themeService.initTheme.calls.reset();
   }));
 
   it('View: Should set links below the right side layout', fakeAsync(() => {
@@ -365,16 +411,48 @@ describe('AppComponent', () => {
     expect(root.children[0].children[1].children[2].children[1].children.length).toBe(app.links.length);
 
     expect(root.children[0].children[1].children[2].children[1].children.length).toBe(app.links.length);
-    for (let i = 0; i < root.children[0].children[1].children[2].children[1].children.length; i++){
+    for (let i = 0; i < root.children[0].children[1].children[2].children[1].children.length; i++) {
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].nativeElement.textContent).toBe(" " + app.links[i].title + " ");
-      if (i === 0 || i === 2 || i === 3 || i === 4) { 
-        expect(root.children[0].children[1].children[2].children[1].children[i].children[1].nativeElement.textContent).toBe("|"); 
+      if (i === 0 || i === 1 || i === 3 || i === 4) {
+        expect(root.children[0].children[1].children[2].children[1].children[i].children[1].nativeElement.textContent).toBe("|");
       }
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].classes['link']).toBe(true);
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['href']).toBe(app.links[i].link);
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['target']).toBe('_blank');
     }
-    themeService.initTheme.calls.reset();
   }));
 
+  it('View: Should set alert on isServerDown emits', fakeAsync(() => {
+    pingService.getIsServerDown.calls.reset();
+    pingService.getIsServerDown.and.returnValue(signal(true));
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    tick(1100);
+
+    fixture.detectChanges();
+
+    const root = fixture.debugElement.query(By.css('div'));
+
+    expect(app.isServerDown()).toBe(true);
+
+    expect(root.children.length).toBe(4);
+    expect(root.children[3].classes['toast']).toBe(true);
+  }));
+
+  it('View: Should hide alert on isServerDown emits', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    tick(1100);
+
+    fixture.detectChanges();
+
+    const root = fixture.debugElement.query(By.css('div'));
+
+    expect(app.isServerDown()).toBe(false);
+
+    expect(root.children.length).toBe(3);
+  }));
 });
