@@ -2,11 +2,5 @@ div{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80vh;
-}
-
-@media only screen and (max-width: 550px) {
-    div{
-      height: 79vh;
-    }
+    height: 100%;
 }
