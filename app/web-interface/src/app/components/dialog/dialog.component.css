@@ -1,0 +1,24 @@
+.dialog-frame {
+  position: fixed;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  opacity: 0.96;
+  background-color: #222222;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  z-index: 10;
+  margin: 5px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var(--mild-bg);
+  color: var(--dark);
+}
