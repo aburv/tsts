@@ -1,10 +1,11 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentRef, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { InputComponent } from './input.component';
 
 describe('InputComponent', () => {
+  let componentRef: ComponentRef<InputComponent>;
   let component: InputComponent;
   let fixture: ComponentFixture<InputComponent>;
 
@@ -17,29 +18,15 @@ describe('InputComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InputComponent);
+    componentRef = fixture.componentRef;
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('Should create', () => {
-    expect(component).toBeTruthy();
+    expect(componentRef).toBeTruthy();
   });
 
-
-  it('Should set the input values on init with validation and value', () => {
-    component.title = "title";
-    component.regexes = { "validation": /.+/ };
-    component.validator = "validation";
-    component.value = "value"
-    fixture.detectChanges();
-
-    component.ngOnInit();
-
-    expect(component.regex).toEqual(/.+/);
-    expect(component.title).toBe("title  *");
-  });
-
-  it('Should set the values on input call without validation and options', () => {
+  it('Should set the values on input call without validation', () => {
     const spy = spyOn(component.childEmitter, 'emit');
     const event = { target: { value: "value" } };
 
@@ -50,12 +37,14 @@ describe('InputComponent', () => {
     spy.calls.reset();
   });
 
-  it('Should set the values on input call with validation and without options', () => {
+  it('Should set the values on input call with validation', () => {
     const spy = spyOn(component.childEmitter, 'emit');
+
     const event = { target: { value: "value" } };
-    component.validator = "validation";
-    component.regex = /.+/;
-    fixture.detectChanges();
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
 
     component.onInput(event);
 
@@ -64,12 +53,13 @@ describe('InputComponent', () => {
     spy.calls.reset();
   });
 
-  it('Should set the values on input call with validation to invalid and without options', () => {
+  it('Should set the values on input call with validation to invalid', () => {
     const spy = spyOn(component.childEmitter, 'emit');
     const event = { target: { value: "value" } };
-    component.validator = "validation";
-    component.regex = /^([0-9]{10})$/;
-    fixture.detectChanges();
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "phone");
+    componentRef.setInput('value', "value");
 
     component.onInput(event);
 
@@ -80,10 +70,14 @@ describe('InputComponent', () => {
 
   it('Should set focus to true if out of compoment click happens', () => {
     const event = { target: fixture.nativeElement };
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
 
     component.isFocus = true;
-    fixture.detectChanges();
 
+    fixture.detectChanges();
     component.clickout(event);
 
     expect(component.isFocus).toBe(true);
@@ -92,29 +86,52 @@ describe('InputComponent', () => {
   it('Should set focus to false if click is not out of compoment', () => {
     const event = { target: null };
 
-    component.isFocus = true;
-    fixture.detectChanges();
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
 
+    component.isFocus = true;
+
+    fixture.detectChanges();
     component.clickout(event);
 
     expect(component.isFocus).toBe(false);
   });
 
   it('View: Should have parent tag with content css class and border style', () => {
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
+
+    fixture.detectChanges();
+
     const content = fixture.debugElement.query(By.css('.content'));
 
     expect(content.nativeElement).not.toBe(null);
     expect(content.styles['border']).toBe('1px solid var(--less-bright)');
   });
-  
+
   it('View: Should return the red border color on invalid input', () => {
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
+
     component.isValid = false;
+
     fixture.detectChanges();
 
     expect(component.getBorderColor()).toBe('var(--danger)')
   });
 
   it('View: Should return the inactive border color on invalid input', () => {
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
+
     fixture.detectChanges();
 
     expect(component.isValid).not.toBeDefined()
@@ -122,20 +139,37 @@ describe('InputComponent', () => {
   });
 
   it('View: Should return the active border color on layout is in focus', () => {
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
+
     component.isFocus = true;
+
     fixture.detectChanges();
 
     expect(component.getBorderColor()).toBe('var(--primary)')
   });
 
   it('View: Should return the inactive border color on layout is not in focus', () => {
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
+
     component.isFocus = false;
+
     fixture.detectChanges();
 
     expect(component.getBorderColor()).toBe('var(--less-bright)')
   });
 
   it('View: Should set the focus to true if on edit mode', () => {
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
+
     fixture.detectChanges();
 
     const content = fixture.debugElement.query(By.css('.content'));
@@ -147,31 +181,30 @@ describe('InputComponent', () => {
 
     expect(content.styles['border']).toBe('1px solid var(--primary)');
     expect(component.isFocus).toBe(true);
-
   });
 
-  it('View: Should set the layout without options on edit mode', () => {
+  it('View: Should set the layout on edit mode with validator', () => {
     const spy = spyOn(component, 'onInput');
-    component.title = 'title';
-    component.placeholder = 'placeholder';
-    component.value = 'value';
-    component.type = 'type';
+    componentRef.setInput('title', "title");
+    componentRef.setInput('validator', "mandatory");
+    componentRef.setInput('value', "value");
+    componentRef.setInput('placeholder', "placeholder");
+    componentRef.setInput('type', "type");
     component.isFocus = true;
+
     fixture.detectChanges();
+
+    expect(component.regex()).toEqual(/.+/);
 
     const content = fixture.debugElement.query(By.css('.content'));
     const title = fixture.nativeElement.querySelector('span');
     const input = fixture.debugElement.query(By.css('input'));
-    const optionLayout = fixture.debugElement.query(By.css('.options'));
-    const optionElements = fixture.debugElement.queryAll(By.css('.option'))
 
     expect(content.children.length).toBe(1);
-    expect(title.textContent).toBe('title');
+    expect(title.textContent).toBe('title *');
     expect(input.nativeElement.value).toBe('value');
     expect(input.attributes['placeholder']).toBe('placeholder');
     expect(input.classes['type']).toBe(true);
-    expect(optionLayout).toBeDefined();
-    expect(optionElements.length).toBe(0);
 
     input.triggerEventHandler('input', 'sometext');
 
@@ -179,4 +212,22 @@ describe('InputComponent', () => {
     spy.calls.reset;
   });
 
+  it('View:  Should set the layout on edit mode without validator and default type', () => {
+    componentRef.setInput('title', "title");
+    componentRef.setInput('value', "value");
+    componentRef.setInput('placeholder', "placeholder");
+    component.isFocus = true;
+
+    fixture.detectChanges();
+
+    const content = fixture.debugElement.query(By.css('.content'));
+    const title = fixture.nativeElement.querySelector('span');
+    const input = fixture.debugElement.query(By.css('input'));
+
+    expect(content.children.length).toBe(1);
+    expect(title.textContent).toBe('title ');
+    expect(input.nativeElement.value).toBe('value');
+    expect(input.attributes['placeholder']).toBe('placeholder');
+    expect(input.classes['small']).toBe(true);
+  });
 });

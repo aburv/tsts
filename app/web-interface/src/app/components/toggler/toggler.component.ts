@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-toggler',
@@ -6,9 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./toggler.component.css']
 })
 export class TogglerComponent {
-
-  @Input() public selected!: string;
-  @Input() public options!: Array<string>;
-  @Output() public childEmitter = new EventEmitter();
-
+  selected = input.required<string>();
+  options = input.required<Array<string>>();
+  childEmitter = output<string>();
 }

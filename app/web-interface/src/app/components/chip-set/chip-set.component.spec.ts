@@ -1,11 +1,11 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentRef, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ChipSetComponent } from './chip-set.component';
 
 describe('ChipSetComponent', () => {
-  let component: ChipSetComponent;
+  let componentRef: ComponentRef<ChipSetComponent>;
   let fixture: ComponentFixture<ChipSetComponent>;
 
   beforeEach(async () => {
@@ -18,12 +18,11 @@ describe('ChipSetComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ChipSetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    componentRef = fixture.componentRef;
   });
 
   it('Should create', () => {
-    expect(component).toBeTruthy();
+    expect(componentRef).toBeTruthy();
   });
 
   it('View: Should have parent tag with content css class', () => {
@@ -36,9 +35,10 @@ describe('ChipSetComponent', () => {
     const options = [{ id: "optionId1", text: 'optionText1' }, { id: "optionId2", text: 'optionText2' }];
     const selected = ["optionId1"];
 
-    spyOn(component.childEmitter, 'emit');
-    component.options = options;
-    component.selected = selected;
+    spyOn(fixture.componentInstance.childEmitter, 'emit');
+    componentRef.setInput("options", options);
+    componentRef.setInput("selected", selected);
+
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.css('.item'));
@@ -52,7 +52,7 @@ describe('ChipSetComponent', () => {
 
     items[0].nativeElement.click();
     
-    expect(component.childEmitter.emit).toHaveBeenCalledWith('optionId1');
+    expect(fixture.componentInstance.childEmitter.emit).toHaveBeenCalledWith('optionId1');
   });
 
 });
