@@ -4,7 +4,7 @@
         <item name="background">@color/whiteBright</item>
         <item name="mildBackground">@color/white</item>
         <item name="bright">@color/whiteBright</item>
-        <item name="lessBright">@color/white</item>
+        <item name="lessBright">@color/cream</item>
         <item name="dark">@color/greyBright</item>
         <item name="lessDark">@color/greyLess</item>
 
