@@ -19,8 +19,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private var clearIcon: ImageView? = null
     private var loaderLayout: ConstraintLayout? = null
     private var loadingAppLogo: ImageView? = null
+
+    private var searchingvalue: String = ""
 
     private var loadingRotate: Animation? = null
 
@@ -31,13 +34,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        clearIcon = binding.icClear
         loaderLayout = binding.loadingLayout
         loadingAppLogo = binding.loadingAppIcon
 
         val searchIcon = binding.icSearch
         val searchLayout = binding.layoutSearch
         val closeIcon = binding.icBack
-        val clearIcon = binding.icClear
         val searchText = binding.searchInputText
         val searchList = binding.listSearch
 
@@ -91,12 +94,18 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        clearIcon.setOnClickListener {
+        clearIcon!!.setOnClickListener {
             searchText.text.clear()
         }
 
+        updateSearchCloseIcon()
+
         searchText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
+            override fun afterTextChanged(s: Editable) {
+                searchingvalue = s.toString()
+                updateSearchCloseIcon()
+            }
+
             override fun beforeTextChanged(
                 s: CharSequence,
                 start: Int,
@@ -118,5 +127,13 @@ class MainActivity : AppCompatActivity() {
     private fun setLoadingOff() {
         loaderLayout!!.visibility = View.GONE
         loadingRotate!!.cancel()
+    }
+
+    private fun updateSearchCloseIcon() {
+        if (searchingvalue.isNotBlank()) {
+            clearIcon!!.visibility = View.VISIBLE
+        } else {
+            clearIcon!!.visibility = View.INVISIBLE
+        }
     }
 }

@@ -51,13 +51,13 @@
             android:layout_height="50dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bg_circle"
+            android:contentDescription="@string/text_search"
             android:padding="10dp"
             android:src="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/dark"
-            android:contentDescription="@string/text_search" />
+            app:tint="?attr/dark" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_search"
@@ -73,27 +73,28 @@
                 android:id="@+id/ic_back"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="5dp"
                 android:background="@drawable/bg_circle"
+                android:contentDescription="@string/text_back"
                 android:padding="12dp"
                 android:src="@drawable/ic_left_arrow"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/search_input_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="?attr/dark"
-                android:contentDescription="@string/text_back" />
+                app:tint="?attr/dark" />
 
             <EditText
                 android:id="@+id/search_input_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:autofillHints=""
                 android:background="@android:color/transparent"
+                android:hint="@string/text_search_here"
                 android:inputType="text"
-                android:padding="16dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:textColorHint="?attr/lessDark"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ic_clear"
@@ -104,16 +105,16 @@
                 android:id="@+id/ic_clear"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/bg_circle"
+                android:contentDescription="@string/text_clear"
                 android:padding="10dp"
                 android:src="@drawable/ic_cross"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/search_input_text"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="?attr/dark"
-                android:contentDescription="@string/text_clear" />
+                app:tint="?attr/dark" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
