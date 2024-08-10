@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import com.aburv.takbuff.databinding.ActivitySplashBinding
@@ -30,13 +31,15 @@ class SplashActivity : AppCompatActivity() {
 
         val moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, -500f)
         moveUp.duration = 2000
-        val rotate = ObjectAnimator.ofFloat(appLogo, View.ROTATION, 0f, 360f)
-        rotate.duration = 3000
+        val rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
+        rotate.fillAfter = true
         val hide = ObjectAnimator.ofFloat(appSubtitle, View.ALPHA, 1.0f, 0.0f)
-        hide.duration = 5000
+        hide.duration = 3000
+
+        appLogo.startAnimation(rotate)
 
         AnimatorSet().apply {
-            this.play(moveUp).after(hide).after(rotate)
+            this.play(moveUp).after(hide)
         }.start()
 
         appLogo.setOnClickListener {

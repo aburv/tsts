@@ -14,9 +14,8 @@
 
         <activity
             android:name=".SplashActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden"
             android:exported="true"
-            android:screenOrientation="fullSensor"
             android:theme="@style/Theme.Takbuff.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
