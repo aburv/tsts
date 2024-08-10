@@ -10,9 +10,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.aburv.takbuff.databinding.ActivityMainBinding
+import com.aburv.takbuff.mainFragments.DashboardFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +35,13 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.container, DashboardFragment())
+                .commit()
+        }
 
         clearIcon = binding.icClear
         loaderLayout = binding.loadingLayout
@@ -117,6 +126,12 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
 
+        onBackPressedDispatcher.addCallback(this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    finishAffinity()
+                }
+            })
     }
 
     private fun setLoadingOn() {
