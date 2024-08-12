@@ -9,6 +9,6 @@ import SwiftUI
 
 struct SubScreenLayout: View {
     var body: some View{
-        ScrollView {}
+        DashboardScreen()
     }
 }
