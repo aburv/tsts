@@ -36,12 +36,13 @@ class SplashActivity : AppCompatActivity() {
         val appSubtitle = binding.appSubtitle
         val appLogo = binding.appIcon
 
-        val moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, -500f)
-        moveUp.duration = 2000
         val rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
         rotate.fillAfter = true
         val hide = ObjectAnimator.ofFloat(appSubtitle, View.ALPHA, 1.0f, 0.0f)
         hide.duration = 3000
+        val moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, -500f)
+        moveUp.duration = 2000
+        hide.start()
 
         appLogo.startAnimation(rotate)
 
