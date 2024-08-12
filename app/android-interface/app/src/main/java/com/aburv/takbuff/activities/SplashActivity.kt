@@ -1,4 +1,4 @@
-package com.aburv.takbuff
+package com.aburv.takbuff.activities
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import com.aburv.takbuff.R
 import com.aburv.takbuff.databinding.ActivitySplashBinding
 import androidx.core.util.Pair as UtilPair
 
@@ -42,7 +43,6 @@ class SplashActivity : AppCompatActivity() {
         hide.duration = 3000
         val moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, -500f)
         moveUp.duration = 2000
-        hide.start()
 
         appLogo.startAnimation(rotate)
 

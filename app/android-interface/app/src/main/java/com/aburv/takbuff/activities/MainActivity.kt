@@ -1,4 +1,4 @@
-package com.aburv.takbuff
+package com.aburv.takbuff.activities
 
 import android.animation.Animator
 import android.content.pm.ActivityInfo
@@ -14,6 +14,7 @@ import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.aburv.takbuff.R
 import com.aburv.takbuff.databinding.ActivityMainBinding
 import com.aburv.takbuff.mainFragments.DashboardFragment
 
