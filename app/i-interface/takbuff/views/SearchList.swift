@@ -9,16 +9,19 @@ import SwiftUI
 
 struct searchList: View {
     
+    @Binding public var ResultList: Array<Result>
+    
     var body: some View{
-        List {}
-        .listStyle(.plain)
-        .background(
-            Color("background")
-                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
-        )
+        if(ResultList.count == 0){
+            Text("Nothing to show")
+                .font(.system(size: 20))
+                .foregroundColor(Color("dark"))
+        }
+        else{
+            List {}
+                .listStyle(.plain)
+        }
     }
 }
 
-#Preview {
-    searchList()
-}
+struct Result{}

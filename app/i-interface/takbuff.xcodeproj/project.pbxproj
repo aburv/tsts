@@ -20,6 +20,8 @@
 		4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */; };
 		4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8442B3355AD000C6B06 /* ScalingButton.swift */; };
 		4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84A2B3355EF000C6B06 /* HomeScreen.swift */; };
+		4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84E2B3362E3000C6B06 /* Loader.swift */; };
+		47EB547B2C68E40C00E43E19 /* dashboardScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 		4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubScreenLayout.swift; sourceTree = "<group>"; };
 		4776B8442B3355AD000C6B06 /* ScalingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalingButton.swift; sourceTree = "<group>"; };
 		4776B84A2B3355EF000C6B06 /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
+		4776B84E2B3362E3000C6B06 /* Loader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
+		47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dashboardScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,7 @@
 		4741C5952A9625DF00D73EA0 /* takbuff */ = {
 			isa = PBXGroup;
 			children = (
+				47EB54792C68D40C00E43E19 /* subScreens */,
 				4776B83E2B33552C000C6B06 /* screens */,
 				4776B83F2B33553A000C6B06 /* views */,
 				4741C5962A9625DF00D73EA0 /* takbuffApp.swift */,
@@ -157,8 +162,17 @@
 				4776B8412B3355AD000C6B06 /* SearchLayout.swift */,
 				4776B8422B3355AD000C6B06 /* SearchList.swift */,
 				4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */,
+				4776B84E2B3362E3000C6B06 /* Loader.swift */,
 			);
 			path = views;
+			sourceTree = "<group>";
+		};
+		47EB54792C68D40C00E43E19 /* subScreens */ = {
+			isa = PBXGroup;
+			children = (
+				47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */,
+			);
+			path = subScreens;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,6 +305,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47EB547B2C68E40C00E43E19 /* dashboardScreen.swift in Sources */,
 				4741C5992A9625DF00D73EA0 /* SplashScreen.swift in Sources */,
 				4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */,
 				4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */,
@@ -299,6 +314,7 @@
 				4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */,
 				4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */,
 				4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */,
+				4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

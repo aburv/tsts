@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Takbuff" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="background">@color/black</item>
-        <item name="mildBackground">@color/grey</item>
+        <item name="mildBackground">@color/greyBright</item>
         <item name="bright">@color/blackBright</item>
         <item name="lessBright">@color/blackLess</item>
         <item name="dark">@color/white</item>

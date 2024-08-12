@@ -8,15 +8,15 @@ describe('DateTime', () => {
     });
 
     it('Should set the default type if input is null', () => {
-        const dateTime = new DateTime('2022-12-12', null);
+        const dateTime = new DateTime('2022-12-12');
 
         expect(dateTime.type).toBe('date');
     });
 
-    it('Should set the value from input', () => {
+    it('Should set the value() from input', () => {
         const dateTime = new DateTime('2022-12-12', DateStringType.MONTH);
 
-        expect(dateTime.value).toEqual(new Date('2022-12-12'));
+        expect(dateTime.value()).toEqual(new Date('2022-12-12'));
     });
 
     it('Should format the date in mmm yyyy', () => {
@@ -55,20 +55,20 @@ describe('DateTime', () => {
         expect(dateTime.getISOString()).toBe('2022-12-02');
     });
 
-    it('Should set value if value string is non empty string', () => {
+    it('Should set value() if value() string is non empty string', () => {
         const dateTime = new DateTime('2022-12-02', DateStringType.DATE);
 
         dateTime.setValue('2022-12-12');
 
-        expect(dateTime.value).toEqual(new Date('2022-12-12'));
+        expect(dateTime.value()).toEqual(new Date('2022-12-12'));
     });
 
-    it('Should set nothing if value string is empty string', () => {
+    it('Should set nothing if value() string is empty string', () => {
         const dateTime = new DateTime('2022-12-02', DateStringType.DATE);
 
         dateTime.setValue('');
 
-        expect(dateTime.value).toEqual(new Date('2022-12-02'));
+        expect(dateTime.value()).toEqual(new Date('2022-12-02'));
     });
 
     it('Should set type', () => {
@@ -87,12 +87,12 @@ describe('DateTime', () => {
         expect(actual).toBe(true);
     });
 
-    it('Should return true on 12-jul-1990 less than 12-Jul-1990', () => {
+    it('Should return false on 12-Jul-1990 less than 12-Jul-1990', () => {
         const dateTime = new DateTime('1990-07-12', DateStringType.DATE);
 
         const actual = dateTime.lesserThan(new DateTime('1990-07-12', DateStringType.DATE));
 
-        expect(actual).toBe(true);
+        expect(actual).toBe(false);
     });
 
     it('Should return true on 12-jun-1990 less than 14-Jul-1990', () => {
@@ -136,23 +136,23 @@ describe('DateTime', () => {
     });
 
     it('Should return false on null values', () => {
-        const dateTime = new DateTime(null, null);
+        const dateTime = new DateTime(null);
 
-        const actual = dateTime.lesserThan(new DateTime(null, null));
+        const actual = dateTime.lesserThan(new DateTime(null));
 
         expect(actual).toBe(false);
     });
 
-    it('Should return empty string on null value on getFormatString call', () => {
-        const dateTime = new DateTime(null, null);
+    it('Should return empty string on null value() on getFormatString call', () => {
+        const dateTime = new DateTime(null);
 
         const actual = dateTime.getFormatString();
 
         expect(actual).toBe("");
     });
 
-    it('Should return empty string on null value on getISOString call', () => {
-        const dateTime = new DateTime(null, null);
+    it('Should return empty string on null value() on getISOString call', () => {
+        const dateTime = new DateTime(null);
 
         const actual = dateTime.getISOString();
 
