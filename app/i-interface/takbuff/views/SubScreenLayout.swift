@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct SubScreenLayout: View {
+    
+    @Binding var isLoading: Bool
+    
     var body: some View{
-        DashboardScreen()
+        DashboardScreen(isLoading: $isLoading)
     }
 }
