@@ -8,23 +8,28 @@
 import SwiftUI
 
 struct SearchLayout: View {
+    let layout:LayoutProperties
+    
     @Binding public var isSearching: Bool
     @Binding public var searchText: String
-
+    
     let radius = 25.0
     let nonSearchingIconBgSize = 45.0
-
+    
     var body: some View {
         ZStack (alignment: .trailing) {
             ZStack{
                 RoundedRectangle(
-                    cornerRadius: isSearching ? 0.0 : radius,
+                    cornerRadius: isSearching ? layout.dimen.searchingCornerRadius : radius,
                     style: .continuous
                 )
                 .foregroundColor(Color(isSearching ? "background" : "bright"))
                 .frame(width: nil, height: nil)
             }
-            .frame(width: isSearching ? 400.0 : nonSearchingIconBgSize, height: isSearching ? 70.0 : nonSearchingIconBgSize)
+            .frame(
+                width: isSearching ? layout.dimen.searchingBgWidth : nonSearchingIconBgSize,
+                height: isSearching ? layout.dimen.searchingBgHeight : nonSearchingIconBgSize
+            )
             .foregroundColor(Color("dark"))
             
             HStack{
@@ -42,7 +47,7 @@ struct SearchLayout: View {
                     TextField("Search here", text: $searchText)
                         .foregroundColor(Color("dark"))
                         .padding(.horizontal)
-                        .frame(maxWidth: isSearching ? 340.0 : 0.0)
+                        .frame(maxWidth: isSearching ? layout.dimen.searchingBgWidth : .infinity)
                 }
                 
                 SearchIcon(
@@ -51,7 +56,7 @@ struct SearchLayout: View {
                 )
             }
         }
-        .frame(maxWidth: .infinity, alignment: .trailing)
+        .frame(maxWidth: layout.dimen.searchingBgWidth, alignment: .trailing)
     }
     
 }

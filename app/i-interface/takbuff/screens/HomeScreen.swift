@@ -11,6 +11,7 @@ struct HomeScreen: View {
     let animation: Namespace.ID
     let name: Namespace.ID
     let logo: Namespace.ID
+    let layout:LayoutProperties
     
     @State private var isSearching = false
     @State private var searchText = ""
@@ -23,7 +24,9 @@ struct HomeScreen: View {
     let appTitleSize = 25.0
     
     let layoutCornerRadius = 20.0
-        
+    
+    let sideLayoutSize = 200.0
+    
     let searchPaddingTop = 10.0
     let searchPaddingSide = 20.0
     let searchPaddingBottom = 15.0
@@ -32,7 +35,7 @@ struct HomeScreen: View {
         ZStack{
             VStack {
                 HStack {
-                    if(!isSearching){
+                    if(!isSearching || layout.dimen.keepBanner){
                         AppLogo()
                             .matchedGeometryEffect(id: logo, in: animation)
                             .frame(width: appLogoSize, height: appLogoSize)
@@ -48,16 +51,17 @@ struct HomeScreen: View {
                     }
                     
                     SearchLayout(
+                        layout: layout,
                         isSearching: $isSearching,
                         searchText: $searchText
                     )
                 }
                 .padding(
                     EdgeInsets(
-                        top: isSearching ? 0.0 : searchPaddingTop,
-                        leading: isSearching ? 0.0 : searchPaddingSide,
-                        bottom: isSearching ? 0.0 : searchPaddingBottom,
-                        trailing: isSearching ? 0.0 : searchPaddingSide
+                        top: isSearching ? layout.dimen.searchlayoutPaddingTop : searchPaddingTop,
+                        leading: isSearching ? layout.dimen.searchlayoutPaddingLeading : searchPaddingSide,
+                        bottom: isSearching ? layout.dimen.searchlayoutPaddingBottom : searchPaddingBottom,
+                        trailing: isSearching ? layout.dimen.searchlayoutPaddingTrailing : searchPaddingSide
                     )
                 )
                 .background(
@@ -69,12 +73,47 @@ struct HomeScreen: View {
                             )
                         )
                 )
+                .frame(width: layout.dimen.bannerLayoutWidth)
                 
-                if (isSearching) {
-                    searchList(ResultList: $searchResultList)
-                } else {
-                    SubScreenLayout(isLoading: $isLoading)
+                HStack(alignment: .top) {
+                    if (layout.dimen.keepSideLayouts){
+                        ZStack {
+                            RoundedRectangle(
+                                cornerRadius: layoutCornerRadius,
+                                style: .continuous
+                            )
+                            .foregroundColor(Color("mildBackground"))
+                            .frame(width: nil, height: nil)
+                        }
+                        .frame(width: sideLayoutSize, height: sideLayoutSize)
+                        
+                    }
+                    
+                    ZStack {
+                        Color("mildBackground")
+                            .edgesIgnoringSafeArea(.bottom)
+                        
+                        if (isSearching) {
+                            searchList(ResultList: $searchResultList)
+                        } else {
+                            SubScreenLayout(isLoading: $isLoading)
+                        }
+                    }
+                    .frame(width: layout.dimen.mainLayoutWidth)
+                    
+                    if (layout.dimen.keepSideLayouts){
+                        ZStack {
+                            RoundedRectangle(
+                                cornerRadius: layoutCornerRadius,
+                                style: .continuous
+                            )
+                            .foregroundColor(Color("mildBackground"))
+                            .frame(width: nil, height: nil)
+                        }
+                        .frame(width: sideLayoutSize, height: sideLayoutSize)
+                    }
                 }
+                .frame(maxWidth: .infinity)
             }
             
             if(isLoading){
