@@ -11,16 +11,20 @@ struct SearchLayout: View {
     @Binding public var isSearching: Bool
     @Binding public var searchText: String
 
+    let radius = 25.0
+    let nonSearchingIconBgSize = 45.0
+
     var body: some View {
         ZStack (alignment: .trailing) {
             ZStack{
                 RoundedRectangle(
-                    cornerRadius: isSearching ? 0.0 : 25.0,
+                    cornerRadius: isSearching ? 0.0 : radius,
                     style: .continuous
                 )
                 .foregroundColor(Color(isSearching ? "background" : "bright"))
+                .frame(width: nil, height: nil)
             }
-            .frame(width: isSearching ? 400.0 : 45.0, height: isSearching ? 70.0 : 45.0)
+            .frame(width: isSearching ? 400.0 : nonSearchingIconBgSize, height: isSearching ? 70.0 : nonSearchingIconBgSize)
             .foregroundColor(Color("dark"))
             
             HStack{
@@ -38,7 +42,7 @@ struct SearchLayout: View {
                     TextField("Search here", text: $searchText)
                         .foregroundColor(Color("dark"))
                         .padding(.horizontal)
-                        .frame(width: isSearching ? 340 : 0)
+                        .frame(maxWidth: isSearching ? 340.0 : 0.0)
                 }
                 
                 SearchIcon(
@@ -46,7 +50,6 @@ struct SearchLayout: View {
                     searchText: $searchText
                 )
             }
-
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
     }
@@ -56,7 +59,15 @@ struct SearchLayout: View {
 struct SearchIcon: View {
     @Binding public var isSearching: Bool
     @Binding public var searchText: String
-
+    
+    let rotateAngle = 80.0
+    let circleSize = 15.0
+    let lineCornerRadius = 5.0
+    let lineWidth = 5.0
+    let searchHeight = 20.0
+    let nonSearchheight = 10.0
+    
+    let iconSize = 25.0
     var body: some View {
         Button {
             if !isSearching {
@@ -73,39 +84,44 @@ struct SearchIcon: View {
             VStack(spacing: 0) {
                 Circle()
                     .trim(from: 0.0, to: isSearching ? 0.0: 1.0)
-                    .stroke(lineWidth: 3)
-                    .rotationEffect(.degrees(80))
-                    .frame(width: 15, height: 15)
+                    .stroke(lineWidth: lineWidth - 2)
+                    .rotationEffect(.degrees(rotateAngle))
+                    .frame(width: circleSize, height: circleSize)
                     .padding()
-                RoundedRectangle(cornerRadius: 5.0)
-                    .frame(width: 5.0, height: isSearching ? 20.0 : 10.0)
+                RoundedRectangle(cornerRadius: lineCornerRadius)
+                    .frame(width: lineWidth, height: isSearching ? searchHeight : nonSearchheight)
                     .offset(y:-17)
                     .overlay{
-                        RoundedRectangle(cornerRadius: 5.0)
-                            .frame(width: 5.0, height: isSearching ? 20.0 : 10.0)
-                            .rotationEffect(.degrees(isSearching ? 80.0: 0.0), anchor: .center)
+                        RoundedRectangle(cornerRadius: lineCornerRadius)
+                            .frame(width:lineWidth, height: isSearching ? searchHeight : nonSearchheight)
+                            .rotationEffect(.degrees(isSearching ? rotateAngle: 0.0), anchor: .center)
                             .offset(y:-17)
                     }
             }
-            .rotationEffect(.degrees(-40))
+            .rotationEffect(.degrees( 0 - (rotateAngle / 2 )))
             .offset(x: isSearching ? -18 : -7, y: isSearching ? -7 : 2)
             .foregroundColor(Color("dark"))
-            .frame(width: 25.0, height: 25.0)
+            .frame(width: iconSize, height: iconSize)
         }
     }
 }
 
 
 struct BackIcon: View {
+    let lineWidth = 5.0
+    let lineHeight = 15.0
+    let lineCornerRadius = 5.0
+    let lineAngle = 45.0
+    
     var body: some View {
         VStack(spacing: 0) {
-            RoundedRectangle(cornerRadius: 5.0)
-                .frame(width: 5.0, height: 15.0)
-                .rotationEffect(.degrees(45.0), anchor: .center)
+            RoundedRectangle(cornerRadius: lineCornerRadius)
+                .frame(width: lineWidth, height: lineHeight)
+                .rotationEffect(.degrees(lineAngle), anchor: .center)
                 .offset(y:-18)
-            RoundedRectangle(cornerRadius: 5.0)
-                .frame(width: 5.0, height: 15.0)
-                .rotationEffect(.degrees(-45.0), anchor: .center)
+            RoundedRectangle(cornerRadius: lineCornerRadius)
+                .frame(width: lineWidth, height: lineHeight)
+                .rotationEffect(.degrees(0 - lineAngle), anchor: .center)
                 .offset(y:-25)
         }
         .foregroundColor(Color("dark"))

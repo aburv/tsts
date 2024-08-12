@@ -15,6 +15,18 @@ struct HomeScreen: View {
     @State private var isSearching = false
     @State private var searchText = ""
     @State private var isLoading = false
+    @State private var searchResultList: Array<Result> = []
+    
+    let appName = "Takbuff"
+    
+    let appLogoSize = 50.0
+    let appTitleSize = 25.0
+    
+    let layoutCornerRadius = 20.0
+        
+    let searchPaddingTop = 10.0
+    let searchPaddingSide = 20.0
+    let searchPaddingBottom = 15.0
     
     var body: some View {
         ZStack{
@@ -23,11 +35,11 @@ struct HomeScreen: View {
                     if(!isSearching){
                         AppLogo()
                             .matchedGeometryEffect(id: logo, in: animation)
-                            .frame(width: 50.0, height: 50.0)
+                            .frame(width: appLogoSize, height: appLogoSize)
                         
                         VStack(alignment: .leading) {
-                            Text("Takbuff")
-                                .font(.system(size: 25))
+                            Text(appName)
+                                .font(.system(size: appTitleSize))
                                 .foregroundColor(.white)
                                 .matchedGeometryEffect(id: name, in: animation)
                         }
@@ -42,26 +54,24 @@ struct HomeScreen: View {
                 }
                 .padding(
                     EdgeInsets(
-                        top: isSearching ? 0.0: 10.0,
-                        leading: isSearching ? 0.0: 20.0,
-                        bottom: isSearching ? 0.0: 20.0,
-                        trailing: isSearching ? 0.0: 20.0
+                        top: isSearching ? 0.0 : searchPaddingTop,
+                        leading: isSearching ? 0.0 : searchPaddingSide,
+                        bottom: isSearching ? 0.0 : searchPaddingBottom,
+                        trailing: isSearching ? 0.0 : searchPaddingSide
                     )
                 )
                 .background(
                     Color("banner")
                         .clipShape(
                             .rect(
-                                topLeadingRadius: 0,
-                                bottomLeadingRadius: 20,
-                                bottomTrailingRadius:20,
-                                topTrailingRadius: 0
+                                bottomLeadingRadius: layoutCornerRadius,
+                                bottomTrailingRadius:layoutCornerRadius
                             )
                         )
                 )
                 
                 if (isSearching) {
-                    searchList()
+                    searchList(ResultList: $searchResultList)
                 } else {
                     SubScreenLayout(isLoading: $isLoading)
                 }
