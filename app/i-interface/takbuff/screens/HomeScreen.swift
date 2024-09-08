@@ -27,9 +27,9 @@ struct HomeScreen: View {
     
     let sideLayoutSize = 200.0
     
-    let searchPaddingTop = 10.0
+    let searchPaddingTop = 5.0
     let searchPaddingSide = 20.0
-    let searchPaddingBottom = 15.0
+    let searchPaddingBottom = 10.0
     
     var body: some View {
         ZStack{
