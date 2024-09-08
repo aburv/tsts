@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		470ADB522C8DC55800E480D4 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 470ADB512C8DC55800E480D4 /* TabBarView.swift */; };
 		4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5962A9625DF00D73EA0 /* takbuffApp.swift */; };
 		4741C5992A9625DF00D73EA0 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5982A9625DF00D73EA0 /* SplashScreen.swift */; };
 		4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4741C59A2A9625E000D73EA0 /* Assets.xcassets */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		470ADB512C8DC55800E480D4 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		4741C5932A9625DF00D73EA0 /* takbuff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = takbuff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4741C5962A9625DF00D73EA0 /* takbuffApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffApp.swift; sourceTree = "<group>"; };
 		4741C5982A9625DF00D73EA0 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				4776B8412B3355AD000C6B06 /* SearchLayout.swift */,
 				4776B8422B3355AD000C6B06 /* SearchList.swift */,
 				4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */,
+				470ADB512C8DC55800E480D4 /* TabBarView.swift */,
 				4776B84E2B3362E3000C6B06 /* Loader.swift */,
 			);
 			path = views;
@@ -314,6 +317,7 @@
 				4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */,
 				4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */,
 				4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */,
+				470ADB522C8DC55800E480D4 /* TabBarView.swift in Sources */,
 				4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
