@@ -17,7 +17,7 @@ import androidx.viewpager.widget.ViewPager
 import com.aburv.takbuff.R
 import com.aburv.takbuff.databinding.LayoutTabBarBinding
 
-class TabBar(context: Context?, attrs: AttributeSet?) :
+class TabBarView(context: Context?, attrs: AttributeSet?) :
     RelativeLayout(context, attrs) {
 
     private var binding: LayoutTabBarBinding =
@@ -49,6 +49,7 @@ class TabBar(context: Context?, attrs: AttributeSet?) :
         onTabSelectedListener = {
             viewPager.setCurrentItem(it, true)
         }
+//        registerOnPageChangeCallback
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
@@ -67,15 +68,26 @@ class TabBar(context: Context?, attrs: AttributeSet?) :
     }
 
     fun setTitles(tabTitles: List<String>) {
+//        val typedArray = context.theme.obtainStyledAttributes(
+//            attrs, R.styleable.CustomTabBar,
+//            0, 0
+//        )
+
         listTabName = tabTitles
+//            typedArray.getTextArray(R.styleable.CustomTabBar_android_entries).toList().map {
+//                it.toString()
+//            }
         setupUI()
+//        typedArray.recycle()
     }
 
     private fun setupUI() {
+        //textview
         listTabTv = listTabName.mapIndexed { index, tabName ->
             initTabTv(tabName, index)
         }
 
+        //view_tabs_wrapper
         binding.viewTabsWrapper.apply {
             weightSum = listTabTv.size.toFloat()
             listTabTv.forEach {
@@ -83,6 +95,7 @@ class TabBar(context: Context?, attrs: AttributeSet?) :
             }
         }
 
+        //view_indicator_wrapper
         binding.viewIndicatorWrapper.apply {
             weightSum = listTabTv.size.toFloat()
         }
