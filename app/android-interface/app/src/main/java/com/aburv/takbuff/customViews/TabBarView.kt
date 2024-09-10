@@ -49,7 +49,6 @@ class TabBarView(context: Context?, attrs: AttributeSet?) :
         onTabSelectedListener = {
             viewPager.setCurrentItem(it, true)
         }
-//        registerOnPageChangeCallback
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
@@ -68,26 +67,15 @@ class TabBarView(context: Context?, attrs: AttributeSet?) :
     }
 
     fun setTitles(tabTitles: List<String>) {
-//        val typedArray = context.theme.obtainStyledAttributes(
-//            attrs, R.styleable.CustomTabBar,
-//            0, 0
-//        )
-
         listTabName = tabTitles
-//            typedArray.getTextArray(R.styleable.CustomTabBar_android_entries).toList().map {
-//                it.toString()
-//            }
         setupUI()
-//        typedArray.recycle()
     }
 
     private fun setupUI() {
-        //textview
         listTabTv = listTabName.mapIndexed { index, tabName ->
             initTabTv(tabName, index)
         }
 
-        //view_tabs_wrapper
         binding.viewTabsWrapper.apply {
             weightSum = listTabTv.size.toFloat()
             listTabTv.forEach {
@@ -95,7 +83,6 @@ class TabBarView(context: Context?, attrs: AttributeSet?) :
             }
         }
 
-        //view_indicator_wrapper
         binding.viewIndicatorWrapper.apply {
             weightSum = listTabTv.size.toFloat()
         }
