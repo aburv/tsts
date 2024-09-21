@@ -2,9 +2,9 @@ import unittest
 from unittest import mock
 from unittest.mock import call, patch
 
+from migrate_db import Migrate, get_version_from_name, get_ddl_files
 from src.config import Relation
 from src.db_duo import PostgresDbDuo, OrderType
-from migrate_db import Migrate, get_version_from_name, get_ddl_files
 from src.logger import LoggerAPI
 from src.responses import TableNotFoundException, DBExecutionException
 
@@ -149,7 +149,9 @@ class MigrateTest(unittest.TestCase):
         assert not mock_update_version.called
         mock_info.assert_has_calls([
             call('Migrating DB'),
+            call('Executing DDL command file: resources/V1.11'),
             call('DDL command file already executed as fileV1.09 systemVersion 1.10'),
+            call('Executing DDL command file: resources/V1.22'),
             call('DDL command file already executed as fileV1.09 systemVersion 1.10')
         ])
 
@@ -346,7 +348,7 @@ class MigrateTest(unittest.TestCase):
         with mock.patch.object(Migrate, '__init__', return_value=None):
             migrate = Migrate()
             migrate.db = mock_db
-            mock_db.get_records.return_value = expected
+            mock_db.get_records.return_value = [{"version": expected}]
 
         actual = migrate.get_version()
 

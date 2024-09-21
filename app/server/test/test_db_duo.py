@@ -189,66 +189,34 @@ class DbDuoTest(unittest.TestCase):
             db.client = mock_connect.cursor.return_value
 
         with self.assertRaises(TableNotFoundException):
-            db.get_records(
-                [],
-                order_type=OrderType('type', True)
-            )
+            db.get_records([])
 
         mock_is_table_exist.assert_called_once_with()
         assert not db.con.commit.called
         assert not db.client.cursor.called
         assert not db.client.execute.called
-        assert not db.client.fetchone.called
+        assert not db.client.fetchall.called
         mock_exception.assert_called_once_with("table")
 
     @mock.patch.object(PostgresDbDuo, 'is_table_exist', return_value=True)
-    def test_should_return_tuple_result_get_records_with_all_fields_no_query(self,
-                                                                             mock_is_table_exist
-                                                                             ):
-        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
-            db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
-            db.schema = 'schema'
-
-        expected = "value"
-
-        with mock.patch('psycopg2.connect') as mock_connect:
-            db.con = mock_connect
-            db.client = mock_connect.cursor.return_value
-            mock_execute = mock_connect.cursor.return_value.execute
-            db.client.fetchone.return_value = (expected,)
-
-        actual = db.get_records(
-            [],
-            order_type=OrderType('type', True)
-        )
-
-        mock_is_table_exist.assert_called_once_with()
-        mock_execute.assert_called_once_with(
-            "SELECT * FROM table ORDER BY type DESC"
-        )
-        db.con.commit.assert_called_once_with()
-        self.assertEqual(expected, actual)
-
-    @mock.patch.object(PostgresDbDuo, 'is_table_exist', return_value=True)
-    def test_should_return_tuple_result_when_query_fields_group_order_DESC_count_get_records_(self,
+    def test_should_return_list_result_when_query_fields_group_order_DESC_count_get_records_(self,
                                                                                               mock_is_table_exist):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
             db.table = 'table'
             db.schema = 'schema'
 
-        expected = "value"
+        expected = [{'field_1': "value_1", 'field_2': "value_2"}]
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
-            db.client.fetchone.return_value = (expected,)
+            db.client.fetchall.return_value = (('value_1', 'value_2',),)
 
         actual = db.get_records(
             ['field_1', 'field_2'],
-            query_param={'field_2': '2'},
+            query_param={'field_2': 2, 'field_5': '2'},
             order_type=OrderType('type', True),
             group_by_field="field_3",
             record_count=4
@@ -256,30 +224,30 @@ class DbDuoTest(unittest.TestCase):
 
         mock_is_table_exist.assert_called_once_with()
         mock_execute.assert_called_once_with(
-            "SELECT field_1, field_2 FROM table WHERE field_2=2 GROUP BY field_3 ORDER BY type DESC LIMIT 4"
+            "SELECT field_1, field_2 FROM table WHERE field_2=2 AND field_5='2' GROUP BY field_3 ORDER BY type DESC LIMIT 4"
         )
         db.con.commit.assert_called_once_with()
         self.assertEqual(expected, actual)
 
     @mock.patch.object(PostgresDbDuo, 'is_table_exist', return_value=True)
-    def test_should_return_tuple_result_when_query_fields_group_order_ASC_count_get_records_(self,
-                                                                                             mock_is_table_exist):
+    def test_should_return_list_result_when_query_fields_group_order_ASC_count_get_records_(self,
+                                                                                            mock_is_table_exist):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
             db.table = 'table'
             db.schema = 'schema'
 
-        expected = "value"
+        expected = [{'field_1': 'value_1', 'field_2': 'value_2'}]
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
-            db.client.fetchone.return_value = (expected,)
+            db.client.fetchall.return_value = (('value_1', 'value_2',),)
 
         actual = db.get_records(
             ['field_1', 'field_2'],
-            query_param={'field_2': '2'},
+            query_param={'field_2': 2},
             order_type=OrderType('type', False),
             group_by_field="field_3",
             record_count=4
@@ -292,30 +260,30 @@ class DbDuoTest(unittest.TestCase):
         db.con.commit.assert_called_once_with()
         self.assertEqual(expected, actual)
 
+    @mock.patch.object(DBExecutionException, '__init__', return_value=None)
     @mock.patch.object(PostgresDbDuo, 'is_table_exist', return_value=True)
-    def test_should_return_empty_tuple_result_when_data_is_none_get_records(self,
-                                                                            mock_is_table_exist):
+    def test_should_raise_db_execution_exception_when_fields_empty_list_on_exception_get_records(self,
+                                                                                                 mock_is_table_exist,
+                                                                                                 mock_exception
+                                                                                                 ):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
             db.table = 'table'
             db.schema = 'schema'
 
-        expected = ()
-
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
-            db.client.fetchone.return_value = None
+            db.client.fetchall.return_value = None
 
-        actual = db.get_records([])
+        with self.assertRaises(DBExecutionException):
+            db.get_records([])
 
+        mock_exception.assert_called_once_with('Retrieve', 'Query fields cannot be empty')
         mock_is_table_exist.assert_called_once_with()
-        mock_execute.assert_called_once_with(
-            "SELECT * FROM table"
-        )
-        db.con.commit.assert_called_once_with()
-        self.assertEqual(expected, actual)
+        mock_execute.assert_not_called()
+        db.con.commit.assert_not_called()
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
     @mock.patch.object(PostgresDbDuo, 'is_table_exist', return_value=True)
@@ -336,7 +304,7 @@ class DbDuoTest(unittest.TestCase):
         with self.assertRaises(DBExecutionException):
             db.get_records(
                 ['field_1', 'field_2'],
-                query_param={'field_2': '2'},
+                query_param={'field_2': 2},
                 order_type=OrderType('type', True)
             )
 

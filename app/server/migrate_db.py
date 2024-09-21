@@ -65,6 +65,9 @@ class Migrate:
             for ddl_file_name in ddl_files:
                 version = get_version_from_name(ddl_file_name)
                 file_name_path = str(os.path.join(ROOT_PATH, ddl_file_name))
+                self.logger.info_entry(
+                    f'Executing DDL command file: {file_name_path}'
+                )
                 if version.split(".")[1] == "00":
                     self.db.run_ddl_file(file_name_path)
                     self.update_version(version)
@@ -109,13 +112,13 @@ class Migrate:
         """
         try:
             order_type = OrderType("date_time", True)
-            version = self.db.get_records(
+            version_records = self.db.get_records(
                 ["version"],
                 order_type=order_type,
                 record_count=1
             )
-            if version != ():
-                return str(version)
+            if len(version_records) == 1:
+                return str(version_records[0]["version"])
             return "0.00"
         except TableNotFoundException as _:
             return "0.00"

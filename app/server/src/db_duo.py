@@ -1,7 +1,6 @@
 """
  PostgresDB class
 """
-from typing import Any
 
 import psycopg2
 
@@ -78,7 +77,7 @@ class PostgresDbDuo:
                     order_type: OrderType | None = None,
                     group_by_field: str | None = None,
                     record_count: int | None = None
-                    ) -> tuple[Any, ...]:
+                    ) -> list:
         """
         Get records by filter on condition and
         fields with limiting count
@@ -86,14 +85,20 @@ class PostgresDbDuo:
         if not self.is_table_exist():
             raise TableNotFoundException(self.table)
 
-        field_str = ", ".join(fields) if len(fields) != 0 else '*'
+        if len(fields) == 0:
+            raise DBExecutionException('Retrieve', 'Query fields cannot be empty')
+
+        field_str = ", ".join(fields)
 
         query = f'SELECT {field_str} FROM {self.table}'
         if query_param is not None:
             query += " WHERE "
             query_list = []
             for (field, value) in query_param.items():
-                query_list.append(field + "=" + value)
+                if isinstance(value, str):
+                    query_list.append(field + "='" + value + "'")
+                else:
+                    query_list.append(field + "=" + str(value))
             query += " AND ".join(query_list)
         if group_by_field is not None:
             query += f" GROUP BY {group_by_field}"
@@ -103,11 +108,16 @@ class PostgresDbDuo:
             query += f" LIMIT {record_count}"
         try:
             self.client.execute(query)
-            data = self.client.fetchone()
+            data = self.client.fetchall()
             self.con.commit()
-            if data is not None and len(data) > 0:
-                return data[0]
-            return ()
+            records = []
+            if data is not None:
+                for data_item in data:
+                    record = {}
+                    for index, field in enumerate(fields):
+                        record[field] = data_item[index]
+                    records.append(record)
+            return records
         except Exception as e:
             raise DBExecutionException('Retrieve', f'{self.table} : {query} on {e}') from e
 
