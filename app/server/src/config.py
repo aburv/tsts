@@ -53,7 +53,8 @@ class Table:
 
     def get_name(self) -> str:
         """
-        return table name
+        :return: table name
+        :rtype: str
         """
         return self._name
 
@@ -66,3 +67,4 @@ class Relation(enum.Enum):
     MIGRATION = Table("migration", False)
     AUDIT = Table("audit", False)
     AUDIT_FIELD = Table("audit_field", False)
+    DEVICE = Table("device", True)
