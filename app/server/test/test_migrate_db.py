@@ -451,7 +451,7 @@ class MigrateTest(unittest.TestCase):
         migrate.update_version("version")
 
         mock_info.assert_called_once_with('updating migration version : version')
-        mock_db.insert_record.assert_called_once_with({'version': 'version'})
+        mock_db.insert_record.assert_called_once_with({'version': 'version'}, '')
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
     @mock.patch.object(LoggerAPI, 'info_entry', return_value=None)
@@ -474,5 +474,5 @@ class MigrateTest(unittest.TestCase):
             migrate.update_version("version")
 
         mock_info.assert_called_once_with('updating migration version : version')
-        mock_db.insert_record.assert_called_once_with({'version': 'version'})
+        mock_db.insert_record.assert_called_once_with({'version': 'version'}, '')
         mock_exception.assert_has_calls([call('op', 'message'), call('Update', 'version : version')])

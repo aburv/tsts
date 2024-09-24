@@ -1,12 +1,12 @@
 import unittest
 from unittest import mock
-from unittest.mock import patch
+from unittest.mock import patch, call
 
 import psycopg2
 
 from src.config import Config, Relation, Table
-from src.db_duo import PostgresDbDuo, OrderType
-from src.responses import DBConnectionException, DBExecutionException, TableNotFoundException
+from src.db_duo import PostgresDbDuo, OrderType, DBOperationException
+from src.responses import DBConnectionException, DBExecutionException, TableNotFoundException, DataValidationException
 
 
 class OrderTypeTest(unittest.TestCase):
@@ -22,9 +22,7 @@ class DbDuoTest(unittest.TestCase):
 
     @mock.patch.object(Config, 'get_db_parameters')
     @mock.patch.object(psycopg2, 'connect')
-    @mock.patch.object(Table, 'get_name', return_value="tableName")
     def test_should_establish_db_connection_on_init(self,
-                                                    mock_table_name,
                                                     mock_client_init,
                                                     mock_get_db_parameters
                                                     ):
@@ -40,9 +38,10 @@ class DbDuoTest(unittest.TestCase):
             "meta_schema": "meta_schema"
         }
 
-        db = PostgresDbDuo(Relation.INIT)
+        relation = Relation.INIT
+        db = PostgresDbDuo(relation)
 
-        mock_table_name.assert_called_once_with()
+        # mock_table_name.assert_called_once_with()
         mock_get_db_parameters.assert_called_once_with()
         mock_client_init.assert_called_once_with(
             host='test_host',
@@ -56,7 +55,7 @@ class DbDuoTest(unittest.TestCase):
         self.assertEqual(db.con, mock_client_init.return_value)
         self.assertEqual(True, db.con.autocommit)
         self.assertEqual(db.client, mock_con.cursor.return_value)
-        self.assertEqual(db.table, "tableName")
+        self.assertEqual(db.table, relation.value)
 
     @mock.patch.object(DBConnectionException, '__init__', return_value=None)
     @mock.patch.object(Config, 'get_db_parameters')
@@ -95,7 +94,7 @@ class DbDuoTest(unittest.TestCase):
     def test_should_run_ddl_file(self, mock_open):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         with mock.patch('psycopg2.connect') as mock_connect:
@@ -117,7 +116,7 @@ class DbDuoTest(unittest.TestCase):
                                                                            ):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         with mock.patch('psycopg2.connect') as mock_connect:
@@ -134,7 +133,7 @@ class DbDuoTest(unittest.TestCase):
     def test_should_return_true_in_is_table_exist(self):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         with mock.patch('psycopg2.connect') as mock_connect:
@@ -155,7 +154,7 @@ class DbDuoTest(unittest.TestCase):
     def test_should_raise_db_execution_exception_on_exception_is_table_exist(self, mock_exception):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         with mock.patch('psycopg2.connect') as mock_connect:
@@ -181,7 +180,7 @@ class DbDuoTest(unittest.TestCase):
                                                                                              ):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         with mock.patch('psycopg2.connect') as mock_connect:
@@ -200,10 +199,10 @@ class DbDuoTest(unittest.TestCase):
 
     @mock.patch.object(PostgresDbDuo, 'is_table_exist', return_value=True)
     def test_should_return_list_result_when_query_fields_group_order_DESC_count_get_records_(self,
-                                                                                              mock_is_table_exist):
+                                                                                             mock_is_table_exist):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         expected = [{'field_1': "value_1", 'field_2': "value_2"}]
@@ -224,7 +223,8 @@ class DbDuoTest(unittest.TestCase):
 
         mock_is_table_exist.assert_called_once_with()
         mock_execute.assert_called_once_with(
-            "SELECT field_1, field_2 FROM table WHERE field_2=2 AND field_5='2' GROUP BY field_3 ORDER BY type DESC LIMIT 4"
+            "SELECT field_1, field_2 FROM table WHERE field_2=2 AND field_5='2' "
+            "GROUP BY field_3 ORDER BY type DESC LIMIT 4"
         )
         db.con.commit.assert_called_once_with()
         self.assertEqual(expected, actual)
@@ -234,7 +234,7 @@ class DbDuoTest(unittest.TestCase):
                                                                                             mock_is_table_exist):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         expected = [{'field_1': 'value_1', 'field_2': 'value_2'}]
@@ -268,7 +268,7 @@ class DbDuoTest(unittest.TestCase):
                                                                                                  ):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
             db.schema = 'schema'
 
         with mock.patch('psycopg2.connect') as mock_connect:
@@ -293,7 +293,7 @@ class DbDuoTest(unittest.TestCase):
                                                                           ):
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
@@ -316,31 +316,117 @@ class DbDuoTest(unittest.TestCase):
         )
         assert not db.con.commit.called
 
-    def test_should_insert_record(self):
-        expected = 1
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
+    @mock.patch.object(PostgresDbDuo, 'update_audit')
+    def test_should_insert_record_with_main_table(self,
+                                                  mock_audit_update,
+                                                  mock_is_success,
+                                                  mock_table_get_name):
+        mock_is_success.side_effect = [True]
+
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = "table"
+            db.table = Table("table", True)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
-            mock_connect.cursor.return_value.rowcount = expected
 
-        db.insert_record({'field': 'value', 'field_2': 1})
+        db.insert_record({'field': 'value', 'field_2': 1, "id": "id"}, "my_id")
 
-        mock_execute.assert_called_once_with(
-            "INSERT INTO table (field, field_2) VALUES ('value', 1)"
-        )
+        mock_audit_update.assert_called_once_with('id', {'field': 'value', 'field_2': 1}, 'my_id')
+        mock_is_success.assert_has_calls([
+            call('INSERT 0 1'),
+        ])
+        mock_table_get_name.assert_called_once_with()
+        mock_execute.assert_has_calls([
+            call('BEGIN;'),
+            call("INSERT INTO table (field, field_2, id) VALUES ('value', 1, 'id');"),
+            call('END;')
+        ])
         db.con.commit.assert_called_once_with()
-        self.assertEqual(1, 1)
 
-    @mock.patch.object(DBExecutionException, '__init__', return_value=None)
-    def test_should_raise_db_execution_exception_on_exception_on_insert_record(self, mock_exception):
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
+    @mock.patch.object(PostgresDbDuo, 'update_audit')
+    def test_should_insert_record_with_non_main_table(self,
+                                                      mock_audit_update,
+                                                      mock_is_success,
+                                                      mock_table_get_name):
+        mock_is_success.side_effect = [True]
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_execute = mock_connect.cursor.return_value.execute
+
+        db.insert_record({'field': 'value', 'field_2': 1, "id": "id"}, "my_id")
+
+        assert not mock_audit_update.called
+        mock_is_success.assert_has_calls([
+            call('INSERT 0 1'),
+        ])
+        mock_table_get_name.assert_called_once_with()
+        mock_execute.assert_has_calls([
+            call('BEGIN;'),
+            call("INSERT INTO table (field, field_2, id) VALUES ('value', 1, 'id');"),
+            call('END;')
+        ])
+        db.con.commit.assert_called_once_with()
+
+    @mock.patch.object(DataValidationException, '__init__', return_value=None)
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
+    @mock.patch('uuid.uuid4', return_value='audit_id')
+    def test_should_raise_validation_exception_in_insert_record_on_data_empty(self,
+                                                                              mock_id,
+                                                                              mock_is_success,
+                                                                              mock_table_get_name,
+                                                                              mock_exception
+                                                                              ):
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+            db.table = Table("table", False)
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_execute = mock_connect.cursor.return_value.execute
+
+        with self.assertRaises(DataValidationException):
+            db.insert_record({}, "my_id")
+
+        assert not mock_id.called
+        mock_is_success.assert_has_calls([])
+        mock_table_get_name.assert_called_once_with()
+        mock_execute.assert_has_calls([])
+        assert not db.con.commit.called
+
+        mock_exception.assert_called_once_with('Nothing to Insert Failure: ', 'table')
+
+    @mock.patch.object(DBExecutionException, '__init__', return_value=None)
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success')
+    @mock.patch('uuid.uuid4', return_value='audit_id')
+    def test_should_raise_execution_exception_in_insert_record_on_exception(self,
+                                                                            mock_id,
+                                                                            mock_is_success,
+                                                                            mock_table_get_name,
+                                                                            mock_exception):
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+            db.table = Table("table", False)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
@@ -349,63 +435,170 @@ class DbDuoTest(unittest.TestCase):
             mock_execute.side_effect = Exception("error")
 
         with self.assertRaises(DBExecutionException):
-            db.insert_record({'field': 'value', 'field_2': 'value_2'})
+            db.insert_record({'field': 'value', 'field_2': 'value_2', "id": "id"}, "my_id")
 
-        mock_execute.assert_called_once_with(
-            "INSERT INTO table (field, field_2) VALUES ('value', 'value_2')"
+        mock_table_get_name.assert_called_once_with()
+        mock_is_success.assert_has_calls([])
+        mock_execute.assert_has_calls([
+            call('BEGIN;')
+        ])
+        mock_exception.assert_called_once_with(
+            'Insert Failure: System error',
+            "table {'field': 'value', 'field_2': 'value_2', 'id': 'id'} : error"
         )
-        mock_exception.assert_called_once_with('Insert', "table : {'field': 'value', 'field_2': 'value_2'} on error")
+        assert not mock_id.called
         assert not db.con.commit.called
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
-    def test_should_raise_db_execution_exception_on_rowcount_is_not_1_on_insert_record(self, mock_exception):
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success')
+    def test_should_raise_execution_exception_in_insert_record_on_no_execution_on_insert_statement(self,
+                                                                                                   mock_is_success,
+                                                                                                   mock_table_get_name,
+                                                                                                   mock_exception):
+        data = {'field': 'value', 'field_2': 'value_2', "id": "id"}
+
+        mock_is_success.side_effect = [
+            False
+        ]
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
-            mock_connect.cursor.return_value.rowcount = 0
 
         with self.assertRaises(DBExecutionException):
-            db.insert_record({'field': 'value', 'field_2': 'value_2'})
+            db.insert_record(data, "my_id")
 
-        mock_execute.assert_called_once_with(
-            "INSERT INTO table (field, field_2) VALUES ('value', 'value_2')"
+        mock_table_get_name.assert_called_once_with()
+        mock_execute.assert_has_calls([
+            call('BEGIN;'),
+            call("INSERT INTO table (field, field_2, id) VALUES ('value', 'value_2', 'id');"),
+        ])
+        mock_exception.assert_called_once_with(
+            'Insert Failure: System error',
+            f"table {data} : Data not inserted"
         )
+        mock_is_success.assert_has_calls([call('INSERT 0 1')])
+        assert not db.con.commit.called
 
-        mock_exception.assert_called_once_with('Insert',
-                                               "table : {'field': 'value', 'field_2': 'value_2'} on no response")
-        db.con.commit.assert_called_once_with()
-
-    def test_should_update_record(self):
-        expected = 1
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
+    @mock.patch.object(PostgresDbDuo, 'update_audit', return_value='audit_id')
+    def test_should_update_record_with_main_table(self,
+                                                  mock_audit_update,
+                                                  mock_is_success,
+                                                  mock_table_get_name):
+        mock_is_success.side_effect = [True]
 
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = "table"
+            db.table = Table("table", True)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
-            mock_connect.cursor.return_value.rowcount = expected
 
-        db.update_record("record_id", {'field': 'value', 'field_2': 1})
+        db.update_record("record_id", {'field': 'value', 'field_2': 1}, "my_id")
 
-        mock_execute.assert_called_once_with(
-            "UPDATE table SET 'field'='value' , 'field_2'=1 WHERE id = record_id"
-        )
+        mock_table_get_name.assert_called_once_with()
+        mock_is_success.assert_has_calls([
+            call('UPDATE 0 1'),
+        ])
+        mock_audit_update.assert_called_once_with('record_id', {'field': 'value', 'field_2': 1}, 'my_id')
+        mock_execute.assert_has_calls([
+            call('BEGIN;'),
+            call("UPDATE table SET 'field'='value', 'field_2'=1 WHERE id = record_id;"),
+            call('END;')
+        ])
         db.con.commit.assert_called_once_with()
-        self.assertEqual(1, 1)
 
-    @mock.patch.object(DBExecutionException, '__init__', return_value=None)
-    def test_should_return_false_print_error_in_update_record_on_exception(self, mock_exception):
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
+    @mock.patch.object(PostgresDbDuo, 'update_audit')
+    def test_should_update_record_with_non_main_table(self,
+                                                      mock_audit_update,
+                                                      mock_is_success,
+                                                      mock_table_get_name):
+        mock_is_success.side_effect = [True]
+
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_execute = mock_connect.cursor.return_value.execute
+
+        db.update_record("id", {'field': 'value', 'field_2': 1}, "my_id")
+
+        assert not mock_audit_update.called
+        mock_is_success.assert_has_calls([
+            call('UPDATE 0 1'),
+        ])
+        mock_table_get_name.assert_called_once_with()
+        mock_execute.assert_has_calls([
+            call('BEGIN;'),
+            call("UPDATE table SET 'field'='value', 'field_2'=1 WHERE id = id;"),
+            call('END;')
+        ])
+        db.con.commit.assert_called_once_with()
+
+    @mock.patch.object(DataValidationException, '__init__', return_value=None)
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
+    @mock.patch.object(PostgresDbDuo, 'update_audit', return_value=True)
+    def test_should_raise_validation_exception_in_update_record_on_data_empty(self,
+                                                                              mock_audit_update,
+                                                                              mock_is_success,
+                                                                              mock_table_get_name,
+                                                                              mock_exception
+                                                                              ):
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+            db.table = Table("table", False)
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_execute = mock_connect.cursor.return_value.execute
+
+        with self.assertRaises(DataValidationException):
+            db.update_record("id", {}, "my_id")
+
+        assert not mock_audit_update.called
+        mock_is_success.assert_has_calls([])
+        mock_table_get_name.assert_called_once_with()
+        mock_execute.assert_has_calls([])
+        assert not db.con.commit.called
+
+        mock_exception.assert_called_once_with('Nothing to Update Failure: ', 'table')
+
+    @mock.patch.object(DBExecutionException, '__init__', return_value=None)
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
+    @mock.patch.object(PostgresDbDuo, 'update_audit', return_value=True)
+    def test_should_raise_execution_exception_in_update_record_on_exception(self,
+                                                                            mock_audit_update,
+                                                                            mock_is_success,
+                                                                            mock_table_get_name,
+                                                                            mock_exception):
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+            db.table = Table("table", False)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
@@ -414,35 +607,258 @@ class DbDuoTest(unittest.TestCase):
             mock_execute.side_effect = Exception("error")
 
         with self.assertRaises(DBExecutionException):
-            db.update_record("record_id", {'field': 'value', 'field_2': 'value_2'})
+            db.update_record("record_id", {'field': 'value', 'field_2': 'value_2'}, "my_id")
 
-        mock_execute.assert_called_once_with(
-            "UPDATE table SET 'field'='value' , 'field_2'='value_2' WHERE id = record_id"
+        mock_table_get_name.assert_called_once_with()
+        mock_is_success.assert_has_calls([])
+        mock_execute.assert_has_calls([
+            call("BEGIN;")
+        ])
+        mock_exception.assert_called_once_with(
+            'Update failure: System error',
+            "table : {'field': 'value', 'field_2': 'value_2'} on record_id: error"
         )
-        mock_exception.assert_called_once_with('Update',
-                                               "table : {'field': 'value', 'field_2': 'value_2'} on record_id on error")
+        assert not mock_audit_update.called
         assert not db.con.commit.called
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
-    def test_should_return_false_print_error_in_update_record_on_failure(self, mock_exception):
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success')
+    def test_should_raise_execution_exception_in_update_record_on_no_execution_on_update_statement(self,
+                                                                                                   mock_is_success,
+                                                                                                   mock_table_get_name,
+                                                                                                   mock_exception):
+        mock_is_success.side_effect = [
+            False,
+        ]
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
-            db.table = 'table'
+            db.table = Table("table", False)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
 
         with mock.patch('psycopg2.connect') as mock_connect:
             db.con = mock_connect
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
-            mock_connect.cursor.return_value.rowcount = 0
 
         with self.assertRaises(DBExecutionException):
-            db.update_record("record_id", {'field': 'value', 'field_2': 'value_2'})
+            db.update_record(
+                "record_id",
+                {'field': 'value', 'field_2': 'value_2'},
+                "my_id"
+            )
 
-        mock_execute.assert_called_once_with(
-            "UPDATE table SET 'field'='value' , 'field_2'='value_2' WHERE id = record_id"
+        mock_table_get_name.assert_called_once_with()
+        mock_is_success.assert_has_calls([call('UPDATE 0 1')])
+        mock_execute.assert_has_calls([
+            call('BEGIN;'),
+            call("UPDATE table SET 'field'='value', 'field_2'='value_2' WHERE id = record_id;"),
+        ])
+
+        mock_exception.assert_called_once_with(
+            'Update failure: System error',
+            "table : {'field': 'value', 'field_2': 'value_2'} on record_id: Data not updated"
         )
 
-        mock_exception.assert_called_once_with('Update',
-                                               "table : {'field': 'value', 'field_2': 'value_2'} "
-                                               "on record_id on no response")
-        db.con.commit.assert_called_once_with()
+        assert not db.con.commit.called
+
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success')
+    @mock.patch('uuid.uuid4', return_value='audit_id')
+    def test_should_insert_audit_and_audit_fields_on_update_audit(
+            self,
+            mock_id,
+            mock_is_success,
+            mock_table_get_name,
+    ):
+        mock_is_success.side_effect = [
+            True,
+            True,
+            True
+        ]
+
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+            db.table = Table("table", True)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_execute = mock_connect.cursor.return_value.execute
+
+        db.update_audit(
+            "record_id",
+            {'field': 'value', 'field_2': 'value_2'},
+            "my_id"
+        )
+
+        mock_table_get_name.assert_called_once_with()
+        mock_is_success.assert_has_calls([
+            call('INSERT 0 1'),
+            call('INSERT 0 1'),
+            call('INSERT 0 1')
+        ])
+        mock_id.assert_called_once_with()
+        mock_execute.assert_has_calls([
+            call(
+                "INSERT INTO table_1 (id, table_name, record_id, operation, op_user) "
+                "VALUES ('audit_id', 'table', 'record_id', 'INSERT', 'my_id');"
+            ),
+            call(
+                "INSERT INTO table_2 (audit_id, field_name, new_value) "
+                "VALUES ('audit_id', 'field', 'value');"
+            ),
+            call(
+                "INSERT INTO table_2 (audit_id, field_name, new_value) "
+                "VALUES ('audit_id', 'field_2', 'value_2');"
+            )
+        ])
+
+    @mock.patch.object(DBOperationException, '__init__', return_value=None)
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success')
+    @mock.patch('uuid.uuid4', return_value='audit_id')
+    def test_should_raise_execution_exception_in_update_audit_on_no_execution_on_audit_statement(
+            self,
+            mock_id,
+            mock_is_success,
+            mock_table_get_name,
+            mock_exception
+    ):
+        mock_is_success.side_effect = [
+            False,
+        ]
+
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+            db.table = Table("table", True)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_execute = mock_connect.cursor.return_value.execute
+
+        with self.assertRaises(DBOperationException):
+            db.update_audit(
+                "record_id",
+                {'field': 'value', 'field_2': 'value_2'},
+                "my_id"
+            )
+
+        mock_table_get_name.assert_called_once_with()
+        mock_is_success.assert_has_calls([call('INSERT 0 1')])
+        mock_id.assert_called_once_with()
+        mock_execute.assert_has_calls([
+            call(
+                "INSERT INTO table_1 (id, table_name, record_id, operation, op_user) "
+                "VALUES ('audit_id', 'table', 'record_id', 'INSERT', 'my_id');"
+            )
+        ])
+
+        mock_exception.assert_called_once_with(
+            "Audit not inserted"
+        )
+        assert not db.con.commit.called
+
+    @mock.patch.object(DBOperationException, '__init__', return_value=None)
+    @mock.patch.object(Table, 'get_name', return_value="table")
+    @mock.patch.object(PostgresDbDuo, 'is_operation_success')
+    @mock.patch('uuid.uuid4', return_value='audit_id')
+    def test_should_raise_execution_exception_in_update_audit_on_no_execution_on_audit_field_statement(
+            self,
+            mock_id,
+            mock_is_success,
+            mock_table_get_name,
+            mock_exception
+    ):
+        mock_is_success.side_effect = [
+            True,
+            False
+        ]
+
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+            db.table = Table("table", True)
+            db.audit_table = "table_1"
+            db.audit_field_table = "table_2"
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_execute = mock_connect.cursor.return_value.execute
+
+        with self.assertRaises(DBOperationException):
+            db.update_audit(
+                "record_id",
+                {'field': 'value', 'field_2': 'value_2'},
+                "my_id"
+            )
+
+        mock_table_get_name.assert_called_once_with()
+        mock_is_success.assert_has_calls([
+            call('INSERT 0 1'),
+            call('INSERT 0 1')
+        ])
+        mock_id.assert_called_once_with()
+        mock_execute.assert_has_calls([
+            call(
+                "INSERT INTO table_1 (id, table_name, record_id, operation, op_user) "
+                "VALUES ('audit_id', 'table', 'record_id', 'INSERT', 'my_id');"
+            ),
+            call(
+                "INSERT INTO table_2 (audit_id, field_name, new_value) "
+                "VALUES ('audit_id', 'field', 'value');"
+            )
+        ])
+
+        mock_exception.assert_called_once_with('Audit field not inserted')
+        assert not db.con.commit.called
+
+    def test_should_true_if_status_message_matches_to_param_in_is_operation_success(self):
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_connect.cursor.return_value.statusmessage = "status"
+
+        actual = db.is_operation_success(
+            "status",
+        )
+
+        self.assertTrue(actual)
+
+        # assert not db.con.commit.called
+
+    def test_should_false_if_status_message_mismatches_to_param_in_is_operation_success(self):
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+            mock_connect.cursor.return_value.statusmessage = "status 2"
+
+        actual = db.is_operation_success(
+            "status",
+        )
+
+        self.assertFalse(actual)
+
+    def test_should_call_close_api_in_close(self):
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(Relation.INIT)
+
+        with mock.patch('psycopg2.connect') as mock_connect:
+            db.con = mock_connect
+            db.client = mock_connect.cursor.return_value
+
+        db.close()
+
+        db.client.close.assert_called_once_with()

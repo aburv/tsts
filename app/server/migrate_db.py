@@ -7,8 +7,8 @@ import psycopg2
 
 from src.config import Config, Relation
 from src.db_duo import PostgresDbDuo, OrderType
-from src.responses import TableNotFoundException, DBConnectionException, DBExecutionException
 from src.logger import LoggerAPI
+from src.responses import TableNotFoundException, DBConnectionException, DBExecutionException
 
 ROOT_PATH = "resources"
 
@@ -132,7 +132,7 @@ class Migrate:
         """
         try:
             self.logger.info_entry(f'updating migration version : {version}')
-            self.db.insert_record({"version": version})
+            self.db.insert_record({"version": version}, "")
         except DBExecutionException as _:
             raise DBExecutionException('Update', f'version : {version}')
 
