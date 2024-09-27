@@ -11,7 +11,9 @@ struct HomeScreen: View {
     let animation: Namespace.ID
     let name: Namespace.ID
     let logo: Namespace.ID
-    let layout:LayoutProperties
+    let layout: LayoutProperties
+    
+    @State private var screen: SubScreen = .Dashboard
     
     @State private var isSearching = false
     @State private var searchText = ""
@@ -96,7 +98,12 @@ struct HomeScreen: View {
                         if (isSearching) {
                             searchList(ResultList: $searchResultList)
                         } else {
-                            SubScreenLayout(isLoading: $isLoading)
+                            SubScreenLayout(
+                                animation: animation,
+                                layout: layout,
+                                isLoading: $isLoading,
+                                screen: $screen
+                            )
                         }
                     }
                     .frame(width: layout.dimen.mainLayoutWidth)
