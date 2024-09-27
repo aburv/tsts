@@ -6,6 +6,7 @@ import uuid
 import psycopg2
 
 from src.config import Config, Relation
+from src.data import DataModel
 from src.responses import DBConnectionException, TableNotFoundException, DBExecutionException, DataValidationException
 
 
@@ -129,85 +130,84 @@ class PostgresDbDuo:
                 records.append(record)
         return records
 
-    def insert_record(self, data: dict, my_id: str) -> None:
+    def insert_record(self, data: DataModel, my_id: str) -> None:
         """
         Insert record into DB
         """
         table_name = self.table.get_name()
-        if len(data.items()) > 0:
-            fields = []
-            values = []
-
-            for field, value in data.items():
-                fields.append(f"{field}")
-                if isinstance(value, str):
-                    values.append(f"'{str(value)}'")
-                else:
-                    values.append(str(value))
-            try:
-                self.client.execute("BEGIN;")
-                statement = f"INSERT INTO {table_name} ({', '.join(fields)}) VALUES ({', '.join(values)});"
-                self.client.execute(statement)
-                if not self.is_operation_success("INSERT 0 1"):
-                    raise DBOperationException('Data not inserted')
-                if self.table.schema_type:
-                    self.update_audit(
-                        data['id'],
-                        {key: val for key, val in data.items() if key != 'id'},
-                        my_id
-                    )
-                self.client.execute("END;")
-                self.con.commit()
-            except Exception as e:
-                if self.con:
-                    self.con.rollback()
-                raise DBExecutionException(
-                    'Insert Failure: ' + (
-                        'Syntax' if (isinstance(e, SyntaxError)) else 'System') + ' error',
-                    f'{table_name} {data} : {e}') from e
-        else:
+        if data.is_empty():
             raise DataValidationException(
                 'Nothing to Insert Failure: ',
                 f'{table_name}'
             )
+        payload = data.get_insert_payload()
+        fields = []
+        values = []
+        for field, value in payload.items():
+            fields.append(f"{field}")
+            if isinstance(value, str):
+                values.append(f"'{str(value)}'")
+            else:
+                values.append(str(value))
+        try:
+            self.client.execute("BEGIN;")
+            statement = f"INSERT INTO {table_name} ({', '.join(fields)}) VALUES ({', '.join(values)});"
+            self.client.execute(statement)
+            if not self.is_operation_success("INSERT 0 1"):
+                raise DBOperationException('Data not inserted')
+            if self.table.schema_type:
+                self.update_audit(
+                    data.get('id'),
+                    {key: val for key, val in payload.items() if key != 'id'},
+                    my_id
+                )
+            self.client.execute("END;")
+            self.con.commit()
+        except Exception as e:
+            if self.con:
+                self.con.rollback()
+            raise DBExecutionException(
+                'Insert Failure: ' + (
+                    'Syntax' if (isinstance(e, SyntaxError)) else 'System') + ' error',
+                f'{table_name} {payload} : {e}') from e
 
-    def update_record(self, r_id: str, data: dict, my_id: str) -> None:
+    def update_record(self, r_id: str, data: DataModel, my_id: str) -> None:
         """
         Update record data by id into DB
         """
         table_name = self.table.get_name()
 
-        if len(data.items()) > 0:
-            data_list = []
-            for field, value in data.items():
-                if isinstance(value, str):
-                    value_temp = f"'{str(value)}'"
-                else:
-                    value_temp = f"{str(value)}"
-                data_list.append(f"'{field}'={value_temp}")
-            try:
-                self.client.execute("BEGIN;")
-                statement = f"UPDATE {table_name} SET {', '.join(data_list)} WHERE id = {r_id};"
-                self.client.execute(statement)
-                if not self.is_operation_success("UPDATE 0 1"):
-                    raise DBOperationException('Data not updated')
-                if self.table.schema_type:
-                    self.update_audit(r_id, data, my_id)
-                self.client.execute("END;")
-                self.con.commit()
-            except Exception as e:
-                if self.con:
-                    self.con.rollback()
-                raise DBExecutionException(
-                    'Update failure: ' + ('Syntax' if (isinstance(e, SyntaxError)) else 'System') + ' error',
-                    f'{table_name} : {data} on {r_id}: {e}'
-                ) from e
-        else:
+        if data.is_empty():
             raise DataValidationException(
                 'Nothing to Update Failure: ',
                 f'{table_name}')
+        data_list = []
+        payload = data.get_update_payload()
+        for field, value in payload.items():
+            if isinstance(value, str):
+                value_temp = f"'{str(value)}'"
+            else:
+                value_temp = f"{str(value)}"
+            data_list.append(f"'{field}'={value_temp}")
+        try:
+            self.client.execute("BEGIN;")
+            statement = f"UPDATE {table_name} SET {', '.join(data_list)} WHERE id = {r_id};"
+            self.client.execute(statement)
+            if not self.is_operation_success("UPDATE 0 1"):
+                raise DBOperationException('Data not updated')
+            if self.table.schema_type:
+                self.update_audit(r_id, payload, my_id)
+            self.client.execute("END;")
+            self.con.commit()
+        except Exception as e:
+            if self.con:
+                self.con.rollback()
+            raise DBExecutionException(
+                'Update failure: ' + ('Syntax' if (isinstance(e, SyntaxError)) else 'System') + ' error',
+                f'{table_name} : {payload} on {r_id}: {e}'
+            ) from e
 
-    def update_audit(self, r_id, data, my_id):
+    def update_audit(self, r_id: str, data: dict, my_id: str):
         """
         update audit and audit field tables
         :return:
@@ -232,7 +232,7 @@ class PostgresDbDuo:
             if not self.is_operation_success("INSERT 0 1"):
                 raise DBOperationException('Audit field not inserted')
 
-    def is_operation_success(self, status):
+    def is_operation_success(self, status: str):
         """
         :return:
         :rtype:

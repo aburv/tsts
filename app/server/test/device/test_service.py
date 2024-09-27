@@ -23,9 +23,7 @@ class DeviceServiceTest(unittest.TestCase):
     @mock.patch.object(PostgresDbDuo, 'insert_record', return_value=True)
     @mock.patch.object(DeviceData, '__init__', return_value=None)
     @mock.patch.object(DeviceData, 'get')
-    @mock.patch.object(DeviceData, 'get_insert_payload', return_value={'device_id': 'device_id', 'id': 'app_device_id'})
     def test_should_return_inserted_device_id_on_register_device(self,
-                                                                 mock_get_insert_payload,
                                                                  mock_get_data,
                                                                  mock_device_data,
                                                                  mock_insert,
@@ -46,8 +44,10 @@ class DeviceServiceTest(unittest.TestCase):
         mock_device_data.assert_called_once_with({})
         mock_get_data.assert_has_calls([call('device_id'), call('id')])
         mock_get_records.assert_called_once_with(['id'], {'device_id': 'device_id'}, record_count=1)
-        mock_get_insert_payload.assert_called_once_with()
-        mock_insert.assert_called_once_with({'device_id': 'device_id', 'id': 'app_device_id'}, '')
+        mock_insert.assert_called_once()
+        args, _ = mock_insert.call_args
+        self.assertIsInstance(args[0], DeviceData)
+        self.assertEqual(args[1], '')
 
         self.assertEqual(actual, "app_device_id")
 

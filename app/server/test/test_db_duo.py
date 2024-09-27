@@ -5,6 +5,7 @@ from unittest.mock import patch, call
 import psycopg2
 
 from src.config import Config, Relation, Table
+from src.data import DataModel
 from src.db_duo import PostgresDbDuo, OrderType, DBOperationException
 from src.responses import DBConnectionException, DBExecutionException, TableNotFoundException, DataValidationException
 
@@ -319,10 +320,18 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
     @mock.patch.object(PostgresDbDuo, 'update_audit')
+    @mock.patch.object(DataModel, 'get', return_value='id')
+    @mock.patch.object(DataModel, 'get_insert_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
     def test_should_insert_record_with_main_table(self,
+                                                  mock_is_empty,
+                                                  mock_get_insert_payload,
+                                                  mock_get,
                                                   mock_audit_update,
                                                   mock_is_success,
                                                   mock_table_get_name):
+        data = {'field': 'value', 'field_2': 1, "id": "id"}
+        mock_get_insert_payload.return_value = data
         mock_is_success.side_effect = [True]
 
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
@@ -336,8 +345,12 @@ class DbDuoTest(unittest.TestCase):
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
 
-        db.insert_record({'field': 'value', 'field_2': 1, "id": "id"}, "my_id")
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            db.insert_record(DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_insert_payload.assert_called_once_with()
+        mock_get.assert_called_once_with("id")
         mock_audit_update.assert_called_once_with('id', {'field': 'value', 'field_2': 1}, 'my_id')
         mock_is_success.assert_has_calls([
             call('INSERT 0 1'),
@@ -353,11 +366,21 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
     @mock.patch.object(PostgresDbDuo, 'update_audit')
+    @mock.patch.object(DataModel, 'get', return_value='id')
+    @mock.patch.object(DataModel, 'get_insert_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
     def test_should_insert_record_with_non_main_table(self,
+                                                      mock_is_empty,
+                                                      mock_get_insert_payload,
+                                                      mock_get,
                                                       mock_audit_update,
                                                       mock_is_success,
                                                       mock_table_get_name):
+        data = {'field': 'value', 'field_2': 1, "id": "id"}
+        mock_get_insert_payload.return_value = data
+
         mock_is_success.side_effect = [True]
+
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
             db.table = Table("table", False)
@@ -369,8 +392,12 @@ class DbDuoTest(unittest.TestCase):
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
 
-        db.insert_record({'field': 'value', 'field_2': 1, "id": "id"}, "my_id")
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            db.insert_record(DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_insert_payload.assert_called_once_with()
+        assert not mock_get.called
         assert not mock_audit_update.called
         mock_is_success.assert_has_calls([
             call('INSERT 0 1'),
@@ -386,9 +413,13 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(DataValidationException, '__init__', return_value=None)
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
-    @mock.patch('uuid.uuid4', return_value='audit_id')
+    @mock.patch.object(DataModel, 'get', return_value='id')
+    @mock.patch.object(DataModel, 'get_insert_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=True)
     def test_should_raise_validation_exception_in_insert_record_on_data_empty(self,
-                                                                              mock_id,
+                                                                              mock_is_empty,
+                                                                              mock_get_insert_payload,
+                                                                              mock_get,
                                                                               mock_is_success,
                                                                               mock_table_get_name,
                                                                               mock_exception
@@ -403,9 +434,11 @@ class DbDuoTest(unittest.TestCase):
             mock_execute = mock_connect.cursor.return_value.execute
 
         with self.assertRaises(DataValidationException):
-            db.insert_record({}, "my_id")
+            db.insert_record(DataModel({}), "my_id")
 
-        assert not mock_id.called
+        mock_is_empty.assert_called_once_with()
+        assert not mock_get_insert_payload.called
+        assert not mock_get.called
         mock_is_success.assert_has_calls([])
         mock_table_get_name.assert_called_once_with()
         mock_execute.assert_has_calls([])
@@ -416,12 +449,19 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success')
-    @mock.patch('uuid.uuid4', return_value='audit_id')
+    @mock.patch.object(DataModel, 'get', return_value='id')
+    @mock.patch.object(DataModel, 'get_insert_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
     def test_should_raise_execution_exception_in_insert_record_on_exception(self,
-                                                                            mock_id,
+                                                                            mock_is_empty,
+                                                                            mock_get_insert_payload,
+                                                                            mock_get,
                                                                             mock_is_success,
                                                                             mock_table_get_name,
                                                                             mock_exception):
+        data = {'field': 'value', 'field_2': 'value_2', "id": "id"}
+        mock_get_insert_payload.return_value = data
+
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
             db.table = Table("table", False)
@@ -435,8 +475,12 @@ class DbDuoTest(unittest.TestCase):
             mock_execute.side_effect = Exception("error")
 
         with self.assertRaises(DBExecutionException):
-            db.insert_record({'field': 'value', 'field_2': 'value_2', "id": "id"}, "my_id")
+            with mock.patch.object(DataModel, '__init__', return_value=None):
+                db.insert_record(DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_insert_payload.assert_called_once_with()
+        assert not mock_get.called
         mock_table_get_name.assert_called_once_with()
         mock_is_success.assert_has_calls([])
         mock_execute.assert_has_calls([
@@ -446,18 +490,24 @@ class DbDuoTest(unittest.TestCase):
             'Insert Failure: System error',
             "table {'field': 'value', 'field_2': 'value_2', 'id': 'id'} : error"
         )
-        assert not mock_id.called
         assert not db.con.commit.called
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success')
-    def test_should_raise_execution_exception_in_insert_record_on_no_execution_on_insert_statement(self,
-                                                                                                   mock_is_success,
-                                                                                                   mock_table_get_name,
-                                                                                                   mock_exception):
+    @mock.patch.object(DataModel, 'get', return_value='id')
+    @mock.patch.object(DataModel, 'get_insert_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
+    def test_should_raise_execution_exception_in_insert_record_on_no_execution_on_insert_statement(
+            self,
+            mock_is_empty,
+            mock_get_insert_payload,
+            mock_get,
+            mock_is_success,
+            mock_table_get_name,
+            mock_exception):
         data = {'field': 'value', 'field_2': 'value_2', "id": "id"}
-
+        mock_get_insert_payload.return_value = data
         mock_is_success.side_effect = [
             False
         ]
@@ -473,8 +523,12 @@ class DbDuoTest(unittest.TestCase):
             mock_execute = mock_connect.cursor.return_value.execute
 
         with self.assertRaises(DBExecutionException):
-            db.insert_record(data, "my_id")
+            with mock.patch.object(DataModel, '__init__', return_value=None):
+                db.insert_record(DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_insert_payload.assert_called_once_with()
+        assert not mock_get.called
         mock_table_get_name.assert_called_once_with()
         mock_execute.assert_has_calls([
             call('BEGIN;'),
@@ -490,10 +544,17 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
     @mock.patch.object(PostgresDbDuo, 'update_audit', return_value='audit_id')
+    @mock.patch.object(DataModel, 'get_update_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
     def test_should_update_record_with_main_table(self,
+                                                  mock_is_empty,
+                                                  mock_get_update_payload,
                                                   mock_audit_update,
                                                   mock_is_success,
                                                   mock_table_get_name):
+        data = {'field': 'value', 'field_2': 1}
+        mock_get_update_payload.return_value = data
+
         mock_is_success.side_effect = [True]
 
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
@@ -507,8 +568,11 @@ class DbDuoTest(unittest.TestCase):
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
 
-        db.update_record("record_id", {'field': 'value', 'field_2': 1}, "my_id")
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            db.update_record("record_id", DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_update_payload.assert_called_once_with()
         mock_table_get_name.assert_called_once_with()
         mock_is_success.assert_has_calls([
             call('UPDATE 0 1'),
@@ -524,10 +588,17 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
     @mock.patch.object(PostgresDbDuo, 'update_audit')
+    @mock.patch.object(DataModel, 'get_update_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
     def test_should_update_record_with_non_main_table(self,
+                                                      mock_is_empty,
+                                                      mock_get_update_payload,
                                                       mock_audit_update,
                                                       mock_is_success,
                                                       mock_table_get_name):
+        data = {'field': 'value', 'field_2': 1}
+        mock_get_update_payload.return_value = data
+
         mock_is_success.side_effect = [True]
 
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
@@ -541,8 +612,11 @@ class DbDuoTest(unittest.TestCase):
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
 
-        db.update_record("id", {'field': 'value', 'field_2': 1}, "my_id")
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            db.update_record("record_id", DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_update_payload.assert_called_once_with()
         assert not mock_audit_update.called
         mock_is_success.assert_has_calls([
             call('UPDATE 0 1'),
@@ -550,7 +624,7 @@ class DbDuoTest(unittest.TestCase):
         mock_table_get_name.assert_called_once_with()
         mock_execute.assert_has_calls([
             call('BEGIN;'),
-            call("UPDATE table SET 'field'='value', 'field_2'=1 WHERE id = id;"),
+            call("UPDATE table SET 'field'='value', 'field_2'=1 WHERE id = record_id;"),
             call('END;')
         ])
         db.con.commit.assert_called_once_with()
@@ -559,7 +633,11 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
     @mock.patch.object(PostgresDbDuo, 'update_audit', return_value=True)
+    @mock.patch.object(DataModel, 'get_update_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=True)
     def test_should_raise_validation_exception_in_update_record_on_data_empty(self,
+                                                                              mock_is_empty,
+                                                                              mock_get_update_payload,
                                                                               mock_audit_update,
                                                                               mock_is_success,
                                                                               mock_table_get_name,
@@ -575,8 +653,10 @@ class DbDuoTest(unittest.TestCase):
             mock_execute = mock_connect.cursor.return_value.execute
 
         with self.assertRaises(DataValidationException):
-            db.update_record("id", {}, "my_id")
+            db.update_record("record_id", DataModel({}), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        assert not mock_get_update_payload.called
         assert not mock_audit_update.called
         mock_is_success.assert_has_calls([])
         mock_table_get_name.assert_called_once_with()
@@ -589,11 +669,18 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success', return_value=True)
     @mock.patch.object(PostgresDbDuo, 'update_audit', return_value=True)
+    @mock.patch.object(DataModel, 'get_update_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
     def test_should_raise_execution_exception_in_update_record_on_exception(self,
+                                                                            mock_is_empty,
+                                                                            mock_get_update_payload,
                                                                             mock_audit_update,
                                                                             mock_is_success,
                                                                             mock_table_get_name,
                                                                             mock_exception):
+        data = {'field': 'value', 'field_2': 'value_2'}
+        mock_get_update_payload.return_value = data
+
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(Relation.INIT)
             db.table = Table("table", False)
@@ -607,8 +694,11 @@ class DbDuoTest(unittest.TestCase):
             mock_execute.side_effect = Exception("error")
 
         with self.assertRaises(DBExecutionException):
-            db.update_record("record_id", {'field': 'value', 'field_2': 'value_2'}, "my_id")
+            with self.assertRaises(DataValidationException):
+                db.update_record("record_id", DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_update_payload.assert_called_once_with()
         mock_table_get_name.assert_called_once_with()
         mock_is_success.assert_has_calls([])
         mock_execute.assert_has_calls([
@@ -624,10 +714,18 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
     @mock.patch.object(Table, 'get_name', return_value="table")
     @mock.patch.object(PostgresDbDuo, 'is_operation_success')
-    def test_should_raise_execution_exception_in_update_record_on_no_execution_on_update_statement(self,
-                                                                                                   mock_is_success,
-                                                                                                   mock_table_get_name,
-                                                                                                   mock_exception):
+    @mock.patch.object(DataModel, 'get_update_payload')
+    @mock.patch.object(DataModel, 'is_empty', return_value=False)
+    def test_should_raise_execution_exception_in_update_record_on_no_execution_on_update_statement(
+            self,
+            mock_is_empty,
+            mock_get_update_payload,
+            mock_is_success,
+            mock_table_get_name,
+            mock_exception):
+        data = {'field': 'value', 'field_2': 'value_2'}
+        mock_get_update_payload.return_value = data
+
         mock_is_success.side_effect = [
             False,
         ]
@@ -643,12 +741,11 @@ class DbDuoTest(unittest.TestCase):
             mock_execute = mock_connect.cursor.return_value.execute
 
         with self.assertRaises(DBExecutionException):
-            db.update_record(
-                "record_id",
-                {'field': 'value', 'field_2': 'value_2'},
-                "my_id"
-            )
+            with self.assertRaises(DataValidationException):
+                db.update_record("record_id", DataModel(data), "my_id")
 
+        mock_is_empty.assert_called_once_with()
+        mock_get_update_payload.assert_called_once_with()
         mock_table_get_name.assert_called_once_with()
         mock_is_success.assert_has_calls([call('UPDATE 0 1')])
         mock_execute.assert_has_calls([

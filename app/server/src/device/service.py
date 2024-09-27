@@ -28,5 +28,5 @@ class DeviceServices:
         )
         if len(devices) == 1:
             return devices[0]["id"]
-        self._db.insert_record(device_data.get_insert_payload(), "")
+        self._db.insert_record(device_data, "")
         return device_data.get("id")

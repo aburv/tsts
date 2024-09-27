@@ -61,6 +61,13 @@ class DataModel:
         })
         return self._fields
 
+    def get_update_payload(self) -> dict:
+        """
+        :return: payload
+        :rtype: dict
+        """
+        return self._fields
+
     def add_field(
             self,
             name: str,
@@ -83,3 +90,11 @@ class DataModel:
         except KeyError as e:
             if not is_optional:
                 raise DataValidationException("Necessary field not present", f"{self._data} {name}") from e
+
+    def is_empty(self) -> bool:
+        """
+        checks for emptiness
+        :return:
+        :rtype: bool
+        """
+        return len(self._fields.items()) == 0

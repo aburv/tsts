@@ -43,6 +43,14 @@ class DataModelTest(unittest.TestCase):
         mock_id.assert_called_once_with()
         self.assertEqual(actual, {'d_id': 'id', 'id': 'd_id', 'is_active': True})
 
+    def test_should_return_update_data_on_get_update_payload(self):
+        model = DataModel({})
+        model._fields = {"d_id": "id"}
+
+        actual = model.get_update_payload()
+
+        self.assertEqual(actual, {'d_id': 'id'})
+
     def test_should_add_validated_field_and_value_on_add_field(self):
         model = DataModel({"dId": "device_id"})
 
@@ -76,3 +84,14 @@ class DataModelTest(unittest.TestCase):
         model.add_field("d_id", "eId", str)
 
         self.assertEqual(model._fields, {})
+
+    def test_should_true_if_fields_are_empty_on_is_empty(self):
+        model = DataModel({"dId": "device_id"})
+
+        self.assertTrue(model.is_empty())
+
+    def test_should_false_if_fields_are_non_empty_on_is_empty(self):
+        model = DataModel({"dId": "device_id"})
+        model._fields = {"id": "id"}
+
+        self.assertFalse(model.is_empty())
