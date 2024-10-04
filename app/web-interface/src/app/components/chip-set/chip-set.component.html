@@ -1,0 +1,4 @@
+<div class="content">
+    <span class="item" [ngClass]="{'selected' : selected().includes(option.id)}" *ngFor="let option of options()"
+        (click)="childEmitter.emit(option.id)">{{option.text}}</span>
+</div>

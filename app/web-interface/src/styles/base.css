@@ -1,0 +1,9 @@
+html {
+  background-color: var(--bg);
+  color: var(--dark);
+  transition: all ease-in-out 400ms;
+}
+
+hr {
+  border: 1px solid var(--less-bright) ;
+}
