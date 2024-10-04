@@ -11,7 +11,9 @@ struct HomeScreen: View {
     let animation: Namespace.ID
     let name: Namespace.ID
     let logo: Namespace.ID
-    let layout:LayoutProperties
+    let layout: LayoutProperties
+    
+    @State private var screen: SubScreen = .Dashboard
     
     @State private var isSearching = false
     @State private var searchText = ""
@@ -27,9 +29,9 @@ struct HomeScreen: View {
     
     let sideLayoutSize = 200.0
     
-    let searchPaddingTop = 10.0
+    let searchPaddingTop = 5.0
     let searchPaddingSide = 20.0
-    let searchPaddingBottom = 15.0
+    let searchPaddingBottom = 10.0
     
     var body: some View {
         ZStack{
@@ -96,7 +98,12 @@ struct HomeScreen: View {
                         if (isSearching) {
                             searchList(ResultList: $searchResultList)
                         } else {
-                            SubScreenLayout(isLoading: $isLoading)
+                            SubScreenLayout(
+                                animation: animation,
+                                layout: layout,
+                                isLoading: $isLoading,
+                                screen: $screen
+                            )
                         }
                     }
                     .frame(width: layout.dimen.mainLayoutWidth)

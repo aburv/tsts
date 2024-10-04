@@ -1,4 +1,4 @@
-package com.aburv.takbuff
+package com.aburv.takbuff.activities
 
 import android.animation.Animator
 import android.content.pm.ActivityInfo
@@ -14,6 +14,7 @@ import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.aburv.takbuff.R
 import com.aburv.takbuff.databinding.ActivityMainBinding
 import com.aburv.takbuff.mainFragments.DashboardFragment
 
@@ -43,11 +44,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val type = intent.getStringExtra("type")
+        val id = intent.getStringExtra("id")
+
         if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.container, DashboardFragment())
-                .commit()
+            loadFragment(type, id)
         }
 
         clearIcon = binding.icClear
@@ -139,6 +140,21 @@ class MainActivity : AppCompatActivity() {
                     finishAffinity()
                 }
             })
+
+        binding.appIcon.setOnClickListener {
+            navigateToDashboard()
+        }
+    }
+
+    private fun loadFragment(type: String?, id: String?) {
+        val fragment = when (type) {
+            else -> DashboardFragment(this)
+        }
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.container, fragment)
+            .commit()
     }
 
     private fun setLoadingOn() {
@@ -157,5 +173,12 @@ class MainActivity : AppCompatActivity() {
         } else {
             clearIcon!!.visibility = View.INVISIBLE
         }
+    }
+
+    private fun navigateToDashboard() {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, DashboardFragment(this))
+            .commit()
     }
 }

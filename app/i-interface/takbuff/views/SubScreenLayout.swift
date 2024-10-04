@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct SubScreenLayout: View {
+    let animation: Namespace.ID
+    let layout: LayoutProperties
     
     @Binding var isLoading: Bool
+    @Binding var screen: SubScreen
     
     var body: some View{
-        DashboardScreen(isLoading: $isLoading)
+        switch screen {
+            case .Dashboard: DashboardScreen(isLoading: $isLoading, screen: $screen)
+        }
     }
+}
+
+enum SubScreen {
+    case Dashboard
 }

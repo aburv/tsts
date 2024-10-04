@@ -8,7 +8,7 @@
         <item name="dark">@color/white</item>
         <item name="lessDark">@color/whiteLess</item>
 
-        <item name="colorButtonNormal">@color/creamLess</item>
+        <item name="primary">@color/creamLess</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/banner</item>
         <!-- Customize your theme here. -->

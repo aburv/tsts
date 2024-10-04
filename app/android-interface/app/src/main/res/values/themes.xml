@@ -8,7 +8,7 @@
         <item name="dark">@color/greyBright</item>
         <item name="lessDark">@color/greyLess</item>
 
-        <item name="colorButtonNormal">@color/blue</item>
+        <item name="primary">@color/blue</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/banner</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

@@ -10,8 +10,9 @@ import SwiftUI
 struct DashboardScreen: View {
     
     @Binding var isLoading: Bool
-    
-    var body: some View{
+    @Binding var screen: SubScreen
+
+    var body: some View {
         Text("No tournaments to show")
             .font(.system(size: 16))
             .foregroundColor(Color("dark"))
