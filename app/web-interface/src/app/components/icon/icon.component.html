@@ -1,5 +1,5 @@
-<svg [attr.width]="iconSize" [attr.height]="iconSize" [attr.viewBox]="viewBox">
+<svg [attr.width]="size()" [attr.height]="size()" [attr.viewBox]="getViewBox">
     <g>
-        <path *ngFor="let pathData of icons[name]" [attr.d]="pathData" [ngStyle]="{'fill': fill !== undefined ? fill : 'var(--dark)'}"></path>
+        <path *ngFor="let path of iconPaths()" [attr.d]="path" [ngStyle]="{'fill': fill() }"></path>
     </g>
 </svg>

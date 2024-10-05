@@ -7,4 +7,5 @@
     <string name="text_back">back</string>
     <string name="text_search">search</string>
     <string name="text_clear">clear</string>
+    <string name="text_search_here">Search here</string>
 </resources>

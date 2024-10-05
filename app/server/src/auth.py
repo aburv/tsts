@@ -21,9 +21,9 @@ def client_auth(func):
     def decorated(*args, **kwargs):
         client_key = request.headers.get('x-api-key')
 
-        if client_key not in Config.get_api_keys():
-            return SecurityException('Client', 'Not Authenticated').get_response_json()
+        if client_key is not None and client_key in Config.get_api_keys():
+            return func(*args, **kwargs)
 
-        return func(*args, **kwargs)
+        return SecurityException('Client', 'Not Authenticated').get_response_json()
 
     return decorated

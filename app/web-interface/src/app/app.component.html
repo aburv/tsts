@@ -85,6 +85,10 @@
     </div>
 
     <div class="toast" *ngIf="isServerDown()">
+        Please try again later
+    </div>
+
+    <div class="toast" *ngIf="isInternetDown()">
         No Internet connection
     </div>
 </div>
