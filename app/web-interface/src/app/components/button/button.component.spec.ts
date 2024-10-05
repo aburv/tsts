@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentRef, input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -6,7 +6,7 @@ import { ButtonComponent } from './button.component';
 
 
 describe('ButtonComponent', () => {
-  let component: ButtonComponent;
+  let componentRef: ComponentRef<ButtonComponent>;
   let fixture: ComponentFixture<ButtonComponent>;
 
   beforeEach(async () => {
@@ -19,11 +19,11 @@ describe('ButtonComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ButtonComponent);
-    component = fixture.componentInstance;
+    componentRef = fixture.componentRef;
   });
 
   it('Should create', () => {
-    expect(component).toBeTruthy();
+    expect(componentRef).toBeTruthy();
   });
 
   it('View: Should have parent tag with content css class', () => {
@@ -33,15 +33,16 @@ describe('ButtonComponent', () => {
   });
 
   it('View: Should set the parent tag with input type css class', () => {
-    component.type = "type"
+    componentRef.setInput("type", "type");
+    
     fixture.detectChanges();
 
     const parent = fixture.debugElement.query(By.css('.content'));
-    expect(parent.classes["type"]).toBeTruthy();
+    expect(parent.classes["type"]).toBe(true);
   })
 
   it('View: Should set button text without icon', () => {
-    component.text = "text"
+    componentRef.setInput("text", "text");
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
@@ -52,9 +53,10 @@ describe('ButtonComponent', () => {
   });
 
   it('View: Should set button icon and its properties without text', () => {
-    component.icon = "iconName"
-    component.iconColor = "color"
-    component.iconSize = 2
+    componentRef.setInput("icon", "iconName");
+    componentRef.setInput("iconColor", "color");
+    componentRef.setInput("iconSize", 2);
+
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
@@ -67,10 +69,11 @@ describe('ButtonComponent', () => {
   });
 
   it('View: Should set button text with icon and its properties', () => {
-    component.icon = "iconName"
-    component.iconColor = "color"
-    component.iconSize = 2
-    component.text = "text"
+    componentRef.setInput("icon", "iconName");
+    componentRef.setInput("iconColor", "color");
+    componentRef.setInput("iconSize", 2);
+    componentRef.setInput("text", "text");
+
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');

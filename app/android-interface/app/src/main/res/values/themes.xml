@@ -4,11 +4,11 @@
         <item name="background">@color/whiteBright</item>
         <item name="mildBackground">@color/white</item>
         <item name="bright">@color/whiteBright</item>
-        <item name="lessBright">@color/white</item>
+        <item name="lessBright">@color/cream</item>
         <item name="dark">@color/greyBright</item>
         <item name="lessDark">@color/greyLess</item>
 
-        <item name="colorButtonNormal">@color/blue</item>
+        <item name="primary">@color/blue</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/banner</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

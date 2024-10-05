@@ -1,31 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import * as icon from './icons.json';
 
 @Component({
   selector: 'app-icon',
   templateUrl: './icon.component.html'
 })
-export class IconComponent implements OnInit {
+export class IconComponent {
+  static viewBox = '0 0 24 24';
+  static icons = icon as any;;
 
-  @Input()
-  public name!: string;
-  @Input()
-  public fill!: string;
-  @Input()
-  public size!: number;
+  name = input.required<string>();
+  fill = input<string>('var(--dark)');
+  size = input<number>(24);
 
-  viewBox = '0 0 24 24';
-  iconSize = '24';
-  icons: any;
+  iconPaths = computed(() => {
+    return IconComponent.icons[this.name()];
+  })
 
-  constructor() {
-    this.icons = icon as any;
-  }
-
-  ngOnInit(): void {
-    if (this.size) {
-      this.iconSize = this.size.toString();
-    }
+  get getViewBox(): string {
+    return IconComponent.viewBox;
   }
 }
 

@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+
+export type option = { id: string, text: string }
 
 @Component({
   selector: 'app-chip-set',
@@ -6,12 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./chip-set.component.css']
 })
 export class ChipSetComponent {
-
-  @Input()
-  public selected!: Array<string>;
-  @Input() 
-  public options!: Array<{id: string, text: string}>;
-  @Output() 
-  public childEmitter = new EventEmitter();
-
+  selected = input.required<Array<string>>();
+  options = input.required<Array<option>>();
+  childEmitter = output<string>();
 }

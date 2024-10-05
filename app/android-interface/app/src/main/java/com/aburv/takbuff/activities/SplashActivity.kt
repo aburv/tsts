@@ -1,13 +1,16 @@
-package com.aburv.takbuff
+package com.aburv.takbuff.activities
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import com.aburv.takbuff.R
 import com.aburv.takbuff.databinding.ActivitySplashBinding
 import androidx.core.util.Pair as UtilPair
 
@@ -21,6 +24,12 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar!!.hide()
 
+        requestedOrientation = if (resources.getBoolean(R.bool.isTablet)) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -28,15 +37,17 @@ class SplashActivity : AppCompatActivity() {
         val appSubtitle = binding.appSubtitle
         val appLogo = binding.appIcon
 
+        val rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
+        rotate.fillAfter = true
+        val hide = ObjectAnimator.ofFloat(appSubtitle, View.ALPHA, 1.0f, 0.0f)
+        hide.duration = 3000
         val moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, -500f)
         moveUp.duration = 2000
-        val rotate = ObjectAnimator.ofFloat(appLogo, View.ROTATION, 0f, 360f)
-        rotate.duration = 3000
-        val hide = ObjectAnimator.ofFloat(appSubtitle, View.ALPHA, 1.0f, 0.0f)
-        hide.duration = 5000
+
+        appLogo.startAnimation(rotate)
 
         AnimatorSet().apply {
-            this.play(moveUp).after(hide).after(rotate)
+            this.play(moveUp).after(hide)
         }.start()
 
         appLogo.setOnClickListener {

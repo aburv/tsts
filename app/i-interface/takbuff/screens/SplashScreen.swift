@@ -14,73 +14,103 @@ struct SplashScreen: View {
     let name: Namespace.ID
     let logo: Namespace.ID
     
-    
     @Binding public var proceed: Bool
     
-    @State private var isRotating = 0.0
-    @State private var isShowing = true
+    @State private var rotateDegree = 0.0
     @State private var offset = 0.0
-    @State private var loading = 3.0
-    
+    @State private var isSubTitleVisible = true
+    @State private var isLoading = true
+
     @State private var canSignIn = false
-            
+    
+    let appName = "Takbuff"
+    let subTitle = "An Open Source Application"
+    let subText = "Powered By"
+    let companyName = "Aburv"
+    
+    let appLogoSize = 150.0
+    let liftUpOffSet = -100.0
+    let fullRotatingDegree = 360.0
+    
+    let appTitleSize = 35.0
+    let subTitleSize = 25.0
+    
+    let fullOpacity = 1.0
+    let zeroOpacity = 0.0
+    
+    let speed = 0.7
+    
+    let oneDelay = 1.0
+    let twoDelay = 2.0
+    let threeDelay = 3.0
+    
+    let rotate = Animation.linear(duration: 1.0).speed(0.7).repeatForever(autoreverses: false)
+    
     var body: some View {
         return VStack {
             
             Spacer()
             
             VStack {
-                AppLogo()
-                    .matchedGeometryEffect(id: logo, in: animation)
-                    .frame(width: 150.0, height: 150.0)
-                    .rotationEffect(.degrees(isRotating))
-                    .onAppear {
-                        withAnimation(
-                            .linear(duration: loading)
-                            .speed(1)
-                        ) {
-                            isRotating = 360.0
+                if(isLoading){
+                    AppLogo()
+                        .frame(width: appLogoSize, height: appLogoSize)
+                        .rotationEffect(.degrees(rotateDegree))
+                        .onAppear {
+                            withAnimation(rotate) {
+                                rotateDegree = fullRotatingDegree
+                            }
                         }
-                    }
-                
-                Text("Takbuff")
-                    .font(.system(size: 35))
+                }
+                else{
+                    AppLogo()
+                        .matchedGeometryEffect(id: logo, in: animation)
+                        .frame(width: appLogoSize, height: appLogoSize)
+                }
+                Text(appName)
+                    .font(.system(size: appTitleSize))
                     .foregroundColor(.white)
                     .matchedGeometryEffect(id: name, in: animation)
                 
-                Text("An Open Source Application")
-                    .font(.system(size: 25))
+                Text(subTitle)
+                    .font(.system(size: subTitleSize))
                     .foregroundColor(.white)
-                    .opacity(isShowing ? 1.0 : 0.0)
+                    .opacity(isSubTitleVisible ? fullOpacity : zeroOpacity)
                     .onAppear {
                         withAnimation(
                             .spring()
-                            .speed(0.5)
+                            .delay(oneDelay)
+                            .speed(speed)
                         ) {
-                            isShowing = false
+                            isSubTitleVisible = false
                         }
                     }
             }
             .offset(y: offset)
-            .onAppear() {
-                withAnimation(
-                    .bouncy
-                        .delay(loading)
-                ){
-                    offset = -100.0
-                    canSignIn = true
-                }
-            }
             
             Spacer()
             
             VStack(){
-                Text("Powered By")
-                    .font(.system(size: 25))
+                Text(subText)
+                    .font(.system(size: 20))
                     .foregroundColor(.white)
-                Text("Aburv").bold()
-                    .font(.system(size: 35))
+                Text(companyName).bold()
+                    .font(.system(size: 30))
                     .foregroundColor(.white)
+            }
+        }
+        .onAppear{
+            DispatchQueue.main.asyncAfter(deadline: .now() + threeDelay){
+                isLoading = false
+                withAnimation(.bouncy.speed(speed)){
+                    offset = liftUpOffSet
+                    canSignIn = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + twoDelay){
+                    withAnimation{
+                        proceed = true
+                    }
+                }
             }
         }
     }

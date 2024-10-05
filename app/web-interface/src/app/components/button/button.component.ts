@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-button',
@@ -6,16 +6,9 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./button.component.css']
 })
 export class ButtonComponent {
-
-  @Input()
-  public type!: string;
-  @Input()
-  public text!: string;
-  @Input()
-  public icon!: string;
-  @Input()
-  public iconColor!: string;
-  @Input()
-  public iconSize!: number;
-
+  type = input<string>();
+  text = input<string>();
+  icon = input<string>();
+  iconColor = input<string>('var(--dark)');
+  iconSize = input<number>(24);
 }
