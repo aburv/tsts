@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { DateTime } from './dateTime'
 
 @Component({
@@ -6,41 +6,43 @@ import { DateTime } from './dateTime'
   templateUrl: './input-date.component.html',
   styleUrls: ['./input-date.component.css']
 })
-export class InputDateComponent implements OnChanges {
+export class InputDateComponent {
+  title = input<string>();
+  value = input<DateTime>();
+  min = input<DateTime>();
+  max = input<DateTime>();
 
-  @Input()
-  public title!: string;
-  @Input()
-  public value!: DateTime;
-  @Input()
-  public min!: DateTime;
-  @Input()
-  public max!: DateTime;
+  childEmitter = output<string>();
 
-  @Output() public childEmitter = new EventEmitter();
-
-  minValue!: string;
-  maxValue!: string;
-  valueText!: string;
-  inputValue!: string;
-
-  ngOnChanges(): void {
-    if (this.min) {
-      this.minValue = this.min.getISOString();
+  minValue = computed(() => {
+    if (this.min() !== undefined) {
+      return this.min()!.getISOString();
     }
-    if (this.max) {
-      this.maxValue = this.max.getISOString();
+    return null
+  });
+  maxValue = computed(() => {
+    if (this.max() !== undefined) {
+      return this.max()!.getISOString();
     }
-    if (this.value) {
-      this.valueText = this.value.getFormatString();
-      this.inputValue = this.value.getISOString();
+    return null
+  });
+
+  inputValue = computed(() => {
+    if (this.value() !== undefined) {
+      return this.value()!.getISOString();
     }
-  }
+    return null
+  });
+
+  valueText = computed(() => {
+    if (this.value() !== undefined) {
+      return this.value()!.getFormatString();
+    }
+    return null
+  });
 
   notify(event: any): void {
-    this.value.setValue(event.target.value);
-    this.valueText = this.value.getFormatString();
-    this.inputValue = this.value.getISOString();
+    this.value()!.setValue(event.target.value);
     this.childEmitter.emit(event.target.value);
   }
 }

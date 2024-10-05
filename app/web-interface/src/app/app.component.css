@@ -64,7 +64,6 @@
 .search .disp-input {
   display: block;
   width: 200px;
-  padding: 1px 10px;
   margin: 10px 2px;
   font-size: 15px;
   background-color: var(--bg);
@@ -86,7 +85,7 @@
 }
 
 .search>app-icon {
-  margin: 5px;
+  margin: 5px 5px 3px 5px;
 }
 
 .search-result-item {

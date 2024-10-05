@@ -1,4 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentRef, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -6,6 +6,7 @@ import { TogglerComponent } from './toggler.component';
 
 describe('TogglerComponent', () => {
   let component: TogglerComponent;
+  let componentRef: ComponentRef<TogglerComponent>;
   let fixture: ComponentFixture<TogglerComponent>;
 
   beforeEach(async () => {
@@ -19,7 +20,7 @@ describe('TogglerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TogglerComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    componentRef = fixture.componentRef
   });
 
   it('Should create', () => {
@@ -37,8 +38,9 @@ describe('TogglerComponent', () => {
     const selected = "option1";
 
     spyOn(component.childEmitter, 'emit');
-    component.options = options;
-    component.selected = selected;
+    componentRef.setInput('options', options);
+    componentRef.setInput('selected', selected);
+    
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.css('.item'));

@@ -5,7 +5,7 @@ from flask import Flask
 
 from src.logger import LoggerAPI
 from src.responses import ValidResponse, SecurityException, TableNotFoundException, DBConnectionException, \
-    DBExecutionException
+    DBExecutionException, DataValidationException
 
 
 class ExceptionTest(unittest.TestCase):
@@ -31,7 +31,7 @@ class ExceptionTest(unittest.TestCase):
     def test_should_return_the_auth_exception_with_context(self,
                                                            mock_log_init,
                                                            mock_error_entry):
-        expected = b'{"error":{"detail":"content","message":"message","type":"SecurityException"}}\n'
+        expected = b'{"error":{"message":"message","type":"SecurityException"}}\n'
 
         with self.app.app_context():
             actual = SecurityException('message', 'content').get_response_json()
@@ -42,42 +42,56 @@ class ExceptionTest(unittest.TestCase):
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
+    def test_should_return_the_validation_exception_with_context(self,
+                                                                 mock_log_init,
+                                                                 mock_error_entry):
+        expected = b'{"error":{"message":"message","type":"DataValidationException"}}\n'
+
+        with self.app.app_context():
+            actual = DataValidationException('message', 'content').get_response_json()
+
+            mock_error_entry.assert_called_once_with("400 DataValidationException message : content")
+            self.assertEqual(expected, actual.data)
+            self.assertEqual(400, actual.status_code)
+
+    @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
+    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_table_not_found_exception_with_context(self,
                                                                       mock_log_init,
                                                                       mock_error_entry):
-        expected = b'{"error":{"detail":"table","message":"","type":"TableNotFoundException"}}\n'
+        expected = b'{"error":{"message":"","type":"TableNotFoundException"}}\n'
 
         with self.app.app_context():
             actual = TableNotFoundException('table').get_response_json()
 
             mock_error_entry.assert_called_once_with("2 TableNotFoundException  : table")
             self.assertEqual(expected, actual.data)
-            self.assertEqual(2, actual.status_code)
+            self.assertEqual(500, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_db_connection_exception_with_context(self,
                                                                     mock_log_init,
                                                                     mock_error_entry):
-        expected = b'{"error":{"detail":"message","message":"","type":"DBConnectionException"}}\n'
+        expected = b'{"error":{"message":"","type":"DBConnectionException"}}\n'
 
         with self.app.app_context():
             actual = DBConnectionException('message').get_response_json()
 
             mock_error_entry.assert_called_once_with("0 DBConnectionException  : message")
             self.assertEqual(expected, actual.data)
-            self.assertEqual(0, actual.status_code)
+            self.assertEqual(500, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_db_execution_exception_with_context(self,
                                                                    mock_log_init,
                                                                    mock_error_entry):
-        expected = b'{"error":{"detail":"message","message":"operation","type":"DBExecutionException"}}\n'
+        expected = b'{"error":{"message":"operation","type":"DBExecutionException"}}\n'
 
         with self.app.app_context():
             actual = DBExecutionException('operation', 'message').get_response_json()
 
             mock_error_entry.assert_called_once_with("1 DBExecutionException operation : message")
             self.assertEqual(expected, actual.data)
-            self.assertEqual(1, actual.status_code)
+            self.assertEqual(500, actual.status_code)
