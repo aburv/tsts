@@ -1,4 +1,7 @@
 import { Component, computed, ElementRef, Signal, signal, ViewChild } from '@angular/core';
+import { Observable, Observer, fromEvent, merge } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
@@ -18,6 +21,8 @@ export class AppComponent {
   isServerDown: Signal<boolean> = computed(() => {
     return this.pingService.getIsServerDown()();
   });
+
+  isInternetDown = signal(false);
 
   isSearching = false;
 
@@ -69,6 +74,17 @@ export class AppComponent {
     this.themeService.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {
       this.themeService.initTheme(e.matches);
+    });
+
+    merge(
+      fromEvent(window, 'offline').pipe(map(() => false)),
+      fromEvent(window, 'online').pipe(map(() => true)),
+      new Observable((sub: Observer<boolean>) => {
+        sub.next(navigator.onLine);
+        sub.complete();
+      })
+    ).subscribe((isOnline: boolean) => {
+      this.isInternetDown.set(!isOnline)
     });
 
     userService.getUserData().subscribe({

@@ -1,12 +1,13 @@
 """
  PostgresDB class
 """
-from typing import Any
+import uuid
 
 import psycopg2
 
 from src.config import Config, Relation
-from src.responses import DBConnectionException, TableNotFoundException, DBExecutionException
+from src.data import DataModel
+from src.responses import DBConnectionException, TableNotFoundException, DBExecutionException, DataValidationException
 
 
 class OrderType:
@@ -39,12 +40,14 @@ class PostgresDbDuo:
                 password=db_parameters.get("pass"),
                 options=f'-c search_path={self.schema}'
             )
+            self.audit_table = db_parameters.get("meta_schema") + ".audit"
+            self.audit_field_table = db_parameters.get("meta_schema") + ".audit_field"
             self.con.autocommit = True
             self.client = self.con.cursor()
 
         except Exception as e:
             raise DBConnectionException(str(db_parameters) + " : " + str(table.value.get_name())) from e
-        self.table = table.value.get_name()
+        self.table = table.value
 
     def run_ddl_file(self, file_path: str) -> None:
         """
@@ -64,13 +67,13 @@ class PostgresDbDuo:
             self.client.execute(
                 f"SELECT * FROM information_schema.tables WHERE "
                 f"table_schema='{self.schema}' and "
-                f"table_name='{self.table}'",
+                f"table_name='{self.table.get_name()}'",
             )
             val = self.client.fetchone()
             self.con.commit()
             return val[0] if val is not None else False
         except Exception as e:
-            raise DBExecutionException('Is Table exist', f'{self.table} on {e}') from e
+            raise DBExecutionException('Is Table exist', f'{self.table.get_name()} on {e}') from e
 
     def get_records(self,
                     fields: list,
@@ -78,22 +81,26 @@ class PostgresDbDuo:
                     order_type: OrderType | None = None,
                     group_by_field: str | None = None,
                     record_count: int | None = None
-                    ) -> tuple[Any, ...]:
+                    ) -> list:
         """
         Get records by filter on condition and
         fields with limiting count
         """
         if not self.is_table_exist():
-            raise TableNotFoundException(self.table)
+            raise TableNotFoundException(self.table.get_name())
 
-        field_str = ", ".join(fields) if len(fields) != 0 else '*'
+        if len(fields) == 0:
+            raise DBExecutionException('Retrieve', 'Query fields cannot be empty')
 
-        query = f'SELECT {field_str} FROM {self.table}'
+        query = f'SELECT {", ".join(fields)} FROM {self.table.get_name()}'
         if query_param is not None:
             query += " WHERE "
             query_list = []
             for (field, value) in query_param.items():
-                query_list.append(field + "=" + value)
+                if isinstance(value, str):
+                    query_list.append(field + "='" + value + "'")
+                else:
+                    query_list.append(field + "=" + str(value))
             query += " AND ".join(query_list)
         if group_by_field is not None:
             query += f" GROUP BY {group_by_field}"
@@ -103,52 +110,147 @@ class PostgresDbDuo:
             query += f" LIMIT {record_count}"
         try:
             self.client.execute(query)
-            data = self.client.fetchone()
+            data = self.client.fetchall()
             self.con.commit()
-            if data is not None and len(data) > 0:
-                return data[0]
-            return ()
+            return self.frame_records(data, fields)
         except Exception as e:
-            raise DBExecutionException('Retrieve', f'{self.table} : {query} on {e}') from e
+            raise DBExecutionException('Retrieve', f'{self.table.get_name()} : {query} on {e}') from e
 
-    def insert_record(self, data: dict) -> None:
+    @staticmethod
+    def frame_records(data, fields):
+        """
+        Framing the records
+        """
+        records = []
+        if data is not None:
+            for data_item in data:
+                record = {}
+                for index, field in enumerate(fields):
+                    record[field] = data_item[index]
+                records.append(record)
+        return records
+
+    def insert_record(self, data: DataModel, my_id: str) -> None:
         """
         Insert record into DB
         """
+        table_name = self.table.get_name()
+        if data.is_empty():
+            raise DataValidationException(
+                'Nothing to Insert Failure: ',
+                f'{table_name}'
+            )
+        payload = data.get_insert_payload()
         fields = []
         values = []
-        for field, value in data.items():
+        for field, value in payload.items():
             fields.append(f"{field}")
             if isinstance(value, str):
                 values.append(f"'{str(value)}'")
             else:
                 values.append(str(value))
-        statement = f"INSERT INTO {self.table} ({', '.join(fields)}) VALUES ({', '.join(values)})"
         try:
+            self.client.execute("BEGIN;")
+            statement = f"INSERT INTO {table_name} ({', '.join(fields)}) VALUES ({', '.join(values)});"
             self.client.execute(statement)
+            if not self.is_operation_success("INSERT 0 1"):
+                raise DBOperationException('Data not inserted')
+            if self.table.schema_type:
+                self.update_audit(
+                    data.get('id'),
+                    {key: val for key, val in payload.items() if key != 'id'},
+                    my_id
+                )
+            self.client.execute("END;")
             self.con.commit()
         except Exception as e:
-            raise DBExecutionException('Insert', f'{self.table} : {data} on {e}') from e
-        if not self.client.rowcount == 1:
-            raise DBExecutionException('Insert', f'{self.table} : {data} on no response')
+            if self.con:
+                self.con.rollback()
+            raise DBExecutionException(
+                'Insert Failure: ' + (
+                    'Syntax' if (isinstance(e, SyntaxError)) else 'System') + ' error',
+                f'{table_name} {payload} : {e}') from e
 
-    def update_record(self, r_id: str, data: dict) -> None:
+    def update_record(self, r_id: str, data: DataModel, my_id: str) -> None:
         """
         Update record data by id into DB
         """
+        table_name = self.table.get_name()
+
+        if data.is_empty():
+            raise DataValidationException(
+                'Nothing to Update Failure: ',
+                f'{table_name}')
         data_list = []
-        for field, value in data.items():
+        payload = data.get_update_payload()
+        for field, value in payload.items():
             if isinstance(value, str):
                 value_temp = f"'{str(value)}'"
             else:
                 value_temp = f"{str(value)}"
             data_list.append(f"'{field}'={value_temp}")
-
-        statement = f"UPDATE {self.table} SET {' , '.join(data_list)} WHERE id = {r_id}"
         try:
+            self.client.execute("BEGIN;")
+            statement = f"UPDATE {table_name} SET {', '.join(data_list)} WHERE id = {r_id};"
             self.client.execute(statement)
+            if not self.is_operation_success("UPDATE 0 1"):
+                raise DBOperationException('Data not updated')
+            if self.table.schema_type:
+                self.update_audit(r_id, payload, my_id)
+            self.client.execute("END;")
             self.con.commit()
         except Exception as e:
-            raise DBExecutionException('Update', f'{self.table} : {data} on {r_id} on {e}') from e
-        if not self.client.rowcount == 1:
-            raise DBExecutionException('Update', f'{self.table} : {data} on {r_id} on no response')
+            if self.con:
+                self.con.rollback()
+            raise DBExecutionException(
+                'Update failure: ' + ('Syntax' if (isinstance(e, SyntaxError)) else 'System') + ' error',
+                f'{table_name} : {payload} on {r_id}: {e}'
+            ) from e
+
+    def update_audit(self, r_id: str, data: dict, my_id: str):
+        """
+        update audit and audit field tables
+        :return:
+        :rtype:
+        """
+        audit_id = uuid.uuid4()
+        table_name = self.table.get_name()
+        audit_statement = (
+            f"INSERT INTO {self.audit_table} "
+            f"(id, table_name, record_id, operation, op_user) "
+            f"VALUES ('{audit_id}', '{table_name}', '{r_id}', 'INSERT', '{my_id}');"
+        )
+        self.client.execute(audit_statement)
+        if not self.is_operation_success("INSERT 0 1"):
+            raise DBOperationException('Audit not inserted')
+        audit_field_statement_prefix = (
+            f"INSERT INTO {self.audit_field_table} "
+            f"(audit_id, field_name, new_value) VALUES "
+        )
+        for field, value in data.items():
+            self.client.execute(audit_field_statement_prefix + f"('{audit_id}', '{field}', '{value}');")
+            if not self.is_operation_success("INSERT 0 1"):
+                raise DBOperationException('Audit field not inserted')
+
+    def is_operation_success(self, status: str):
+        """
+        :return:
+        :rtype:
+        """
+        return self.client.statusmessage == status
+
+    def close(self):
+        """
+        :return:
+        :rtype:
+        """
+        self.client.close()
+
+
+class DBOperationException(Exception):
+    """
+    Custom DB Operation failure Exception
+    """
+
+    def __init__(self, message: str):
+        super().__init__(message)

@@ -49,10 +49,11 @@ class APIException(Exception):
             'error': {
                 'type': self.error_type,
                 'message': self.msg,
-                'detail': self.content,
             }
         }
-        response = make_response(jsonify(error_response), self.status_code)
+        response = make_response(
+            jsonify(error_response),
+            500 if (self.status_code in [0, 1, 2]) else self.status_code)
         response.headers["Content-Type"] = "application/json"
         return response
 
@@ -64,6 +65,15 @@ class SecurityException(APIException):
 
     def __init__(self, msg: str, content: str) -> None:
         super().__init__(msg, content, error_type='SecurityException', status_code=401)
+
+
+class DataValidationException(APIException):
+    """
+    400 DataValidationException
+    """
+
+    def __init__(self, msg: str, content: str) -> None:
+        super().__init__(msg, content, error_type='DataValidationException', status_code=400)
 
 
 class DBConnectionException(APIException):
