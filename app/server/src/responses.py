@@ -12,7 +12,7 @@ class ValidResponse:
     """
     logger = LoggerAPI()
 
-    def __init__(self, domain: str, content: dict | str, detail=None) -> None:
+    def __init__(self, domain: str, content: list | dict | str | bool, detail=None) -> None:
         ValidResponse.logger.info_entry(f'Success {domain} {detail} : {content}')
         self.content = content
         self.status_code = 200
@@ -56,6 +56,15 @@ class APIException(Exception):
             500 if (self.status_code in [0, 1, 2]) else self.status_code)
         response.headers["Content-Type"] = "application/json"
         return response
+
+
+class RuntimeException(APIException):
+    """
+    500 AuthenticationException
+    """
+
+    def __init__(self, domain: str, message: str) -> None:
+        super().__init__(domain, message, error_type='RuntimeException', status_code=500)
 
 
 class SecurityException(APIException):

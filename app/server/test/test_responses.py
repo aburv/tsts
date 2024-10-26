@@ -5,7 +5,7 @@ from flask import Flask
 
 from src.logger import LoggerAPI
 from src.responses import ValidResponse, SecurityException, TableNotFoundException, DBConnectionException, \
-    DBExecutionException, DataValidationException
+    DBExecutionException, DataValidationException, RuntimeException
 
 
 class ExceptionTest(unittest.TestCase):
@@ -39,6 +39,20 @@ class ExceptionTest(unittest.TestCase):
             mock_error_entry.assert_called_once_with("401 SecurityException message : content")
             self.assertEqual(expected, actual.data)
             self.assertEqual(401, actual.status_code)
+
+    @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
+    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
+    def test_should_return_the_runtime_exception_with_context(self,
+                                                              mock_log_init,
+                                                              mock_error_entry):
+        expected = b'{"error":{"message":"message","type":"RuntimeException"}}\n'
+
+        with self.app.app_context():
+            actual = RuntimeException('message', 'content').get_response_json()
+
+            mock_error_entry.assert_called_once_with("500 RuntimeException message : content")
+            self.assertEqual(expected, actual.data)
+            self.assertEqual(500, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
