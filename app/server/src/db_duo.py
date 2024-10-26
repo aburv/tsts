@@ -100,7 +100,7 @@ class PostgresDbDuo:
         if query_param is not None:
             query += " WHERE "
             query_list = []
-            for (field, value) in query_param.items():
+            for (field, _) in query_param.items():
                 query_list.append(field + "= %s")
             query += " AND ".join(query_list)
         if group_by_field is not None:
