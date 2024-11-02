@@ -1,9 +1,16 @@
 # Server
-gunicorn==22.0.0
+gunicorn==23.0.0
 
 # Web Frameworks
 Flask==3.0.3
-Flask-Cors==4.0.1
+Flask-Cors==5.0.0
+
+#Process Image
+Pillow==11.0.0
 
 # postgres Driver
 psycopg2-binary==2.9.9
+
+#caching redis
+Flask-Caching==2.3.0
+redis==5.1.1

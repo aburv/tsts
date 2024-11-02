@@ -1,4 +1,4 @@
-FROM python:3.10-alpine as app
+FROM python:3.10-alpine AS app
 WORKDIR /code
 RUN apk add --no-cache gcc musl-dev linux-headers
 RUN pip install --upgrade pip
