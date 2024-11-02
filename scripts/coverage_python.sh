@@ -8,10 +8,15 @@ sudo apt-get update
 sudo apt-get install jq
 
 pip install coverage
+pip install pylint 
+
+echo "Checking lint"
+
+pylint src ./migrate_db.py 
 
 echo "Start Testing"
 
-coverage run --source=src/ -m unittest discover -s test 
+coverage run --source=. --omit=test/\* -m unittest discover -s test 
 coverage json
 json_val=`jq '.totals.percent_covered' coverage.json` 
 coverage_percentage=$(echo "$json_val" | sed 's/\..*//')
