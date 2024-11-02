@@ -68,3 +68,4 @@ class Relation(enum.Enum):
     AUDIT = Table("audit", False)
     AUDIT_FIELD = Table("audit_field", False)
     DEVICE = Table("device", True)
+    IMAGE = Table("t_image", True)

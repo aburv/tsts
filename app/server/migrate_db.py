@@ -6,7 +6,8 @@ import os
 import psycopg2
 
 from src.config import Config, Relation
-from src.db_duo import PostgresDbDuo, OrderType
+from src.data import DataModel, OrderType
+from src.db_duo import PostgresDbDuo
 from src.logger import LoggerAPI
 from src.responses import TableNotFoundException, DBConnectionException, DBExecutionException
 
@@ -34,6 +35,36 @@ def get_version_from_name(file_name: str) -> str:
     return file_name.split("__")[0].replace("V", "")
 
 
+class MigrateData(DataModel):
+    """
+    Data Migrate
+    """
+
+    def __init__(self):
+        super().__init__(Relation.MIGRATION, has_id=False, is_a_record=False)
+
+    def on_data(self, data: dict):
+        """
+        on_data
+        """
+        self.set_data(data, True)
+
+    def add_insert_fields(self):
+        self.add_field('version', "version", str, is_optional=False)
+
+    def add_fields(self):
+        return None
+
+    def get_filtering_fields(self) -> list:
+        return ["version"]
+
+    def get_record_count(self) -> int | None:
+        return 1
+
+    def get_ordering_type(self) -> OrderType | None:
+        return OrderType("date_time", True)
+
+
 class Migrate:
     """
     Migrate class
@@ -44,8 +75,9 @@ class Migrate:
         self.param = Config.get_db_parameters()
         self.meta_schema = self.param["meta_schema"]
         self.schema = self.param["schema"]
-        self.db = PostgresDbDuo(Relation.MIGRATION)
-        self.init = PostgresDbDuo(Relation.INIT)
+        self._data = MigrateData()
+        self.db = PostgresDbDuo(self._data)
+        self.init = PostgresDbDuo(DataModel(Relation.INIT))
 
     def run(self) -> None:
         """
@@ -80,7 +112,7 @@ class Migrate:
                         f'systemVersion {system_db_version}'
                     )
         except DBExecutionException as _:
-            self.logger.error_entry(f'Migration stopped')
+            self.logger.error_entry('Migration stopped')
         except Exception as e:
             self.logger.error_entry(f'Migration stopped on {e}')
 
@@ -111,12 +143,7 @@ class Migrate:
         :rtype:
         """
         try:
-            order_type = OrderType("date_time", True)
-            version_records = self.db.get_records(
-                ["version"],
-                order_type=order_type,
-                record_count=1
-            )
+            version_records = self.db.get_records()
             if len(version_records) == 1:
                 return str(version_records[0]["version"])
             return "0.00"
@@ -131,17 +158,18 @@ class Migrate:
         :rtype:
         """
         try:
-            self.logger.info_entry(f'updating migration version : {version}')
-            self.db.insert_record({"version": version}, "")
+            self._data.on_data({"version": version})
+            self.logger.info_entry(f'Updating migration version : {version}')
+            self.db.insert_record("")
         except DBExecutionException as _:
-            raise DBExecutionException('Update', f'version : {version}')
+            raise DBExecutionException('Update to version', version) from _
 
 
 if __name__ == '__main__':
-    is_done = False
-    while not is_done:
-        try:
-            Migrate().run()
-            is_done = True
-        except DBConnectionException as _:
-            pass
+    IS_DONE = False  # pragma: no cover
+    while not IS_DONE:  # pragma: no cover
+        try:  # pragma: no cover
+            Migrate().run()  # pragma: no cover
+            IS_DONE = True  # pragma: no cover
+        except DBConnectionException as _:  # pragma: no cover
+            pass  # pragma: no cover
