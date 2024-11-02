@@ -13,9 +13,7 @@ class ExceptionTest(unittest.TestCase):
         self.app = Flask(__name__)
 
     @mock.patch.object(LoggerAPI, 'info_entry', return_value=None)
-    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_valid_response_with_context(self,
-                                                           mock_log_init,
                                                            mock_info_entry):
         expected = b'{"data":"content"}\n'
 
@@ -27,9 +25,7 @@ class ExceptionTest(unittest.TestCase):
             self.assertEqual(200, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
-    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_auth_exception_with_context(self,
-                                                           mock_log_init,
                                                            mock_error_entry):
         expected = b'{"error":{"message":"message","type":"SecurityException"}}\n'
 
@@ -41,9 +37,7 @@ class ExceptionTest(unittest.TestCase):
             self.assertEqual(401, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
-    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_runtime_exception_with_context(self,
-                                                              mock_log_init,
                                                               mock_error_entry):
         expected = b'{"error":{"message":"message","type":"RuntimeException"}}\n'
 
@@ -55,9 +49,7 @@ class ExceptionTest(unittest.TestCase):
             self.assertEqual(500, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
-    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_validation_exception_with_context(self,
-                                                                 mock_log_init,
                                                                  mock_error_entry):
         expected = b'{"error":{"message":"message","type":"DataValidationException"}}\n'
 
@@ -69,9 +61,7 @@ class ExceptionTest(unittest.TestCase):
             self.assertEqual(400, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
-    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_table_not_found_exception_with_context(self,
-                                                                      mock_log_init,
                                                                       mock_error_entry):
         expected = b'{"error":{"message":"","type":"TableNotFoundException"}}\n'
 
@@ -83,9 +73,7 @@ class ExceptionTest(unittest.TestCase):
             self.assertEqual(500, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
-    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_db_connection_exception_with_context(self,
-                                                                    mock_log_init,
                                                                     mock_error_entry):
         expected = b'{"error":{"message":"","type":"DBConnectionException"}}\n'
 
@@ -97,9 +85,7 @@ class ExceptionTest(unittest.TestCase):
             self.assertEqual(500, actual.status_code)
 
     @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
-    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     def test_should_return_the_db_execution_exception_with_context(self,
-                                                                   mock_log_init,
                                                                    mock_error_entry):
         expected = b'{"error":{"message":"operation","type":"DBExecutionException"}}\n'
 
