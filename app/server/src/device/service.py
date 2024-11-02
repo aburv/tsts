@@ -2,7 +2,6 @@
 Device Service
 """
 
-from src.config import Relation
 from src.db_duo import PostgresDbDuo
 from src.device.data import DeviceData
 
@@ -13,20 +12,17 @@ class DeviceServices:
     """
 
     def __init__(self):
-        self._db = PostgresDbDuo(Relation.DEVICE)
+        self._data = DeviceData()
+        self._db = PostgresDbDuo(self._data)
 
     def register_device(self, data: dict) -> str:
         """
         :return:
         :rtype:
         """
-        device_data = DeviceData(data)
-        devices = self._db.get_records(
-            ["id"],
-            {"device_id": device_data.get("device_id")},
-            record_count=1
-        )
+        self._data.on_data(data)
+        devices = self._db.get_records()
         if len(devices) == 1:
-            return devices[0]["id"]
-        self._db.insert_record(device_data, "")
-        return device_data.get("id")
+            return devices[0][self._data.get_filtering_fields()[0]]
+        self._db.insert_record("")
+        return self._data.get("id")

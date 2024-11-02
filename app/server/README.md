@@ -46,7 +46,7 @@ to view the postgresql data in the terminal
 ### Lint
 
 ```
-pylint src
+pylint src ./migrate_db.py 
 ```
 
 Maintain 10.0
@@ -64,7 +64,7 @@ Integration tests are present in Integration_tests/ folder.
 It tests the three layers (Controller -> Service -> DB)
 
 ```
-coverage run --source=src/ -m unittest discover -s test 
+coverage run --source=. --omit=test/\* -m unittest discover -s test 
 coverage html
 ```
 
