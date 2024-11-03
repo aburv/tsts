@@ -97,7 +97,9 @@ class PostgresDbDuo:
         group_by_field = self._data.get_grouping_field()
         record_count = self._data.get_record_count()
         query = f'SELECT {", ".join(fields)} FROM {self._data.get_table_name()}'
+        values = []
         if query_param is not None:
+            values = query_param.values()
             query += " WHERE "
             query_list = []
             for (field, _) in query_param.items():
@@ -109,7 +111,7 @@ class PostgresDbDuo:
             query += f" ORDER BY {order_type.field} " + ("DESC" if order_type.is_desc else "ASC")
         if record_count is not None:
             query += f" LIMIT {record_count}"
-        return query, tuple(query_param.values())
+        return query, tuple(values)
 
     def insert_record(self, my_id: str) -> None:
         """

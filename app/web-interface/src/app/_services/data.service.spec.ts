@@ -128,7 +128,7 @@ describe('DataService', () => {
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/url/path',
-            {},
+            {data: {}},
             {
                 headers: { header: 'header' }
             }

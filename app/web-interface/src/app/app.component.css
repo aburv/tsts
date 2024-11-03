@@ -157,7 +157,9 @@
   width: 101vw;
   justify-content: center;
   align-items: center;
-  background-color: #0000007e;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);  
 }
 
 .loader {
@@ -197,7 +199,10 @@
   position: absolute;
   left: 0px;
   bottom: 20px;
-  background-color: var(--mild-bg);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(3.5px);
+  -webkit-backdrop-filter: blur(3.5px);  
   border-radius: 15px;
   color: var(--dark);
   margin: 15px;
@@ -240,9 +245,7 @@
   }
 
   .toast {
-    background-color: var(--bg);
     border-radius: 15px;
-    color: var(--dark);
     margin-bottom: 50px;
     left: auto;
     justify-self: center;
