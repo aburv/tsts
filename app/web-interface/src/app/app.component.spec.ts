@@ -10,6 +10,7 @@ import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
 import { SearchService } from './_services/search.service';
+import { Config } from './config';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
@@ -79,6 +80,9 @@ describe('AppComponent', () => {
     themeService.setTheme.calls.reset();
     loaderService.getIsLoading.and.returnValue(of(false));
     pingService.getIsServerDown.and.returnValue(signal(false));
+
+    spyOn(Config, "getSiteDomain").and.returnValue("https://host")
+
   })
 
   it('Should create the app on success loading data', fakeAsync(() => {
@@ -291,7 +295,7 @@ describe('AppComponent', () => {
         expect(root.children[2].children[0].children[0].children[i].children[1].nativeElement.textContent).toBe("|");
       }
       expect(root.children[2].children[0].children[0].children[i].children[0].classes['link']).toBe(true);
-      expect(root.children[2].children[0].children[0].children[i].children[0].attributes['href']).toBe(app.links[i].link);
+      expect(root.children[2].children[0].children[0].children[i].children[0].attributes['href']).toBe('https://host' + app.links[i].link);
       expect(root.children[2].children[0].children[0].children[i].children[0].attributes['target']).toBe('_blank');
     }
     expect(root.children[2].children[0].children[1].children.length).toBe(3);
@@ -440,7 +444,7 @@ describe('AppComponent', () => {
         expect(root.children[0].children[1].children[2].children[1].children[i].children[1].nativeElement.textContent).toBe("|");
       }
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].classes['link']).toBe(true);
-      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['href']).toBe(app.links[i].link);
+      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['href']).toBe('https://host' + app.links[i].link);
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['target']).toBe('_blank');
     }
   }));
