@@ -7,6 +7,7 @@ import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
+import { SearchService } from './_services/search.service';
 import { Config } from './config';
 
 @Component({
@@ -71,6 +72,7 @@ export class AppComponent {
     private themeService: ThemeService,
     private loaderService: LoaderService,
     private userService: UserService,
+    private searchService: SearchService,
     private pingService: PingService
   ) {
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
@@ -119,6 +121,11 @@ export class AppComponent {
 
   onChange(event: any): void {
     this.searchText.set(event.target.value);
+    if (this.searchText() !== "") {
+      this.searchService.get(this.searchText()).subscribe((data: any) => {
+        this.searchResult = data["data"]
+      });
+    }
   }
 
   onSearchClose(): void {

@@ -9,12 +9,18 @@ import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
+import { SearchService } from './_services/search.service';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
     'getUserData'
   ]);
-  userService.getUserData.and.returnValue(of(''));
+  userService.getUserData.and.returnValue(of({ data: {} }));
+
+  const searchService = jasmine.createSpyObj('SearchService', [
+    'get'
+  ]);
+  searchService.get.and.returnValue(of({ data: [] }))
 
   const pingService = jasmine.createSpyObj('PingService', [
     'ping',
@@ -49,6 +55,10 @@ describe('AppComponent', () => {
       {
         provide: UserService,
         useValue: userService,
+      },
+      {
+        provide: SearchService,
+        useValue: searchService
       },
       {
         provide: LoaderService,
@@ -152,13 +162,26 @@ describe('AppComponent', () => {
     userService.getUserData.calls.reset();
   }));
 
-  it('Should set search text on onChange call', () => {
+  it('Should set search text and make a get call on onChange call', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
     app.onChange({ target: { value: 'value' } });
 
     expect(app.searchText()).toBe('value')
+    expect(searchService.get).toHaveBeenCalledOnceWith('value')
+    searchService.get.calls.reset()
+  });
+
+  it('Should set search text on onChange call', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    app.onChange({ target: { value: '' } });
+
+    expect(app.searchText()).toBe('')
+    expect(searchService.get).not.toHaveBeenCalled()
+    searchService.get.calls.reset()
   });
 
   it('Should set isSearching to true and focus on searchInput on turnToSearching call', fakeAsync(() => {
