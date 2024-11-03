@@ -46,7 +46,7 @@
                 </div>
                 <div class="links side">
                     <div *ngFor="let link of links; let i = index">
-                        <a target="_blank" class="link" [href]="link['link']">
+                        <a target="_blank" class="link" [href]="siteDomain + link['link']">
                             {{ link['title'] }}
                         </a>
                         <span *ngIf="i === 0 || i === 1 || i === 3 || i === 4" class="separator">|</span>
@@ -66,7 +66,7 @@
         <div class="footer">
             <div class="links bottom">
                 <div *ngFor="let link of links; let lastItem = last;">
-                    <a target="_blank" class="link" [href]="link['link']">
+                    <a target="_blank" class="link" [href]="siteDomain + link['link']">
                         {{ link['title'] }}
                     </a>
                     <span *ngIf="!lastItem" class="separator">|</span>
