@@ -7,6 +7,7 @@ import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
+import { Config } from './config';
 
 @Component({
   selector: 'app-root',
@@ -32,34 +33,36 @@ export class AppComponent {
 
   thisyear = new Date().getFullYear();
 
+  siteDomain = Config.getSiteDomain();
+
   links = [
     {
       title: 'Terms & Conditions',
-      link: ''
+      link: '/terms-conditions'
     },
     {
       title: 'Help',
-      link: ''
+      link: '/faq'
     },
     {
       title: 'Blog',
-      link: ''
+      link: '/blogs'
     },
     {
       title: 'Privacy Policies',
-      link: ''
+      link: '/privacy-policies'
     },
     {
       title: 'FAQ',
-      link: ''
+      link: '/faq'
     },
     {
       title: 'Newsletters',
-      link: ''
+      link: '/newsletters'
     },
     {
       title: 'About Sepak Takraw Game',
-      link: ''
+      link: '/about-game'
     },
   ]
 
