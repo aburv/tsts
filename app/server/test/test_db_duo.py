@@ -349,6 +349,46 @@ class DbDuoTest(unittest.TestCase):
         )
 
     @mock.patch.object(DataModel, 'get_record_count', return_value=1)
+    @mock.patch.object(DataModel, 'get_grouping_field', return_value="field_4")
+    @mock.patch.object(DataModel, 'get_ordering_type', return_value=OrderType("field_4", True))
+    @mock.patch.object(DataModel, 'get_querying_fields_and_value',
+                       return_value=None)
+    @mock.patch.object(DataModel, 'get_filtering_fields', return_value=['field_5', 'field_4'])
+    @mock.patch.object(DataModel, 'get_table_name', return_value="table")
+    @mock.patch.object(Table, '__init__', return_value=None)
+    def test_should_return_framed_select_statement(self,
+                                                   mock_table,
+                                                   mock_table_name,
+                                                   mock_get_filtering_fields,
+                                                   mock_get_querying_fields_and_value,
+                                                   mock_get_ordering_type,
+                                                   mock_get_grouping_field,
+                                                   mock_get_record_count
+                                                   ):
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            model = DataModel(Relation.INIT)
+            mock_table.schema_type = False
+            model.table = mock_table
+
+        with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
+            db = PostgresDbDuo(model)
+            db._data = model
+
+        actual = db.get_select_statement()
+
+        mock_get_filtering_fields.assert_called_once_with()
+        mock_get_querying_fields_and_value.assert_called_once_with()
+        mock_get_ordering_type.assert_called_once_with()
+        mock_get_grouping_field.assert_called_once_with()
+        mock_get_record_count.assert_called_once_with()
+        mock_table_name.assert_called_once_with()
+        self.assertEqual(
+            ('SELECT field_5, field_4 FROM table GROUP BY field_4 ORDER BY field_4 DESC LIMIT 1',
+             ()),
+            actual
+        )
+
+    @mock.patch.object(DataModel, 'get_record_count', return_value=1)
     @mock.patch.object(DataModel, 'get_grouping_field', return_value=None)
     @mock.patch.object(DataModel, 'get_ordering_type', return_value=['field_1', 'field_2'])
     @mock.patch.object(DataModel, 'get_querying_fields_and_value', return_value=['field_1', 'field_2'])

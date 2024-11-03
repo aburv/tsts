@@ -28,7 +28,7 @@ export class DataService {
 
   post(url: string, data: any): Observable<any> {
     if (!this.pingService.getIsServerDown()()) {
-      return this.http.post(Config.getDomain() + url, data, Config.getHeaders());
+      return this.http.post(Config.getDomain() + url, { data }, Config.getHeaders());
     }
     return of(null)
   }
