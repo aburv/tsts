@@ -9,6 +9,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
+import { DeviceService } from './_services/device.service';
 import { SearchService } from './_services/search.service';
 import { Config } from './config';
 
@@ -17,6 +18,11 @@ describe('AppComponent', () => {
     'getUserData'
   ]);
   userService.getUserData.and.returnValue(of({ data: {} }));
+
+  const deviceService = jasmine.createSpyObj('DeviceService', [
+    'sendDeviceDetails'
+  ]);
+  deviceService.sendDeviceDetails.and.returnValue()
 
   const searchService = jasmine.createSpyObj('SearchService', [
     'get'
@@ -58,6 +64,10 @@ describe('AppComponent', () => {
         useValue: userService,
       },
       {
+        provide: DeviceService,
+        useValue: deviceService
+      },
+      {
         provide: SearchService,
         useValue: searchService
       },
@@ -76,6 +86,7 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     userService.getUserData.calls.reset();
+    deviceService.sendDeviceDetails.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
     loaderService.getIsLoading.and.returnValue(of(false));
@@ -114,6 +125,7 @@ describe('AppComponent', () => {
 
     expect(app.isInInit).toBe(true);
     expect(userService.getUserData).toHaveBeenCalledOnceWith();
+    expect(deviceService.sendDeviceDetails).toHaveBeenCalledOnceWith();
     expect(themeService.initTheme).toHaveBeenCalledOnceWith(true);
     expect(window.matchMedia).toHaveBeenCalledOnceWith("(prefers-color-scheme: dark)");
 

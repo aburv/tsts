@@ -7,6 +7,7 @@ import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
+import { DeviceService } from './_services/device.service';
 import { SearchService } from './_services/search.service';
 import { Config } from './config';
 
@@ -72,6 +73,7 @@ export class AppComponent {
     private themeService: ThemeService,
     private loaderService: LoaderService,
     private userService: UserService,
+    private deviceService: DeviceService,
     private searchService: SearchService,
     private pingService: PingService
   ) {
@@ -91,6 +93,8 @@ export class AppComponent {
     ).subscribe((isOnline: boolean) => {
       this.isInternetDown.set(!isOnline)
     });
+
+    deviceService.sendDeviceDetails()
 
     userService.getUserData().subscribe({
       next: () => {
