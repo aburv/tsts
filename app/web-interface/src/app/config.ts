@@ -9,6 +9,10 @@ export class Config {
         return this.getEnv().protocol + '://' + this.getEnv().domain + '/api/';
     }
 
+    static getSiteDomain(): string {
+        return this.getEnv().protocol + '://' + this.getEnv().siteDomain;
+    }
+
     static getHeaders(): any {
         return {
             headers: {

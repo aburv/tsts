@@ -9,12 +9,25 @@ import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
+import { DeviceService } from './_services/device.service';
+import { SearchService } from './_services/search.service';
+import { Config } from './config';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
     'getUserData'
   ]);
-  userService.getUserData.and.returnValue(of(''));
+  userService.getUserData.and.returnValue(of({ data: {} }));
+
+  const deviceService = jasmine.createSpyObj('DeviceService', [
+    'sendDeviceDetails'
+  ]);
+  deviceService.sendDeviceDetails.and.returnValue()
+
+  const searchService = jasmine.createSpyObj('SearchService', [
+    'get'
+  ]);
+  searchService.get.and.returnValue(of({ data: [] }))
 
   const pingService = jasmine.createSpyObj('PingService', [
     'ping',
@@ -51,6 +64,14 @@ describe('AppComponent', () => {
         useValue: userService,
       },
       {
+        provide: DeviceService,
+        useValue: deviceService
+      },
+      {
+        provide: SearchService,
+        useValue: searchService
+      },
+      {
         provide: LoaderService,
         useValue: loaderService,
       },
@@ -65,10 +86,14 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     userService.getUserData.calls.reset();
+    deviceService.sendDeviceDetails.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
     loaderService.getIsLoading.and.returnValue(of(false));
     pingService.getIsServerDown.and.returnValue(signal(false));
+
+    spyOn(Config, "getSiteDomain").and.returnValue("https://host")
+
   })
 
   it('Should create the app on success loading data', fakeAsync(() => {
@@ -100,6 +125,7 @@ describe('AppComponent', () => {
 
     expect(app.isInInit).toBe(true);
     expect(userService.getUserData).toHaveBeenCalledOnceWith();
+    expect(deviceService.sendDeviceDetails).toHaveBeenCalledOnceWith();
     expect(themeService.initTheme).toHaveBeenCalledOnceWith(true);
     expect(window.matchMedia).toHaveBeenCalledOnceWith("(prefers-color-scheme: dark)");
 
@@ -152,13 +178,26 @@ describe('AppComponent', () => {
     userService.getUserData.calls.reset();
   }));
 
-  it('Should set search text on onChange call', () => {
+  it('Should set search text and make a get call on onChange call', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
     app.onChange({ target: { value: 'value' } });
 
     expect(app.searchText()).toBe('value')
+    expect(searchService.get).toHaveBeenCalledOnceWith('value')
+    searchService.get.calls.reset()
+  });
+
+  it('Should set search text on onChange call', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    app.onChange({ target: { value: '' } });
+
+    expect(app.searchText()).toBe('')
+    expect(searchService.get).not.toHaveBeenCalled()
+    searchService.get.calls.reset()
   });
 
   it('Should set isSearching to true and focus on searchInput on turnToSearching call', fakeAsync(() => {
@@ -268,7 +307,7 @@ describe('AppComponent', () => {
         expect(root.children[2].children[0].children[0].children[i].children[1].nativeElement.textContent).toBe("|");
       }
       expect(root.children[2].children[0].children[0].children[i].children[0].classes['link']).toBe(true);
-      expect(root.children[2].children[0].children[0].children[i].children[0].attributes['href']).toBe(app.links[i].link);
+      expect(root.children[2].children[0].children[0].children[i].children[0].attributes['href']).toBe('https://host' + app.links[i].link);
       expect(root.children[2].children[0].children[0].children[i].children[0].attributes['target']).toBe('_blank');
     }
     expect(root.children[2].children[0].children[1].children.length).toBe(3);
@@ -417,7 +456,7 @@ describe('AppComponent', () => {
         expect(root.children[0].children[1].children[2].children[1].children[i].children[1].nativeElement.textContent).toBe("|");
       }
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].classes['link']).toBe(true);
-      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['href']).toBe(app.links[i].link);
+      expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['href']).toBe('https://host' + app.links[i].link);
       expect(root.children[0].children[1].children[2].children[1].children[i].children[0].attributes['target']).toBe('_blank');
     }
   }));

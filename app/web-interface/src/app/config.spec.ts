@@ -8,6 +8,13 @@ describe('Config', () => {
         expect(Config.getDomain()).toBe('https://localhost/api/');
     });
 
+
+    it('Should return site domain', () => {
+        spyOn(Config, 'getEnv').and.returnValue({ protocol: 'https', siteDomain: "localhost" })
+
+        expect(Config.getSiteDomain()).toBe('https://localhost');
+    });
+
     it('Should return headers', () => {
         spyOn(Config, 'getEnv').and.returnValue({ key: 'key' })
 
@@ -19,6 +26,7 @@ describe('Config', () => {
             production: false,
             protocol: 'http',
             domain: 'localhost',
+            siteDomain: 'localhost',
             key: 'key',
         });
     });

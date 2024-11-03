@@ -7,6 +7,9 @@ import { UserService } from './_services/user.service';
 import { Router } from '@angular/router';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
+import { DeviceService } from './_services/device.service';
+import { SearchService } from './_services/search.service';
+import { Config } from './config';
 
 @Component({
   selector: 'app-root',
@@ -32,34 +35,36 @@ export class AppComponent {
 
   thisyear = new Date().getFullYear();
 
+  siteDomain = Config.getSiteDomain();
+
   links = [
     {
       title: 'Terms & Conditions',
-      link: ''
+      link: '/terms-conditions'
     },
     {
       title: 'Help',
-      link: ''
+      link: '/faq'
     },
     {
       title: 'Blog',
-      link: ''
+      link: '/blogs'
     },
     {
       title: 'Privacy Policies',
-      link: ''
+      link: '/privacy-policies'
     },
     {
       title: 'FAQ',
-      link: ''
+      link: '/faq'
     },
     {
       title: 'Newsletters',
-      link: ''
+      link: '/newsletters'
     },
     {
       title: 'About Sepak Takraw Game',
-      link: ''
+      link: '/about-game'
     },
   ]
 
@@ -68,6 +73,8 @@ export class AppComponent {
     private themeService: ThemeService,
     private loaderService: LoaderService,
     private userService: UserService,
+    private deviceService: DeviceService,
+    private searchService: SearchService,
     private pingService: PingService
   ) {
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
@@ -86,6 +93,8 @@ export class AppComponent {
     ).subscribe((isOnline: boolean) => {
       this.isInternetDown.set(!isOnline)
     });
+
+    deviceService.sendDeviceDetails()
 
     userService.getUserData().subscribe({
       next: () => {
@@ -116,6 +125,11 @@ export class AppComponent {
 
   onChange(event: any): void {
     this.searchText.set(event.target.value);
+    if (this.searchText() !== "") {
+      this.searchService.get(this.searchText()).subscribe((data: any) => {
+        this.searchResult = data["data"]
+      });
+    }
   }
 
   onSearchClose(): void {
