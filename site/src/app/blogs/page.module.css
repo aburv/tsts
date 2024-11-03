@@ -1,0 +1,13 @@
+.content {
+    height: calc(100vh - 400px);
+    margin-top: 90px;
+}
+
+.title{
+    font-size: 30px;
+    margin-left: 100px;
+}
+
+.remheight {
+    height: calc(100vh - 450px);
+}
