@@ -356,15 +356,15 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(DataModel, 'get_filtering_fields', return_value=['field_5', 'field_4'])
     @mock.patch.object(DataModel, 'get_table_name', return_value="table")
     @mock.patch.object(Table, '__init__', return_value=None)
-    def test_should_return_framed_select_statement(self,
-                                                   mock_table,
-                                                   mock_table_name,
-                                                   mock_get_filtering_fields,
-                                                   mock_get_querying_fields_and_value,
-                                                   mock_get_ordering_type,
-                                                   mock_get_grouping_field,
-                                                   mock_get_record_count
-                                                   ):
+    def test_should_return_framed_select_none_query_statement(self,
+                                                              mock_table,
+                                                              mock_table_name,
+                                                              mock_get_filtering_fields,
+                                                              mock_get_querying_fields_and_value,
+                                                              mock_get_ordering_type,
+                                                              mock_get_grouping_field,
+                                                              mock_get_record_count
+                                                              ):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             model = DataModel(Relation.INIT)
             mock_table.schema_type = False
