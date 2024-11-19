@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Script
       run: |
-        sh ./scripts/coverage_python.sh
+        sh /scripts/coverage_python.sh
