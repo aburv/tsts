@@ -1,4 +1,4 @@
-name: Pylint
+name: Server CI
 
 on: 
   pull_request:
@@ -20,8 +20,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r reqirements.txt
+        pip install -r requirements.txt
         pip install pylint
+        pip install coverage
     - name: Run Script
       run: |
         sh ./scripts/coverage_python.sh
