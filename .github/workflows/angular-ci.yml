@@ -8,6 +8,10 @@ on:
     path: 
       app/web-interface/**
 
+defaults:
+  run:
+    working-directory: app/web-interface
+
 jobs:
   build:
 
@@ -19,6 +23,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: npm --prefix /app/web-interface i
-    - run: npm --prefix /app/web-interface run lint
-    - run: npm --prefix /app/web-interface run test
+    - run: npm i
+    - run: npm run lint
+    - run: npm run test
