@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
 
-cd server
+cd app/server
 
-echo "installing Dependencies"
+echo "Installing Dependencies"
 sudo apt-get update
 sudo apt-get install jq
 

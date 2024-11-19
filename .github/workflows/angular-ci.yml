@@ -19,7 +19,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - run: cd app/web-interface
-    - run: npm i
-    - run: npm run lint
-    - run: npm run test
+    - run: npm --prefix /app/web-interface i
+    - run: npm --prefix /app/web-interface run lint
+    - run: npm --prefix /app/web-interface run test
