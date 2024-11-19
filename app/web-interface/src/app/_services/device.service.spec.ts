@@ -19,7 +19,7 @@ describe('DeviceService', () => {
 
         const service = new DeviceService(dataSpy);
 
-        const getSpy = spyOn(service, 'getValues').and.returnValue(null);;       
+        const getSpy = spyOn(service, 'getValues').and.returnValue(null);       
         const setSpy = spyOn(service,  'setValues');       
 
         spyOn(service, 'getDeviceInfo').and.returnValue({
@@ -61,7 +61,7 @@ describe('DeviceService', () => {
 
         const service = new DeviceService(dataSpy);
 
-        const getSpy = spyOn(service, 'getValues').and.returnValue({});;       
+        const getSpy = spyOn(service, 'getValues').and.returnValue({});       
         const setSpy = spyOn(service,  'setValues');       
 
         spyOn(service, 'getDeviceInfo').and.returnValue({
