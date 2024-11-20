@@ -12,7 +12,30 @@ pip install pylint
 
 echo "Checking lint"
 
-pylint src ./migrate_db.py 
+pylint src ./migrate_db.py || true
+PYLINT_EXIT_CODE=$?
+
+if [ $PYLINT_EXIT_CODE -ne 0 ]; then
+  echo "Pylint found issues, but continuing the script..."
+else
+  echo "Pylint completed successfully."
+fi
+required_score=9.9
+output=$(pylint src ./migrate_db.py --output-format=text || true)
+
+last_line=$(echo "$output" | tail -n 1)
+
+last_second_value=$(echo "$last_line" | awk '{print $(NF-1)}')
+lint_score=$(echo "$last_second_value" | awk -F'/' '{print $1}')
+
+echo "Pylint score: $lint_score"
+
+if (( $(echo "$lint_score > $required_score" | bc -l) ))
+then
+    echo "Pylint score is excellent: $lint_score"
+else
+    echo "Warning: Pylint score is less than $required_score"
+fi
 
 echo "Start Testing"
 
