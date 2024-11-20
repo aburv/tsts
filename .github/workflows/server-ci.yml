@@ -24,3 +24,8 @@ jobs:
     - name: Run Script
       run: |
         sh scripts/coverage_python.sh
+    - name: Upload test report 
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: app/server/htmlcov/index.html
