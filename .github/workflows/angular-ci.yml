@@ -36,9 +36,9 @@ jobs:
     - name: Run Tests
       run: |
         npm run test -- --browsers ChromeHeadless
-        cd coverage
-        cd web-interface
-        ls -a
+    - name: List files in angular coverage folder
+      run: |
+        ls -l coverage/web-interface
     - name: Upload test report 
       uses: actions/upload-artifact@v3
       with:
