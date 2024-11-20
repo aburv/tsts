@@ -31,11 +31,14 @@ jobs:
         sudo apt-get install -y chromium-browser
     - name: Install Dependencies
       run: npm i
-    - name: Run Tests
+    - name: Run lint
       run: npm run lint
     - name: Run Tests
       run: |
         npm run test -- --browsers ChromeHeadless
+        cd coverage
+        cd web-interface
+        ls -a
     - name: Upload test report 
       uses: actions/upload-artifact@v3
       with:
