@@ -37,7 +37,7 @@ jobs:
       run: |
         npm run test -- --browsers ChromeHeadless
     - name: Upload test report 
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: coverage/web-interface/index.html
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: coverage/web-interface/index.html
