@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Chrome
         run: |
@@ -30,6 +30,11 @@ jobs:
           sudo apt-get install xvfb
           sudo apt-get install -y libxss1 libappindicator3-1 libindicator7
           sudo apt-get install -y chromium-browser
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
       
       - name: Install Dependencies
         run: npm i
@@ -46,7 +51,7 @@ jobs:
           ls -l coverage/web-interface
     
       - name: Upload test report 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: coverage/web-interface/index.html
