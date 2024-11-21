@@ -1,7 +1,5 @@
 import { of } from "rxjs";
 import { DeviceService } from "./device.service";
-import { LocalDataService } from "./localStore.service";
-import { TestBed } from "@angular/core/testing";
 
 describe('DeviceService', () => {
     it('Should make a post call on sendDeviceDetails call', () => {
@@ -12,7 +10,8 @@ describe('DeviceService', () => {
         const data = {
             deviceId: "deviceId",
             os: "",
-            osVersion: "",
+            other: "",
+            version: "",
             deviceType: "",
             platform: "",
         }
@@ -22,14 +21,7 @@ describe('DeviceService', () => {
         const getSpy = spyOn(service, 'getValues').and.returnValue(null);       
         const setSpy = spyOn(service,  'setValues');       
 
-        spyOn(service, 'getDeviceInfo').and.returnValue({
-            deviceId: "deviceId",
-            os: "",
-            other: "",
-            version: "",
-            deviceType: "",
-            platform: "",
-        })
+        spyOn(service, 'getDeviceInfo').and.returnValue(data)
 
         service.sendDeviceDetails();
 
@@ -44,6 +36,8 @@ describe('DeviceService', () => {
             deviceType: "",
             platform: "",
         });
+
+        setSpy.calls.reset();
     });
 
     it('Should not make a post call when data is present in store on sendDeviceDetails call', () => {
@@ -54,7 +48,8 @@ describe('DeviceService', () => {
         const data = {
             deviceId: "deviceId",
             os: "",
-            osVersion: "",
+            other: "",
+            version: "",
             deviceType: "",
             platform: "",
         }
@@ -64,14 +59,7 @@ describe('DeviceService', () => {
         const getSpy = spyOn(service, 'getValues').and.returnValue({});       
         const setSpy = spyOn(service,  'setValues');       
 
-        spyOn(service, 'getDeviceInfo').and.returnValue({
-            deviceId: "deviceId",
-            os: "",
-            other: "",
-            version: "",
-            deviceType: "",
-            platform: "",
-        })
+        spyOn(service, 'getDeviceInfo').and.returnValue(data)
 
         service.sendDeviceDetails();
 
