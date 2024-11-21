@@ -13,7 +13,7 @@ describe('DateTime', () => {
         expect(dateTime.type).toBe('date');
     });
 
-    it('Should set the value() from input', () => {
+    it('Should set the value from input', () => {
         const dateTime = new DateTime('2022-12-12', DateStringType.MONTH);
 
         expect(dateTime.value()).toEqual(new Date('2022-12-12'));
@@ -25,10 +25,10 @@ describe('DateTime', () => {
         expect(dateTime.getFormatString()).toBe('Dec 2022');
     });
 
-    it('Should format the date mmm, dd yyyy', () => {
+    it('Should format the date mmm dd, yyyy', () => {
         const dateTime = new DateTime('2022-12-12', DateStringType.DATE);
 
-        expect(dateTime.getFormatString()).toBe('Dec, 12 2022');
+        expect(dateTime.getFormatString()).toBe('Dec 12, 2022');
     });
 
     it('Should getISOString the date in yyyy-mm-dd', () => {
@@ -55,7 +55,7 @@ describe('DateTime', () => {
         expect(dateTime.getISOString()).toBe('2022-12-02');
     });
 
-    it('Should set value() if value() string is non empty string', () => {
+    it('Should set value if value string is non empty string', () => {
         const dateTime = new DateTime('2022-12-02', DateStringType.DATE);
 
         dateTime.setValue('2022-12-12');
@@ -63,7 +63,7 @@ describe('DateTime', () => {
         expect(dateTime.value()).toEqual(new Date('2022-12-12'));
     });
 
-    it('Should set nothing if value() string is empty string', () => {
+    it('Should set nothing if value string is empty string', () => {
         const dateTime = new DateTime('2022-12-02', DateStringType.DATE);
 
         dateTime.setValue('');
@@ -143,7 +143,7 @@ describe('DateTime', () => {
         expect(actual).toBe(false);
     });
 
-    it('Should return empty string on null value() on getFormatString call', () => {
+    it('Should return empty string on null value on getFormatString call', () => {
         const dateTime = new DateTime(null);
 
         const actual = dateTime.getFormatString();
@@ -151,7 +151,7 @@ describe('DateTime', () => {
         expect(actual).toBe("");
     });
 
-    it('Should return empty string on null value() on getISOString call', () => {
+    it('Should return empty string on null value on getISOString call', () => {
         const dateTime = new DateTime(null);
 
         const actual = dateTime.getISOString();

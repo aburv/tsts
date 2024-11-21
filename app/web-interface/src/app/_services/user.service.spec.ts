@@ -15,6 +15,6 @@ describe('UserService', () => {
 
         actual.subscribe(res => {
             expect(res).toBe(responseData);
-        })
+        });
     });
 });
