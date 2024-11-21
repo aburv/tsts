@@ -7,7 +7,7 @@ import * as icon from './icons.json';
 })
 export class IconComponent {
   static viewBox = '0 0 24 24';
-  static icons = icon as any;;
+  static icons = icon as any;
 
   name = input.required<string>();
   fill = input<string>('var(--dark)');
