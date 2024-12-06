@@ -55,11 +55,11 @@ export class DateTime {
     getFormatString(): string {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
         if (this.value() !== null) {
-            let value: string = ' ' + this.value()!.getFullYear();
+            let value: string = '' + this.value()!.getFullYear();
             if (this.type === DateStringType.DATE) {
-                value = ', ' + this.value()!.getDate() + value;
+                value = this.value()!.getDate() + ', ' + value;
             }
-            return months[this.value()!.getMonth()] + value;
+            return months[this.value()!.getMonth()] + ' ' + value;
         }
         return ""
     }
