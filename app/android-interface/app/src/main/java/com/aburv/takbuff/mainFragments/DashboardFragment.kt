@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.aburv.takbuff.databinding.FragmentDashboardBinding
 
-class DashboardFragment(val context: Context) : Fragment() {
+class DashboardFragment(private val context: Context) : Fragment() {
 
     private lateinit var binding: FragmentDashboardBinding
 
