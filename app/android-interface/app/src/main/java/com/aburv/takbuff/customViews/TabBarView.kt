@@ -3,6 +3,8 @@ package com.aburv.takbuff.customViews
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Typeface
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -128,18 +130,20 @@ class TabBarView(context: Context?, attrs: AttributeSet?) :
             }
         }
 
-        ObjectAnimator.ofFloat(
-            binding.viewIndicator,
-            View.TRANSLATION_X,
-            binding.viewIndicator.x,
-            listTabTv[index].x
-        ).apply {
-            duration = 300
-            onTabSelectedListener?.invoke(index)
-            isAnimating = true
-            start()
-            doOnEnd {
-                isAnimating = false
+        Handler(Looper.getMainLooper()).post {
+            ObjectAnimator.ofFloat(
+                binding.viewIndicator,
+                View.TRANSLATION_X,
+                binding.viewIndicator.x,
+                listTabTv[index].x
+            ).apply {
+                duration = 300
+                onTabSelectedListener?.invoke(index)
+                isAnimating = true
+                start()
+                doOnEnd {
+                    isAnimating = false
+                }
             }
         }
     }

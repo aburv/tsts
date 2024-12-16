@@ -44,10 +44,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val type = intent.getStringExtra("type")
-        val id = intent.getStringExtra("id")
-
-        if (savedInstanceState == null) {
+        val extras = intent.extras
+        if (extras == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.container, DashboardFragment(this))
+                .commit()
+        }
+        if (extras != null) {
+            val type: String = extras.getString("type", "")
+            val id: String = extras.getString("id", "")
             loadFragment(type, id)
         }
 
