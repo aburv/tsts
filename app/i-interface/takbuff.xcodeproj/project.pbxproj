@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,8 @@
 		4741C5A82A9625E000D73EA0 /* takbuffTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5A72A9625E000D73EA0 /* takbuffTests.swift */; };
 		4741C5B22A9625E000D73EA0 /* takbuffUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5B12A9625E000D73EA0 /* takbuffUITests.swift */; };
 		4741C5B42A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */; };
+		475E211F2B3A039C004DA9BD /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E211E2B3A039C004DA9BD /* ImageView.swift */; };
+		475E21212B3A03D7004DA9BD /* InputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E21202B3A03D7004DA9BD /* InputText.swift */; };
 		4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8402B3355AD000C6B06 /* AppLogo.swift */; };
 		4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8412B3355AD000C6B06 /* SearchLayout.swift */; };
 		4776B8472B3355AD000C6B06 /* SearchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8422B3355AD000C6B06 /* SearchList.swift */; };
@@ -22,7 +24,11 @@
 		4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8442B3355AD000C6B06 /* ScalingButton.swift */; };
 		4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84A2B3355EF000C6B06 /* HomeScreen.swift */; };
 		4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84E2B3362E3000C6B06 /* Loader.swift */; };
+		47D15F6E2B5806110057981A /* keys.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 47D15F6D2B5806110057981A /* keys.xcconfig */; };
 		47EB547B2C68E40C00E43E19 /* dashboardScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */; };
+		47F4B2532CA3349A007FD5D6 /* AppUserDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F4B2522CA3348E007FD5D6 /* AppUserDevice.swift */; };
+		47F4B2572CA554A5007FD5D6 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F4B2562CA55497007FD5D6 /* Data.swift */; };
+		47F4B25E2CA568D9007FD5D6 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F4B25D2CA568D6007FD5D6 /* Image.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		470ADB512C8DC55800E480D4 /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		472621CA2CDC77DF000D70B8 /* takbuff.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = takbuff.xctestplan; sourceTree = "<group>"; };
 		4741C5932A9625DF00D73EA0 /* takbuff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = takbuff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4741C5962A9625DF00D73EA0 /* takbuffApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffApp.swift; sourceTree = "<group>"; };
 		4741C5982A9625DF00D73EA0 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
@@ -54,6 +61,8 @@
 		4741C5AD2A9625E000D73EA0 /* takbuffUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = takbuffUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4741C5B12A9625E000D73EA0 /* takbuffUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffUITests.swift; sourceTree = "<group>"; };
 		4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		475E211E2B3A039C004DA9BD /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
+		475E21202B3A03D7004DA9BD /* InputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputText.swift; sourceTree = "<group>"; };
 		4776B8402B3355AD000C6B06 /* AppLogo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppLogo.swift; sourceTree = "<group>"; };
 		4776B8412B3355AD000C6B06 /* SearchLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchLayout.swift; sourceTree = "<group>"; };
 		4776B8422B3355AD000C6B06 /* SearchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchList.swift; sourceTree = "<group>"; };
@@ -61,8 +70,16 @@
 		4776B8442B3355AD000C6B06 /* ScalingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalingButton.swift; sourceTree = "<group>"; };
 		4776B84A2B3355EF000C6B06 /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		4776B84E2B3362E3000C6B06 /* Loader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
+		47D15F6D2B5806110057981A /* keys.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = keys.xcconfig; sourceTree = "<group>"; };
 		47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dashboardScreen.swift; sourceTree = "<group>"; };
+		47F4B2522CA3348E007FD5D6 /* AppUserDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUserDevice.swift; sourceTree = "<group>"; };
+		47F4B2562CA55497007FD5D6 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		47F4B25D2CA568D6007FD5D6 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		47F4B2592CA564A0007FD5D6 /* data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = data; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		4741C5902A9625DF00D73EA0 /* Frameworks */ = {
@@ -92,6 +109,7 @@
 		4741C58A2A9625DF00D73EA0 = {
 			isa = PBXGroup;
 			children = (
+				472621CA2CDC77DF000D70B8 /* takbuff.xctestplan */,
 				4741C5952A9625DF00D73EA0 /* takbuff */,
 				4741C5A62A9625E000D73EA0 /* takbuffTests */,
 				4741C5B02A9625E000D73EA0 /* takbuffUITests */,
@@ -112,12 +130,16 @@
 		4741C5952A9625DF00D73EA0 /* takbuff */ = {
 			isa = PBXGroup;
 			children = (
+				47F4B2592CA564A0007FD5D6 /* data */,
+				47F4B2562CA55497007FD5D6 /* Data.swift */,
+				47F4B2512CA33487007FD5D6 /* db */,
 				47EB54792C68D40C00E43E19 /* subScreens */,
 				4776B83E2B33552C000C6B06 /* screens */,
 				4776B83F2B33553A000C6B06 /* views */,
 				4741C5962A9625DF00D73EA0 /* takbuffApp.swift */,
 				4741C59A2A9625E000D73EA0 /* Assets.xcassets */,
 				4741C59C2A9625E000D73EA0 /* Preview Content */,
+				47D15F6D2B5806110057981A /* keys.xcconfig */,
 			);
 			path = takbuff;
 			sourceTree = "<group>";
@@ -166,6 +188,8 @@
 				4776B8432B3355AD000C6B06 /* SubScreenLayout.swift */,
 				470ADB512C8DC55800E480D4 /* TabBarView.swift */,
 				4776B84E2B3362E3000C6B06 /* Loader.swift */,
+				475E211E2B3A039C004DA9BD /* ImageView.swift */,
+				475E21202B3A03D7004DA9BD /* InputText.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -176,6 +200,15 @@
 				47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */,
 			);
 			path = subScreens;
+			sourceTree = "<group>";
+		};
+		47F4B2512CA33487007FD5D6 /* db */ = {
+			isa = PBXGroup;
+			children = (
+				47F4B2522CA3348E007FD5D6 /* AppUserDevice.swift */,
+				47F4B25D2CA568D6007FD5D6 /* Image.swift */,
+			);
+			path = db;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,6 +225,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				47F4B2592CA564A0007FD5D6 /* data */,
 			);
 			name = takbuff;
 			productName = takbuff;
@@ -283,6 +319,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4741C59E2A9625E000D73EA0 /* Preview Assets.xcassets in Resources */,
+				47D15F6E2B5806110057981A /* keys.xcconfig in Resources */,
 				4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,15 +346,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				47EB547B2C68E40C00E43E19 /* dashboardScreen.swift in Sources */,
+				475E211F2B3A039C004DA9BD /* ImageView.swift in Sources */,
 				4741C5992A9625DF00D73EA0 /* SplashScreen.swift in Sources */,
 				4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */,
 				4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */,
+				47F4B2572CA554A5007FD5D6 /* Data.swift in Sources */,
+				47F4B25E2CA568D9007FD5D6 /* Image.swift in Sources */,
+				475E21212B3A03D7004DA9BD /* InputText.swift in Sources */,
 				4776B8472B3355AD000C6B06 /* SearchList.swift in Sources */,
 				4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */,
 				4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */,
 				4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */,
 				4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */,
 				470ADB522C8DC55800E480D4 /* TabBarView.swift in Sources */,
+				47F4B2532CA3349A007FD5D6 /* AppUserDevice.swift in Sources */,
 				4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

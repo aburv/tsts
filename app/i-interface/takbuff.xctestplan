@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "26AB25F3-42AC-441D-B063-2CD57BF39E3E",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:takbuff.xcodeproj",
+      "identifier" : "4741C5922A9625DF00D73EA0",
+      "name" : "takbuff"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:takbuff.xcodeproj",
+        "identifier" : "4741C5A22A9625E000D73EA0",
+        "name" : "takbuffTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:takbuff.xcodeproj",
+        "identifier" : "4741C5AC2A9625E000D73EA0",
+        "name" : "takbuffUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
