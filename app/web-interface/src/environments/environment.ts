@@ -4,7 +4,6 @@
 
 export const environment = {
   production: false,
-  protocol: 'http',
   domain: 'localhost',
   siteDomain: 'localhost',
   key: 'key'
