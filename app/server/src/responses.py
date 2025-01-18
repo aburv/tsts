@@ -6,15 +6,14 @@ from flask import jsonify, make_response, Response
 from src.logger import LoggerAPI
 
 
-class ValidResponse:
+class APIResponse:
     """
-    Response class
+    API Response model
     """
     logger = LoggerAPI()
 
-    def __init__(self, domain: str, content: list | dict | str | bool, detail=None) -> None:
-        ValidResponse.logger.info_entry(f'Success {domain} {detail} : {content}')
-        self.content = content
+    def __init__(self, data: list | dict | str | bool):
+        self.content = data
         self.status_code = 200
 
     def get_response_json(self) -> Response:
@@ -24,6 +23,32 @@ class ValidResponse:
         """
         response = make_response(jsonify({'data': self.content}), self.status_code)
         return response
+
+
+class ValidResponse(APIResponse):
+    """
+    Response
+    """
+
+    def __init__(self, domain: str, data: list | dict | str | bool, detail=None) -> None:
+        super().__init__(data)
+        ValidResponse.logger.info_entry(f'Success {domain} {detail} : {data}')
+
+    def get_data(self) -> list | dict | str | bool:
+        """
+        Get the data
+        """
+        return self.content
+
+
+class CachedResponse(APIResponse):
+    """
+    Cached Response
+    """
+
+    def __init__(self, key: str, data: list | dict | str | bool) -> None:
+        ValidResponse.logger.info_entry(f'Cached {key} : {data}')
+        super().__init__(data)
 
 
 class APIException(Exception):

@@ -13,7 +13,7 @@ psycopg2-binary==2.9.9
 
 #caching redis
 Flask-Caching==2.3.0
-redis==5.1.1
+redis==5.2.1
 
 # gRPC calls
 grpcio==1.68.0
