@@ -3,16 +3,16 @@ import { Config } from "./config";
 describe('Config', () => {
 
     it('Should return domain url', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ protocol: 'https', domain: "localhost" })
+        spyOn(Config, 'getEnv').and.returnValue({ domain: "localhost" })
 
-        expect(Config.getDomain()).toBe('https://localhost/api/');
+        expect(Config.getDomain()).toBe('http://localhost/api/');
     });
 
 
     it('Should return site domain', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ protocol: 'https', siteDomain: "localhost" })
+        spyOn(Config, 'getEnv').and.returnValue({ siteDomain: "localhost" })
 
-        expect(Config.getSiteDomain()).toBe('https://localhost');
+        expect(Config.getSiteDomain()).toBe('http://localhost');
     });
 
     it('Should return headers', () => {
@@ -24,7 +24,6 @@ describe('Config', () => {
     it('Should return env', () => {
         expect(Config.getEnv()).toEqual({
             production: false,
-            protocol: 'http',
             domain: 'localhost',
             siteDomain: 'localhost',
             key: 'key',

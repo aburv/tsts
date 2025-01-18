@@ -311,7 +311,7 @@ describe('AppComponent', () => {
       expect(root.children[2].children[0].children[0].children[i].children[0].attributes['target']).toBe('_blank');
     }
     expect(root.children[2].children[0].children[1].children.length).toBe(3);
-    expect(root.children[2].children[0].children[1].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2024');
+    expect(root.children[2].children[0].children[1].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © 2025');
     expect(root.children[2].children[0].children[1].children[1].attributes['class']).toBe('break');
     expect(root.children[2].children[0].children[1].children[2].nativeElement.textContent).toBe(' An Open Source Application');
     expect(root.children[2].children[0].children[1].children[2].styles["font-size"]).toBe('12px');

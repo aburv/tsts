@@ -14,7 +14,7 @@ export class Config {
     }
 
     static getSiteDomain(): string {
-        return this.getEnv().protocol + '://' + this.getEnv().siteDomain;
+        return this.getApiProtocol() + '://' + this.getEnv().siteDomain;
     }
 
     static getHeaders(): any {
