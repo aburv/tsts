@@ -10,8 +10,9 @@ Python -V3.10
 
 ### Prerequisites:
 
-* Env configs
-  setup the values
+* Env configs 
+  
+Set up the values
 
 ```commandline
 source envs/server.env
@@ -23,6 +24,11 @@ source FLASK_APP=src.app
 
 ```commandline
 pip install -r requirements.txt
+```
+
+* Generate the python code for gRPC code schemas
+```commandline
+ python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/broker.proto
 ```
 
 * Run local server.

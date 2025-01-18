@@ -27,6 +27,14 @@ class Config:
         }
 
     @staticmethod
+    def get_broker_connection_string() -> str:
+        """
+        :return:
+        :rtype:
+        """
+        return os.environ.get("BROKER_HOST") + ":" + os.environ.get("BROKER_PORT")
+
+    @staticmethod
     def get_api_keys() -> list:
         """
         :return:

@@ -30,6 +30,15 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     @mock.patch.dict(os.environ, {
+        "BROKER_HOST": 'host',
+        "BROKER_PORT": 'port',
+    }, clear=True)
+    def test_should_return_broker_server_connection_string_on_get_broker_connection_string(self):
+        expected = "host:port"
+        actual = Config.get_broker_connection_string()
+        self.assertEqual(expected, actual)
+
+    @mock.patch.dict(os.environ, {
         "WEB_CLIENT_KEY": "test_web_key",
         "ANDROID_CLIENT_KEY": "test_android_key",
         "IOS_CLIENT_KEY": "test_ios_key",
