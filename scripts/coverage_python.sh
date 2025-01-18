@@ -37,6 +37,10 @@ else
     echo "Warning: Pylint score is less than $required_score"
 fi
 
+echo "Generating gRPC python service"
+
+python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/broker.proto
+
 echo "Start Testing"
 
 coverage run --source=. --omit=test/\* -m unittest discover -s test 
