@@ -46,8 +46,8 @@ class ImageControllerTest(unittest.TestCase):
         mock_add.assert_called_once()
         args, _ = mock_add.call_args
         self.assertIsInstance(args[0], FileStorage)
-        self.assertEqual(args[1], "")
-        mock_response_init.assert_called_once_with(domain='New image', detail="name.png", data='image_id')
+        self.assertEqual(args[1], '')
+        mock_response_init.assert_called_once_with(domain='New Image', detail="name.png", data='image_id')
         mock_response.assert_called_once_with()
         self.assertEqual(expected_response_data, actual_response.data)
 
@@ -89,7 +89,7 @@ class ImageControllerTest(unittest.TestCase):
         mock_add.assert_called_once()
         args, _ = mock_add.call_args
         self.assertIsInstance(args[0], FileStorage)
-        self.assertEqual(args[1], "")
+        self.assertEqual(args[1], '')
         mock_response.assert_called_once_with()
         self.assertEqual(expected_response_data, actual_response.data)
 
@@ -98,13 +98,13 @@ class ImageControllerTest(unittest.TestCase):
     @mock.patch.object(Config, 'get_api_keys')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
-    def test_should_return_valid_image_str_by_size_and_cache_response_on_get(self,
-                                                                             mock_cache_set,
-                                                                             mock_cache_get,
-                                                                             mock_secret_config,
-                                                                             mock_get,
-                                                                             mock_service_init
-                                                                             ):
+    def test_should_return_valid_image_str_by_size_and_cache_response_on_get_image_by_size(self,
+                                                                                           mock_cache_set,
+                                                                                           mock_cache_get,
+                                                                                           mock_secret_config,
+                                                                                           mock_get,
+                                                                                           mock_service_init
+                                                                                           ):
         mock_cache_get.return_value = None
 
         mock_secret_config.return_value = ['test_key']
@@ -134,13 +134,13 @@ class ImageControllerTest(unittest.TestCase):
     @mock.patch.object(Config, 'get_api_keys')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
-    def test_should_return_cached_image_str_by_size_response_on_get(self,
-                                                                    mock_cache_set,
-                                                                    mock_cache_get,
-                                                                    mock_secret_config,
-                                                                    mock_get,
-                                                                    mock_service_init
-                                                                    ):
+    def test_should_return_cached_image_str_by_size_response_on_get_image_by_size(self,
+                                                                                  mock_cache_set,
+                                                                                  mock_cache_get,
+                                                                                  mock_secret_config,
+                                                                                  mock_get,
+                                                                                  mock_service_init
+                                                                                  ):
         mock_cache_get.return_value = b'image_str'
 
         mock_secret_config.return_value = ['test_key']
@@ -170,13 +170,13 @@ class ImageControllerTest(unittest.TestCase):
     @mock.patch.object(Config, 'get_api_keys')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
-    def test_should_return_api_error_response_on_get_by_size(self,
-                                                             mock_cache_set,
-                                                             mock_cache_get,
-                                                             mock_secret_config,
-                                                             mock_get,
-                                                             mock_service_init,
-                                                             ):
+    def test_should_return_api_error_response_on_get_image_by_size(self,
+                                                                   mock_cache_set,
+                                                                   mock_cache_get,
+                                                                   mock_secret_config,
+                                                                   mock_get,
+                                                                   mock_service_init,
+                                                                   ):
         mock_cache_get.return_value = None
         mock_secret_config.return_value = ['test_key']
 
@@ -209,13 +209,13 @@ class ImageControllerTest(unittest.TestCase):
     @mock.patch.object(Config, 'get_api_keys')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
-    def test_should_return_valid_image_str_and_cache_response_on_get(self,
-                                                                     mock_cache_set,
-                                                                     mock_cache_get,
-                                                                     mock_secret_config,
-                                                                     mock_get,
-                                                                     mock_service_init
-                                                                     ):
+    def test_should_return_valid_image_str_and_cache_response_on_get_original_image(self,
+                                                                                    mock_cache_set,
+                                                                                    mock_cache_get,
+                                                                                    mock_secret_config,
+                                                                                    mock_get,
+                                                                                    mock_service_init
+                                                                                    ):
         mock_cache_get.return_value = None
         mock_secret_config.return_value = ['test_key']
         expected_response_data = b'image_str'
@@ -244,13 +244,13 @@ class ImageControllerTest(unittest.TestCase):
     @mock.patch.object(Config, 'get_api_keys')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
-    def test_should_return_cached_image_str_response_on_get(self,
-                                                            mock_cache_set,
-                                                            mock_cache_get,
-                                                            mock_secret_config,
-                                                            mock_get,
-                                                            mock_service_init
-                                                            ):
+    def test_should_return_cached_image_str_response_on_get_original_image(self,
+                                                                           mock_cache_set,
+                                                                           mock_cache_get,
+                                                                           mock_secret_config,
+                                                                           mock_get,
+                                                                           mock_service_init
+                                                                           ):
         mock_cache_get.return_value = b'image_str'
 
         mock_secret_config.return_value = ['test_key']
@@ -280,13 +280,13 @@ class ImageControllerTest(unittest.TestCase):
     @mock.patch.object(Config, 'get_api_keys')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
-    def test_should_return_api_error_response_on_get(self,
-                                                     mock_cache_set,
-                                                     mock_cache_get,
-                                                     mock_secret_config,
-                                                     mock_get,
-                                                     mock_service_init,
-                                                     ):
+    def test_should_return_api_error_response_on_get_original_image(self,
+                                                                    mock_cache_set,
+                                                                    mock_cache_get,
+                                                                    mock_secret_config,
+                                                                    mock_get,
+                                                                    mock_service_init,
+                                                                    ):
         mock_cache_get.return_value = None
         mock_secret_config.return_value = ['test_key']
 

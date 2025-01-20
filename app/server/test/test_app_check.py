@@ -19,8 +19,7 @@ class PingControllerTest(unittest.TestCase):
         app = App.create()
         with app.test_client() as c:
             actual_response = c.post("/api/ping/",
-                                     headers={'x-api-key': 'test_key'},
-                                     content_type="application/json")
+                                     headers={'x-api-key': 'test_key'})
 
         mock_keys.assert_called_once_with()
 
@@ -49,8 +48,7 @@ class PingControllerTest(unittest.TestCase):
             app = App.create()
             with app.test_client() as c:
                 actual_response = c.post("/api/ping/",
-                                         headers={'x-api-key': 'invalid_key'},
-                                         content_type="application/json")
+                                         headers={'x-api-key': 'invalid_key'})
 
         mock_keys.assert_called()
         mock_exception_init.assert_called_once_with('Client', 'Not Authenticated',
@@ -58,15 +56,13 @@ class PingControllerTest(unittest.TestCase):
                                                     status_code=401)
         self.assertEqual(expected_response_data, actual_response.data)
 
-    @mock.patch.object(Caching, 'init_cache')
-    def test_should_return_success_response_on_aws_ping(self, mock_init_caching):
+    def test_should_return_success_response_on_aws_ping(self):
         expected_response_data = b'{"data":"success"}\n'
 
         with mock.patch.object(Caching, 'init_cache'):
             app = App.create()
             with app.test_client() as c:
-                actual_response = c.get("/api/ping/aws",
-                                        content_type="application/json")
+                actual_response = c.get("/api/ping/aws")
 
         self.assertEqual(expected_response_data, actual_response.data)
         self.assertEqual(200, actual_response.status_code)

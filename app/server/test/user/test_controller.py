@@ -125,6 +125,6 @@ class UserControllerTest(unittest.TestCase):
         mock_cache_get.assert_called_once_with('myapp:app_user/')
         assert not mock_cache_set.called
         mock_service.assert_called_once_with()
-        mock_user_data.assert_called_once_with("")
+        mock_user_data.assert_called_once_with('')
         mock_response.assert_called_once_with()
         self.assertEqual(expected_response_data, actual_response.data)
