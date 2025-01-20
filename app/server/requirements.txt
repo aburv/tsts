@@ -5,13 +5,13 @@ gunicorn==23.0.0
 Flask==3.1.0
 Flask-Cors==5.0.0
 
-#Process Image
+# Process Image
 Pillow==11.0.0
 
-# postgres Driver
-psycopg2-binary==2.9.9
+# Postgres Driver
+psycopg2-binary==2.9.10
 
-#caching redis
+# Caching redis
 Flask-Caching==2.3.0
 redis==5.2.1
 
@@ -19,4 +19,5 @@ redis==5.2.1
 grpcio==1.68.0
 grpcio-tools==1.68.0
 
+# Utils
 Werkzeug~=3.1.3

@@ -110,7 +110,7 @@ class SearchControllerTest(unittest.TestCase):
                 "error_type",
                 500
             )
-            expected_response_data = b'response_json'
+        expected_response_data = b'response_json'
 
         with mock.patch.object(Caching, 'init_cache'):
             app = App.create()
