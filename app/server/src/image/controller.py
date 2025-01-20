@@ -24,7 +24,7 @@ def add_image() -> Response:
         file = request.files['file']
         image = ImageServices().add(file, user_id)
         return ValidResponse(
-            domain="New image",
+            domain="New Image",
             detail=str(file.filename),
             data=image
         ).get_response_json()

@@ -1,5 +1,5 @@
 """
-User Controller
+Search Controller
 """
 from flask import Blueprint
 
@@ -14,12 +14,13 @@ SEARCH_BLUEPRINT = Blueprint('search', __name__)
 @SEARCH_BLUEPRINT.route("/<text>", methods=["GET"])
 @client_auth
 @get_if_cached(api_key="search")
-def get_data(text) -> APIResponse:
+def get_data(text: str) -> APIResponse:
     """
     :return:
     :rtype:
     """
-    data = SearchServices().search(text)
+    user_id = ""
+    data = SearchServices().search(text, user_id)
     return ValidResponse(
         domain="Search Results",
         detail=text,

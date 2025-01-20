@@ -81,3 +81,7 @@ class RelationTest(unittest.TestCase):
         self.assertEqual(Relation.AUDIT.value.get_name(), 'audit')
         self.assertTrue(isinstance(Relation.AUDIT_FIELD, Relation))
         self.assertEqual(Relation.AUDIT_FIELD.value.get_name(), 'audit_field')
+        self.assertTrue(isinstance(Relation.DEVICE, Relation))
+        self.assertEqual(Relation.DEVICE.value.get_name(), 'device')
+        self.assertTrue(isinstance(Relation.IMAGE, Relation))
+        self.assertEqual(Relation.IMAGE.value.get_name(), 't_image')
