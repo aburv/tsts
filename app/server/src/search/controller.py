@@ -1,5 +1,5 @@
 """
-User Controller
+Search Controller
 """
 from flask import Blueprint
 
