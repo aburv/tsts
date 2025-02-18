@@ -6,17 +6,38 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import com.aburv.takbuff.R
+import com.aburv.takbuff.data.DeviceData
+import com.aburv.takbuff.data.UserData
 import com.aburv.takbuff.databinding.ActivitySplashBinding
 import androidx.core.util.Pair as UtilPair
 
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
+
+    companion object {
+        const val SUB_TITLE_HIDE_DURATION = 2000L
+        const val MOVE_UP_DURATION = 2000L
+        const val WAIT_FOR_CALL_DURATION = 1000L
+
+        const val FULL_OPACITY = 1.0f
+        const val ZERO_OPACITY = 1.0f
+
+        const val MOVE_UP_Y_COORDINATE = -500f
+    }
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val userData = UserData()
+    private val deviceData = DeviceData()
 
     private lateinit var binding: ActivitySplashBinding
 
@@ -39,19 +60,34 @@ class SplashActivity : AppCompatActivity() {
 
         val rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
         rotate.fillAfter = true
-        val hide = ObjectAnimator.ofFloat(appSubtitle, View.ALPHA, 1.0f, 0.0f)
-        hide.duration = 3000
-        val moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, -500f)
-        moveUp.duration = 2000
+        val hide = ObjectAnimator.ofFloat(appSubtitle, View.ALPHA, FULL_OPACITY, ZERO_OPACITY)
+        hide.duration = SUB_TITLE_HIDE_DURATION
+        val moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, MOVE_UP_Y_COORDINATE)
+        moveUp.duration = MOVE_UP_DURATION
 
-        appLogo.startAnimation(rotate)
+        try {
+            deviceData.isDeviceRegistered(this)
+            userData.getUserdata()
 
-        AnimatorSet().apply {
-            this.play(moveUp).after(hide)
-        }.start()
-
-        appLogo.setOnClickListener {
-            navigateMain()
+            appLogo.startAnimation(rotate)
+        } catch (e: Exception) {
+            appLogo.startAnimation(rotate)
+            Log.e("App", "Error in Communicating server")
+        }
+        userData.data.observe(this) {
+            handler.postDelayed(
+                {
+                    rotate.cancel()
+                    AnimatorSet().apply {
+                        this.play(moveUp).after(hide)
+                    }.start()
+                    handler.postDelayed(
+                        { navigateMain() },
+                        SUB_TITLE_HIDE_DURATION + MOVE_UP_DURATION
+                    )
+                },
+                WAIT_FOR_CALL_DURATION
+            )
         }
     }
 

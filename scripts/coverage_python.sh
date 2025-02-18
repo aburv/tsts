@@ -30,16 +30,20 @@ lint_score=$(echo "$last_second_value" | awk -F'/' '{print $1}')
 
 echo "Pylint score: $lint_score"
 
-if (( $(echo "$lint_score > $required_score" | bc -l) ))
+if (( $(echo "$lint_score >= $required_score" | bc -l) ))
 then
     echo "Pylint score is excellent: $lint_score"
 else
     echo "Warning: Pylint score is less than $required_score"
 fi
 
+echo "Generating gRPC python service"
+
+python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/broker.proto
+
 echo "Start Testing"
 
-coverage run --source=. --omit=test/\* -m unittest discover -s test 
+coverage run --source=. -m unittest discover -s test 
 coverage json
 json_val=`jq '.totals.percent_covered' coverage.json` 
 coverage_percentage=$(echo "$json_val" | sed 's/\..*//')

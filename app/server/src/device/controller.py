@@ -24,7 +24,7 @@ def set_device_data() -> Response:
         return ValidResponse(
             domain="New Device",
             detail=data,
-            content=device
+            data=device
         ).get_response_json()
     except APIException as e:
         return e.get_response_json()

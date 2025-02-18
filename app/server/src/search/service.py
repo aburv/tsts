@@ -1,5 +1,5 @@
 """
-User Service
+Search Service
 """
 
 
@@ -9,7 +9,7 @@ class SearchServices:
     """
 
     @staticmethod
-    def search(text: str) -> list:
+    def search(text: str, u_id: str) -> list:
         """
         :return:
         :rtype:

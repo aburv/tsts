@@ -14,13 +14,13 @@ setup the values at `/src/environments/environment.ts`
 
 * Install Dependencies
 
-```
+```commandline
 npm install
 ```
 
 * Run locally.
 
-```
+```commandline
 npm run start
 ```
 
@@ -30,7 +30,7 @@ Check ` http://localhost:4200/ ` in any browser
 
 ### Lint
 
-```
+```commandline
 npm run lint
 ```
 
@@ -45,7 +45,7 @@ Component and functional level testing.
 
 Install chrome.exe to run the test 
 
-```
+```commandline
 npm run test
 ```
 

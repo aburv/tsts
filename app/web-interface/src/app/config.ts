@@ -1,16 +1,20 @@
 import { environment } from '../environments/environment';
 
 export class Config {
-    static getEnv(): any{
+    static getEnv(): any {
         return environment;
     }
 
+    static getApiProtocol(): string {
+        return this.getEnv().production ? 'https' : 'http';
+    }
+
     static getDomain(): string {
-        return this.getEnv().protocol + '://' + this.getEnv().domain + '/api/';
+        return this.getApiProtocol() + '://' + this.getEnv().domain + '/api/';
     }
 
     static getSiteDomain(): string {
-        return this.getEnv().protocol + '://' + this.getEnv().siteDomain;
+        return this.getApiProtocol() + '://' + this.getEnv().siteDomain;
     }
 
     static getHeaders(): any {

@@ -2,7 +2,7 @@
 
 # Data services
 
-A flask application -V3.0.0
+A flask application -V3.1.0
 
 Python -V3.10
 
@@ -10,10 +10,11 @@ Python -V3.10
 
 ### Prerequisites:
 
-* Env configs
-  setup the values
+* Env configs 
+  
+Set up the values
 
-```
+```commandline
 source envs/server.env
 source envs/db.env
 source FLASK_APP=src.app
@@ -21,21 +22,26 @@ source FLASK_APP=src.app
 
 * Install Dependencies
 
-```
+```commandline
 pip install -r requirements.txt
+```
+
+* Generate the python code for gRPC code schemas
+```commandline
+ python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/broker.proto
 ```
 
 * Run local server.
 
-```
+```commandline
 flask run
 ```
 
-check ` http://localhost:5000/ ` in any rest api client to test the response
+Check ` http://localhost:5000/ ` in any rest api client to test the response
 
 Database client
 
-```
+```commandline
 psql "dbname=<db_name> user=<db_user>"
 ```
 
@@ -45,7 +51,7 @@ to view the postgresql data in the terminal
 
 ### Lint
 
-```
+```commandline
 pylint src ./migrate_db.py 
 ```
 
@@ -63,8 +69,8 @@ Controller and service level testing.
 Integration tests are present in Integration_tests/ folder.
 It tests the three layers (Controller -> Service -> DB)
 
-```
-coverage run --source=. --omit=test/\* -m unittest discover -s test 
+```commandline
+coverage run --source=. -m unittest discover -s test 
 coverage html
 ```
 

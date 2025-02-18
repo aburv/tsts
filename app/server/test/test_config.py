@@ -30,6 +30,29 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     @mock.patch.dict(os.environ, {
+        "REDIS_PASSWORD": 'pass',
+        "REDIS_HOST": 'host',
+        "REDIS_PORT": 'port',
+    }, clear=True)
+    def test_should_return_redis_db_creds_on_get_caching_parameters(self):
+        expected = {
+            'host': 'host',
+            'pass': 'pass',
+            'port': 'port',
+        }
+        actual = Config.get_caching_parameters()
+        self.assertEqual(expected, actual)
+
+    @mock.patch.dict(os.environ, {
+        "BROKER_HOST": 'host',
+        "BROKER_PORT": 'port',
+    }, clear=True)
+    def test_should_return_broker_server_connection_string_on_get_broker_connection_string(self):
+        expected = "host:port"
+        actual = Config.get_broker_connection_string()
+        self.assertEqual(expected, actual)
+
+    @mock.patch.dict(os.environ, {
         "WEB_CLIENT_KEY": "test_web_key",
         "ANDROID_CLIENT_KEY": "test_android_key",
         "IOS_CLIENT_KEY": "test_ios_key",
@@ -58,3 +81,7 @@ class RelationTest(unittest.TestCase):
         self.assertEqual(Relation.AUDIT.value.get_name(), 'audit')
         self.assertTrue(isinstance(Relation.AUDIT_FIELD, Relation))
         self.assertEqual(Relation.AUDIT_FIELD.value.get_name(), 'audit_field')
+        self.assertTrue(isinstance(Relation.DEVICE, Relation))
+        self.assertEqual(Relation.DEVICE.value.get_name(), 'device')
+        self.assertTrue(isinstance(Relation.IMAGE, Relation))
+        self.assertEqual(Relation.IMAGE.value.get_name(), 't_image')

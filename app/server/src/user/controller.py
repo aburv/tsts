@@ -1,10 +1,11 @@
 """
 User Controller
 """
-from flask import Blueprint, Response
+from flask import Blueprint
 
 from src.auth import client_auth
-from src.responses import ValidResponse, APIException
+from src.caching import get_if_cached
+from src.responses import ValidResponse, APIResponse
 from src.user.service import UserServices
 
 USER_BLUEPRINT = Blueprint('user', __name__)
@@ -12,18 +13,16 @@ USER_BLUEPRINT = Blueprint('user', __name__)
 
 @USER_BLUEPRINT.route("/app", methods=["GET"])
 @client_auth
-def get_user_data() -> Response:
+@get_if_cached("app_user")
+def get_user_data() -> APIResponse:
     """
     :return:
     :rtype:
     """
-    try:
-        user_id = ""
-        data = UserServices().get_user_data(user_id)
-        return ValidResponse(
-            domain="Retrieved user data",
-            detail=user_id,
-            content=data
-        ).get_response_json()
-    except APIException as e:
-        return e.get_response_json()
+    user_id = ""
+    data = UserServices().get_user_data(user_id)
+    return ValidResponse(
+        domain="Retrieved user data",
+        detail=user_id,
+        data=data
+    )

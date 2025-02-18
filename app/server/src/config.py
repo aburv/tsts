@@ -27,6 +27,26 @@ class Config:
         }
 
     @staticmethod
+    def get_caching_parameters() -> dict:
+        """
+        :return:
+        :rtype:
+        """
+        return {
+            "pass": os.environ.get("REDIS_PASSWORD"),
+            "host": os.environ.get("REDIS_HOST"),
+            "port": os.environ.get("REDIS_PORT"),
+        }
+
+    @staticmethod
+    def get_broker_connection_string() -> str:
+        """
+        :return:
+        :rtype:
+        """
+        return os.environ.get("BROKER_HOST") + ":" + os.environ.get("BROKER_PORT")
+
+    @staticmethod
     def get_api_keys() -> list:
         """
         :return:

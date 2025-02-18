@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 
 struct SplashScreen: View {
+    @Environment(\.modelContext) var modelContext
+    @Query() var device: [AppUserDevice]
     
     let animation: Namespace.ID
     let name: Namespace.ID
@@ -100,15 +103,19 @@ struct SplashScreen: View {
             }
         }
         .onAppear{
-            DispatchQueue.main.asyncAfter(deadline: .now() + threeDelay){
-                isLoading = false
-                withAnimation(.bouncy.speed(speed)){
-                    offset = liftUpOffSet
-                    canSignIn = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + twoDelay){
-                    withAnimation{
-                        proceed = true
+            DeviceData().isRegistered(modelContext: modelContext, device: device)
+            UserData().getAppData { data, error in
+                guard error == nil else {return}
+                DispatchQueue.main.asyncAfter(deadline: .now() + threeDelay){
+                    isLoading = false
+                    withAnimation(.bouncy.speed(speed)){
+                        offset = liftUpOffSet
+                        canSignIn = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + twoDelay){
+                        withAnimation{
+                            proceed = true
+                        }
                     }
                 }
             }
