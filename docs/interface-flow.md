@@ -1,16 +1,16 @@
 ## Interface Flow Diagram (IOS/Android/Browser)
 ```mermaid
 flowchart TD
-    A(Start) --> B
+    A(Start) --> AA[Init Layout]
     subgraph Splash Screen
-      B[Init Layout] --> C
+      AA --> AB{isRegistered}
       subgraph Device Registration
-        C{isRegistered} --> |No| D[Register RPC]
+        AB --> |No| AC[Register RPC]
       end
-      D --> K[GET user Data]
+      AC --> AD[GET user Data]
     end
-    K --> Y
+    AD --> BA
     subgraph Dashboard Screen
-      Y[Init layout]
+      BA[Init layout]
     end
 ```
