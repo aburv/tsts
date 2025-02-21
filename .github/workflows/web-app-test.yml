@@ -1,0 +1,57 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Web App - Lint, Test
+
+on:
+  pull_request:
+    path: 
+      app/web-interface/**
+
+defaults:
+  run:
+    working-directory: app/web-interface
+
+jobs:
+  Lint-and-Test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Chrome
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install xvfb
+          sudo apt-get install -y libxss1 libappindicator3-1 libindicator7
+          sudo apt-get install -y chromium-browser
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Install Dependencies
+        run: npm i
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run Tests
+        run: |
+          npm run test -- --browsers ChromeHeadless
+      
+      - name: List files in angular coverage folder
+        run: |
+          ls -l coverage/web-interface
+    
+      - name: Upload test report 
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: coverage/web-interface/index.html
