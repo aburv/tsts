@@ -27,8 +27,8 @@ class DeviceDataTest(unittest.TestCase):
             call('other', 'other', str, is_optional=False),
             call('os', 'os', str, is_optional=False),
             call('os_version', 'version', str, is_optional=False),
-            call('device_type', 'deviceType', str, data_list=["Desktop", "Phone", "Tab"]),
-            call('platform', 'platform', str, data_list=["App", "Browser"])
+            call('device_type', 'deviceType', str, data_list=["D", "P", "T"]),
+            call('platform', 'platform', str, data_list=["A", "B"])
         ])
 
     @mock.patch.object(DataModel, 'add_field', return_value=None)
