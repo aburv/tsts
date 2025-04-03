@@ -1,0 +1,5 @@
+# Web Frameworks
+Flask~=3.1.0
+
+# postgres Driver
+psycopg2-binary==2.9.9
