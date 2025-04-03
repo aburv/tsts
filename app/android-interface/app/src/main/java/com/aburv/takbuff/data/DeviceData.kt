@@ -69,7 +69,6 @@ class DeviceData {
                         email = null,
                         name = null,
                         dp = null,
-                        accessKey = null
                     )
                     CoroutineScope(Dispatchers.Default).launch {
                         deviceDB.insertDevice(newDevise)
