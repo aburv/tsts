@@ -17,7 +17,9 @@ struct SplashScreen: View {
     let name: Namespace.ID
     let logo: Namespace.ID
     
-    @Binding public var proceed: Bool
+    @Binding public var screen: Screen
+
+    let dimen: SplashDimensValues
     
     @State private var rotateDegree = 0.0
     @State private var offset = 0.0
@@ -31,12 +33,7 @@ struct SplashScreen: View {
     let subText = "Powered By"
     let companyName = "Aburv"
     
-    let appLogoSize = 150.0
-    let liftUpOffSet = -100.0
     let fullRotatingDegree = 360.0
-    
-    let appTitleSize = 35.0
-    let subTitleSize = 25.0
     
     let fullOpacity = 1.0
     let zeroOpacity = 0.0
@@ -47,17 +44,20 @@ struct SplashScreen: View {
     let twoDelay = 2.0
     let threeDelay = 3.0
     
-    let rotate = Animation.linear(duration: 1.0).speed(0.7).repeatForever(autoreverses: false)
+    let rotate = Animation
+        .linear(duration: 1.0)
+        .speed(0.7)
+        .repeatForever(autoreverses: false)
     
     var body: some View {
-        return VStack {
+        VStack {
             
             Spacer()
             
             VStack {
                 if(isLoading){
                     AppLogo()
-                        .frame(width: appLogoSize, height: appLogoSize)
+                        .frame(width: dimen.appLogoSize, height: dimen.appLogoSize)
                         .rotationEffect(.degrees(rotateDegree))
                         .onAppear {
                             withAnimation(rotate) {
@@ -68,15 +68,16 @@ struct SplashScreen: View {
                 else{
                     AppLogo()
                         .matchedGeometryEffect(id: logo, in: animation)
-                        .frame(width: appLogoSize, height: appLogoSize)
+                        .frame(width: dimen.appLogoSize, height: dimen.appLogoSize)
                 }
+                
                 Text(appName)
-                    .font(.system(size: appTitleSize))
+                    .font(.system(size: dimen.appTitleSize))
                     .foregroundColor(.white)
                     .matchedGeometryEffect(id: name, in: animation)
                 
                 Text(subTitle)
-                    .font(.system(size: subTitleSize))
+                    .font(.system(size: dimen.subTitleSize))
                     .foregroundColor(.white)
                     .opacity(isSubTitleVisible ? fullOpacity : zeroOpacity)
                     .onAppear {
@@ -95,13 +96,14 @@ struct SplashScreen: View {
             
             VStack(){
                 Text(subText)
-                    .font(.system(size: 20))
+                    .font(.system(size: dimen.poweredByTextSize))
                     .foregroundColor(.white)
                 Text(companyName).bold()
-                    .font(.system(size: 30))
+                    .font(.system(size: dimen.companyTextSize))
                     .foregroundColor(.white)
             }
         }
+        .frame(maxWidth: .infinity)
         .onAppear{
             DeviceData().isRegistered(modelContext: modelContext, device: device)
             UserData().getAppData { data, error in
@@ -109,16 +111,59 @@ struct SplashScreen: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + threeDelay){
                     isLoading = false
                     withAnimation(.bouncy.speed(speed)){
-                        offset = liftUpOffSet
+                        offset = dimen.liftUpOffSet
                         canSignIn = true
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + twoDelay){
                         withAnimation{
-                            proceed = true
+                            screen = .HOME
                         }
                     }
                 }
             }
         }
+    }
+}
+
+struct SplashDimensValues {
+    let topSpace: CGFloat = 250.0
+    
+    let appLogoSize: CGFloat
+    let liftUpOffSet: CGFloat
+    
+    let appTitleSize: CGFloat
+    let subTitleSize: CGFloat
+    
+    let poweredByTextSize: CGFloat
+    let companyTextSize: CGFloat
+    
+    init(screenDimenType: ScreenDimenType, height: CGFloat){
+        switch(screenDimenType){
+        case .MOBILE:
+            appLogoSize = 100.0
+            appTitleSize = 35.0
+            subTitleSize = 25.0
+            poweredByTextSize = 20.0
+            companyTextSize = 30.0
+        case .MIN_TABLET:
+            appLogoSize = 150.0
+            appTitleSize = 54.0
+            subTitleSize = 44.0
+            poweredByTextSize = 35.0
+            companyTextSize = 45.0
+        case .TABLET:
+            appLogoSize = 180.0
+            appTitleSize = 54.0
+            subTitleSize = 44.0
+            poweredByTextSize = 35.0
+            companyTextSize = 45.0
+        case .DESKTOP:
+            appLogoSize = 200.0
+            appTitleSize = 64.0
+            subTitleSize = 54.0
+            poweredByTextSize = 45.0
+            companyTextSize = 55.0
+        }
+        liftUpOffSet = 0 - ((height/2) - topSpace)
     }
 }
