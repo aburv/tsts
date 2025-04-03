@@ -118,3 +118,4 @@ class Relation(enum.Enum):
     AUDIT_FIELD = Table("audit_field", False)
     DEVICE = Table("device", True)
     IMAGE = Table("t_image", True)
+    LOCATION = Table("t_location", True)

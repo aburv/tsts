@@ -117,3 +117,5 @@ class RelationTest(unittest.TestCase):
         self.assertEqual(Relation.DEVICE.value.get_name(), 'device')
         self.assertTrue(isinstance(Relation.IMAGE, Relation))
         self.assertEqual(Relation.IMAGE.value.get_name(), 't_image')
+        self.assertTrue(isinstance(Relation.LOCATION, Relation))
+        self.assertEqual(Relation.LOCATION.value.get_name(), 't_location')
