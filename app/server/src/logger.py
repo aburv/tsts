@@ -31,3 +31,12 @@ class LoggerAPI:
         :rtype:
         """
         self.logger.error(message)
+
+    def warning_entry(self, message) -> None:
+        """
+        :param message:
+        :type message:
+        :return:
+        :rtype:
+        """
+        self.logger.warning(message)

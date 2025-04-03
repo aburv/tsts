@@ -3,6 +3,7 @@ import unittest
 from unittest import mock
 
 from src.config import Config, Table, Relation
+from src.responses import DataValidationException
 
 
 class ConfigTest(unittest.TestCase):
@@ -51,6 +52,37 @@ class ConfigTest(unittest.TestCase):
         expected = "host:port"
         actual = Config.get_broker_connection_string()
         self.assertEqual(expected, actual)
+
+    @mock.patch.dict(os.environ, {
+        "AUTH_HOST": "host",
+        "AUTH_PORT": "port"}, clear=True)
+    def test_should_return_auth_connection_string(self):
+        actual = Config.get_auth_connection_string()
+        self.assertEqual("host:port", actual)
+
+    @mock.patch.dict(os.environ, {
+        "SEPARATOR": "separator_str"}, clear=True)
+    def test_should_return_separator_string(self):
+        actual = Config.get_separator()
+        self.assertEqual("separator_str", actual)
+
+    @mock.patch.object(Config, "get_separator", return_value="separator_str")
+    def test_should_return_tokens_on_get_tokens(self, mock_get_separator):
+        actual = Config.get_tokens("token1separator_strtoken2")
+
+        mock_get_separator.assert_called_once_with()
+        self.assertEqual(('token1', 'token2'), actual)
+
+    @mock.patch.object(DataValidationException, "__init__", return_value=None)
+    @mock.patch.object(Config, "get_separator", return_value="separator_str")
+    def test_should_raise_data_validation_exception_when_no_separator_on_get_tokens(self,
+                                                                                    mock_get_separator,
+                                                                                    mock_exception):
+        with self.assertRaises(DataValidationException):
+            actual = Config.get_tokens("token1token2")
+
+        mock_exception.assert_called_once_with('Invalid Tokens ', 'token1token2 list index out of range')
+        mock_get_separator.assert_called_once_with()
 
     @mock.patch.dict(os.environ, {
         "WEB_CLIENT_KEY": "test_web_key",

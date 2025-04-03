@@ -4,6 +4,8 @@ Methods returning system config
 import enum
 import os
 
+from src.responses import DataValidationException
+
 
 class Config:
     """
@@ -45,6 +47,33 @@ class Config:
         :rtype:
         """
         return os.environ.get("BROKER_HOST") + ":" + os.environ.get("BROKER_PORT")
+
+    @staticmethod
+    def get_auth_connection_string() -> str:
+        """
+        :return:
+        :rtype:
+        """
+        return os.environ.get("AUTH_HOST") + ":" + os.environ.get("AUTH_PORT")
+
+    @staticmethod
+    def get_separator() -> str:
+        """
+        :return:
+        :rtype:
+        """
+        return os.environ.get("SEPARATOR")
+
+    @staticmethod
+    def get_tokens(token: str) -> (str, str):
+        """
+        Get tokens from given token
+        """
+        try:
+            tokens = token.split(Config.get_separator())
+            return (tokens[0]), (tokens[1])
+        except Exception as e:
+            raise DataValidationException("Invalid Tokens ", f"{token} {e}")
 
     @staticmethod
     def get_api_keys() -> list:

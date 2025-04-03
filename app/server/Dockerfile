@@ -12,4 +12,5 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
 RUN python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/broker.proto
+RUN python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/authentication.proto
 CMD gunicorn -w 1 -b 0.0.0.0:5000 src.main:APP
