@@ -17,6 +17,7 @@
 		4741C5B42A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */; };
 		475E211F2B3A039C004DA9BD /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E211E2B3A039C004DA9BD /* ImageView.swift */; };
 		475E21212B3A03D7004DA9BD /* InputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E21202B3A03D7004DA9BD /* InputText.swift */; };
+		475E2B432D97DAF800AF5026 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475E2B422D97DAF800AF5026 /* Screen.swift */; };
 		4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8402B3355AD000C6B06 /* AppLogo.swift */; };
 		4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8412B3355AD000C6B06 /* SearchLayout.swift */; };
 		4776B8472B3355AD000C6B06 /* SearchList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8422B3355AD000C6B06 /* SearchList.swift */; };
@@ -63,6 +64,7 @@
 		4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = takbuffUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		475E211E2B3A039C004DA9BD /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		475E21202B3A03D7004DA9BD /* InputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputText.swift; sourceTree = "<group>"; };
+		475E2B422D97DAF800AF5026 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		4776B8402B3355AD000C6B06 /* AppLogo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppLogo.swift; sourceTree = "<group>"; };
 		4776B8412B3355AD000C6B06 /* SearchLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchLayout.swift; sourceTree = "<group>"; };
 		4776B8422B3355AD000C6B06 /* SearchList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchList.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 		4741C5952A9625DF00D73EA0 /* takbuff */ = {
 			isa = PBXGroup;
 			children = (
+				475E2B412D97DAF200AF5026 /* models */,
 				47F4B2592CA564A0007FD5D6 /* data */,
 				47F4B2562CA55497007FD5D6 /* Data.swift */,
 				47F4B2512CA33487007FD5D6 /* db */,
@@ -167,6 +170,14 @@
 				4741C5B32A9625E000D73EA0 /* takbuffUITestsLaunchTests.swift */,
 			);
 			path = takbuffUITests;
+			sourceTree = "<group>";
+		};
+		475E2B412D97DAF200AF5026 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				475E2B422D97DAF800AF5026 /* Screen.swift */,
+			);
+			path = models;
 			sourceTree = "<group>";
 		};
 		4776B83E2B33552C000C6B06 /* screens */ = {
@@ -278,7 +289,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					4741C5922A9625DF00D73EA0 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -355,6 +366,7 @@
 				475E21212B3A03D7004DA9BD /* InputText.swift in Sources */,
 				4776B8472B3355AD000C6B06 /* SearchList.swift in Sources */,
 				4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */,
+				475E2B432D97DAF800AF5026 /* Screen.swift in Sources */,
 				4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */,
 				4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */,
 				4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */,
@@ -526,8 +538,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -557,8 +568,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
