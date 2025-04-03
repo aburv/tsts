@@ -1,12 +1,11 @@
 import unittest
 from unittest import mock
 
-from src.services.auth_service import AuthServices
-
 from src.app import App
 from src.caching import Caching
 from src.config import Config
 from src.responses import ValidResponse, APIException, APIResponse, CachedResponse, SecurityException
+from src.services.auth_service import AuthServices
 from src.user.service import UserServices
 
 

@@ -23,3 +23,11 @@ class OptionData:
         :rtype: list
         """
         return {"D": "Desktop", "P": "Phone", "T": "Tab"}
+
+    @staticmethod
+    def get_id_types() -> dict:
+        """
+        :return: user id types
+        :rtype: list
+        """
+        return {"P": "Phone", "M": "Mail"}

@@ -119,3 +119,6 @@ class Relation(enum.Enum):
     DEVICE = Table("device", True)
     IMAGE = Table("t_image", True)
     LOCATION = Table("t_location", True)
+    USER = Table("t_user", True)
+    UID = Table("user_identifier", True)
+    ROLE = Table("t_role", True)
