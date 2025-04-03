@@ -1,9 +1,14 @@
 import unittest
+from io import BytesIO
 from unittest import mock
+from unittest.mock import MagicMock
+
+from werkzeug.datastructures import FileStorage
 
 from src.db_duo import PostgresDbDuo
 from src.image.data import ImageData
 from src.image.service import ImageServices
+from src.responses import RuntimeException
 
 
 class ImageServiceTest(unittest.TestCase):
@@ -45,6 +50,75 @@ class ImageServiceTest(unittest.TestCase):
         mock_insert.assert_called_once_with("")
 
         self.assertEqual(actual, "image_id")
+
+    @mock.patch.object(ImageServices, 'add', return_value="image_id")
+    @mock.patch('src.image.service.FileStorage')
+    @mock.patch('src.image.service.BytesIO')
+    @mock.patch('requests.get')
+    def test_should_return_inserted_image_id_after_load_on_load_and_save(self,
+                                                                         mock_request_get,
+                                                                         mock_io_byteio,
+                                                                         mock_file,
+                                                                         mock_image_add
+                                                                         ):
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b'image_byte'
+        mock_request_get.return_value = mock_response
+
+        mock_bytes_io_instance = MagicMock(spec=BytesIO)
+        mock_io_byteio.return_value = mock_bytes_io_instance
+
+        mock_file_storage_instance = MagicMock(spec=FileStorage)
+        mock_file.return_value = mock_file_storage_instance
+
+        with mock.patch.object(ImageServices, '__init__', return_value=None):
+            service = ImageServices()
+
+        actual = service.load_and_save("url", "u_id")
+
+        mock_io_byteio.assert_called_once_with(mock_response.content)
+        mock_file.assert_called_once_with(mock_bytes_io_instance, "u_id")
+
+        mock_image_add.assert_called_once_with(mock_file(), "u_id")
+
+        self.assertEqual(actual, "image_id")
+
+    @mock.patch.object(RuntimeException, '__init__', return_value=None)
+    @mock.patch.object(ImageServices, 'add', return_value="image_id")
+    @mock.patch('src.image.service.FileStorage')
+    @mock.patch('src.image.service.BytesIO')
+    @mock.patch('requests.get')
+    def test_should_raise_runtime_exception_when_load_is_not_success_on_load_and_save(self,
+                                                                                      mock_request_get,
+                                                                                      mock_io_byteio,
+                                                                                      mock_file,
+                                                                                      mock_image_add,
+                                                                                      mock_exception
+                                                                                      ):
+        mock_response = MagicMock()
+        mock_response.status_code = 400
+        mock_response.content = b'image_byte'
+        mock_request_get.return_value = mock_response
+
+        mock_bytes_io_instance = MagicMock(spec=BytesIO)
+        mock_io_byteio.return_value = mock_bytes_io_instance
+
+        mock_file_storage_instance = MagicMock(spec=FileStorage)
+        mock_file.return_value = mock_file_storage_instance
+
+        with mock.patch.object(ImageServices, '__init__', return_value=None):
+            service = ImageServices()
+
+        with self.assertRaises(RuntimeException):
+            service.load_and_save("url", "u_id")
+
+        assert not mock_io_byteio.called
+        assert not mock_file.called
+
+        assert not mock_image_add.called
+
+        mock_exception.assert_called_once_with("Unable to load an image", "url u_id")
 
     @mock.patch('zlib.decompress', return_value=b'image_bytes')
     @mock.patch.object(PostgresDbDuo, 'get_records')
