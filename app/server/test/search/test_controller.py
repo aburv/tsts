@@ -44,7 +44,7 @@ class SearchControllerTest(unittest.TestCase):
 
         mock_cache_get.assert_called_once_with('myapp:search/text:text')
         mock_cache_set.assert_called_once_with('myapp:search/text:text', [], timeout=60)
-        mock_search.assert_called_once_with("text")
+        mock_search.assert_called_once_with("text", "")
         mock_service_init.assert_called_once_with()
         mock_response_init.assert_called_once_with(domain='Search Results', detail='text', data=[])
         mock_response_get_data.assert_called_once_with()
@@ -123,6 +123,6 @@ class SearchControllerTest(unittest.TestCase):
 
         mock_cache_get.assert_called_once_with('myapp:search/text:text')
         mock_service_init.assert_called_once_with()
-        mock_search.assert_called_once_with("text")
+        mock_search.assert_called_once_with("text", "")
         mock_response.assert_called_once_with()
         self.assertEqual(expected_response_data, actual_response.data)
