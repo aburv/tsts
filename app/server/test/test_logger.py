@@ -38,8 +38,8 @@ class LoggerTest(unittest.TestCase):
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     @mock.patch.object(Logger, 'error')
     def test_should_log_error(self,
-                               mock_error,
-                               mock_init_logger):
+                              mock_error,
+                              mock_init_logger):
         message = 'message'
 
         logger = LoggerAPI()
@@ -47,4 +47,18 @@ class LoggerTest(unittest.TestCase):
         logger.error_entry(message)
 
         mock_error.assert_called_once_with(message)
+        mock_init_logger.assert_called_once_with()
+
+    @mock.patch.object(LoggerAPI, '__init__', return_value=None)
+    @mock.patch.object(Logger, 'warning')
+    def test_should_log_warn(self,
+                             mock_warn,
+                             mock_init_logger):
+        message = 'message'
+
+        logger = LoggerAPI()
+        logger.logger = logging.getLogger('src.logger')
+        logger.warning_entry(message)
+
+        mock_warn.assert_called_once_with(message)
         mock_init_logger.assert_called_once_with()

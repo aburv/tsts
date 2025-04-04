@@ -4,7 +4,7 @@ Device Controller
 
 from flask import Blueprint, Response, request
 
-from src.auth import client_auth
+from src.auth import validate
 from src.device.service import DeviceServices
 from src.responses import ValidResponse, APIException
 
@@ -12,7 +12,7 @@ DEVICE_BLUEPRINT = Blueprint('device', __name__)
 
 
 @DEVICE_BLUEPRINT.route("/register", methods=["POST"])
-@client_auth
+@validate(is_required=False)
 def set_device_data() -> Response:
     """
     :return:

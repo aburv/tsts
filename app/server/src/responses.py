@@ -57,9 +57,12 @@ class APIException(Exception):
     """
     logger = LoggerAPI()
 
-    def __init__(self, msg, content: str, error_type: str, status_code: int) -> None:
+    def __init__(self, msg, content: str, error_type: str, status_code: int, is_error: bool = True) -> None:
         super().__init__(msg)
-        APIException.logger.error_entry(f"{status_code} {error_type} {msg} : {content}")
+        if is_error:
+            APIException.logger.error_entry(f"{status_code} {error_type} {msg} : {content}")
+        else:
+            APIException.logger.warning_entry(f"{status_code} {error_type} {msg} : {content}")
         self.msg = msg
         self.content = content
         self.error_type = error_type
@@ -98,7 +101,7 @@ class SecurityException(APIException):
     """
 
     def __init__(self, msg: str, content: str) -> None:
-        super().__init__(msg, content, error_type='SecurityException', status_code=401)
+        super().__init__(msg, content, error_type='SecurityException', status_code=401, is_error=False)
 
 
 class DataValidationException(APIException):
@@ -107,7 +110,7 @@ class DataValidationException(APIException):
     """
 
     def __init__(self, msg: str, content: str) -> None:
-        super().__init__(msg, content, error_type='DataValidationException', status_code=400)
+        super().__init__(msg, content, error_type='DataValidationException', status_code=400, is_error=False)
 
 
 class DBConnectionException(APIException):
@@ -135,3 +138,12 @@ class TableNotFoundException(APIException):
 
     def __init__(self, table_name: str) -> None:
         super().__init__("", table_name, error_type='TableNotFoundException', status_code=2)
+
+
+class RecordNotFoundException(APIException):
+    """
+    404 RecordNotFoundException
+    """
+
+    def __init__(self, domain: str, record_id: str) -> None:
+        super().__init__(record_id, domain, error_type='RecordNotFoundException', status_code=404)

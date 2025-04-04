@@ -5,7 +5,7 @@ from flask import Flask
 
 from src.logger import LoggerAPI
 from src.responses import ValidResponse, SecurityException, TableNotFoundException, DBConnectionException, \
-    DBExecutionException, DataValidationException, RuntimeException, CachedResponse
+    DBExecutionException, DataValidationException, RuntimeException, CachedResponse, RecordNotFoundException
 
 
 class ExceptionTest(unittest.TestCase):
@@ -47,15 +47,15 @@ class ExceptionTest(unittest.TestCase):
         self.assertEqual(expected, actual.data)
         self.assertEqual(200, actual.status_code)
 
-    @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
+    @mock.patch.object(LoggerAPI, 'warning_entry', return_value=None)
     def test_should_return_auth_exception_with_context(self,
-                                                       mock_error_entry):
+                                                       mock_warning_entry):
         expected = b'{"error":{"message":"message","type":"SecurityException"}}\n'
 
         with self.app.app_context():
             actual = SecurityException('message', 'content').get_response_json()
 
-        mock_error_entry.assert_called_once_with("401 SecurityException message : content")
+        mock_warning_entry.assert_called_once_with("401 SecurityException message : content")
         self.assertEqual(expected, actual.data)
         self.assertEqual(401, actual.status_code)
 
@@ -71,15 +71,15 @@ class ExceptionTest(unittest.TestCase):
         self.assertEqual(expected, actual.data)
         self.assertEqual(500, actual.status_code)
 
-    @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
+    @mock.patch.object(LoggerAPI, 'warning_entry', return_value=None)
     def test_should_return_validation_exception_with_context(self,
-                                                             mock_error_entry):
+                                                             mock_warning_entry):
         expected = b'{"error":{"message":"message","type":"DataValidationException"}}\n'
 
         with self.app.app_context():
             actual = DataValidationException('message', 'content').get_response_json()
 
-        mock_error_entry.assert_called_once_with("400 DataValidationException message : content")
+        mock_warning_entry.assert_called_once_with("400 DataValidationException message : content")
         self.assertEqual(expected, actual.data)
         self.assertEqual(400, actual.status_code)
 
@@ -118,3 +118,15 @@ class ExceptionTest(unittest.TestCase):
         mock_error_entry.assert_called_once_with("1 DBExecutionException operation : message")
         self.assertEqual(expected, actual.data)
         self.assertEqual(500, actual.status_code)
+
+    @mock.patch.object(LoggerAPI, 'error_entry', return_value=None)
+    def test_should_return_the_record_not_found_exception_with_context(self,
+                                                                       mock_error_entry):
+        expected = b'{"error":{"message":"r_id","type":"RecordNotFoundException"}}\n'
+
+        with self.app.app_context():
+            actual = RecordNotFoundException('table', 'r_id').get_response_json()
+
+        mock_error_entry.assert_called_once_with("404 RecordNotFoundException r_id : table")
+        self.assertEqual(expected, actual.data)
+        self.assertEqual(404, actual.status_code)

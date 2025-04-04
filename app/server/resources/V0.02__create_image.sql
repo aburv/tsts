@@ -1,4 +1,4 @@
-CREATE TABLE t_image (
+CREATE TABLE IF NOT EXISTS t_image (
     id VARCHAR(36) PRIMARY KEY,
     i_name VARCHAR(100),
     original BYTEA,
@@ -8,4 +8,4 @@ CREATE TABLE t_image (
     three BYTEA
 );
 
-CREATE INDEX idx_image ON t_image(id);
+CREATE INDEX IF NOT EXISTS idx_image ON t_image(id);

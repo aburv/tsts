@@ -53,7 +53,7 @@ class PingControllerTest(unittest.TestCase):
         mock_keys.assert_called()
         mock_exception_init.assert_called_once_with('Client', 'Not Authenticated',
                                                     error_type='SecurityException',
-                                                    status_code=401)
+                                                    status_code=401, is_error=False)
         self.assertEqual(expected_response_data, actual_response.data)
 
     def test_should_return_success_response_on_aws_ping(self):
