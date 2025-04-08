@@ -31,12 +31,14 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     @mock.patch.dict(os.environ, {
+        "REDIS_USER": 'user',
         "REDIS_PASSWORD": 'pass',
         "REDIS_HOST": 'host',
         "REDIS_PORT": 'port',
     }, clear=True)
     def test_should_return_redis_db_creds_on_get_caching_parameters(self):
         expected = {
+            'user': 'user',
             'host': 'host',
             'pass': 'pass',
             'port': 'port',

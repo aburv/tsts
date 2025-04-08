@@ -35,6 +35,7 @@ class Config:
         :rtype:
         """
         return {
+            "user": os.environ.get("REDIS_USER"),
             "pass": os.environ.get("REDIS_PASSWORD"),
             "host": os.environ.get("REDIS_HOST"),
             "port": os.environ.get("REDIS_PORT"),
