@@ -29,9 +29,9 @@ class AuthServices:
         """
         try:
             login_request = LoginRequest(userId=user_id)
-            response = self.client.Login(login_request,
-                                         # metadata=self.metadata
-                                         )
+            response = self.client.Login(
+                login_request,
+            )
             return response.idToken, response.accessToken
         except grpc.RpcError as e:
             raise RuntimeException("Error in authenticating", f"{e}") from e

@@ -11,9 +11,11 @@ services:
     links:
       - "postgresDb:postgresDb"
       - "redisCaching:redisCaching"
+      - "auth:auth"
     depends_on:
       - postgresDb
       - redisCaching
+      - auth
   init:
     build:
       context: .
@@ -46,6 +48,15 @@ services:
       - redis_data:/data
     networks:
       - redis_network
+  auth:
+    image: auth:latest
+    container_name: auth
+    ports:
+      - "50051:50051"
+    links:
+      - "postgresDb:postgresDb"
+    env_file: auth.env
+    restart: unless-stopped
 
 volumes:
   redis_data:
