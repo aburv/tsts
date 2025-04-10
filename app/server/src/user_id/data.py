@@ -46,12 +46,12 @@ class UserIDData(DataModel):
             return ["val", "g_id", "is_verified"]
         return ["t_user", "is_verified"]
 
-    def get_filtering_fields(self):
+    def get_filtering_fields(self) -> list:
         if self._filter_type == "id":
             return ["t_user"]
         return ["val", "type"]
 
-    def get_record_count(self):
+    def get_record_count(self) -> int | None:
         if self._filter_type == "id":
             return 1
         return None

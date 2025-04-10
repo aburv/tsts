@@ -65,6 +65,16 @@ class PostgresDbDuo:
         except Exception as e:
             raise DBExecutionException('Is Table exist', f'{self._data.get_table_name()} on {e}') from e
 
+    def get_record_field_value(self) -> str | None:
+        """
+        Get record value
+        """
+        records = self.get_records()
+        if len(records) > 0:
+            field = self._data.get_filtering_fields()[0]
+            return records[0][field]
+        return None
+
     def get_records(self) -> list:
         """
         Get records by filter on condition and

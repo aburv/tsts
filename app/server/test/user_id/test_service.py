@@ -66,7 +66,7 @@ class UserIdServiceTest(unittest.TestCase):
                                                               mock_db):
         with mock.patch.object(UserIdServices, '__init__', return_value=None):
             service = UserIdServices()
-            mock_db.get_records.return_value = [{"id": "user_id"}]
+            mock_db.get_record_field_value.return_value = "user_id"
             mock_data.get_filtering_fields.return_value = ["id"]
             service._db = mock_db
             service._data = mock_data
@@ -74,27 +74,6 @@ class UserIdServiceTest(unittest.TestCase):
         actual = service.get_user_id_by_id_value("user_mail_id")
 
         mock_data.on_select.assert_called_once_with({'value': 'user_mail_id', 'is_verified': True}, 'id')
-        mock_db.get_records.assert_called_once_with()
-        mock_data.get_filtering_fields.assert_called_once_with()
+        mock_db.get_record_field_value.assert_called_once_with()
 
         self.assertEqual(actual, "user_id")
-
-    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
-    @mock.patch.object(UserIDData, '__init__', return_value=None)
-    def test_should_return_none_when_no_id_on_get_user_id_by_id_value(self,
-                                                                      mock_data,
-                                                                      mock_db):
-        with mock.patch.object(UserIdServices, '__init__', return_value=None):
-            service = UserIdServices()
-            mock_db.get_records.return_value = []
-            mock_data.get_filtering_fields.return_value = ["id"]
-            service._db = mock_db
-            service._data = mock_data
-
-        actual = service.get_user_id_by_id_value("user_mail_id")
-
-        mock_data.on_select.assert_called_once_with({'value': 'user_mail_id', 'is_verified': True}, 'id')
-        mock_db.get_records.assert_called_once_with()
-        assert not mock_data.get_filtering_fields.called
-
-        self.assertEqual(actual, None)

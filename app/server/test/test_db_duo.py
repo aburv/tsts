@@ -201,6 +201,58 @@ class DbDuoTest(unittest.TestCase):
         mock_exception.assert_called_once_with('Is Table exist', 'table on error')
         assert not db.con.commit.called
 
+    @mock.patch.object(Table, '__init__', return_value=None)
+    @mock.patch.object(PostgresDbDuo, 'get_records')
+    @mock.patch.object(DataModel, 'get_filtering_fields', return_value=["field"])
+    def test_should_return_value_when_get_records_has_value_on_get_record_field_value(self,
+                                                                                      mock_get_filtering_fields,
+                                                                                      mock_get_records,
+                                                                                      mock_table
+                                                                                      ):
+        mock_get_records.return_value = [{"field": "value"}]
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            model = DataModel(Relation.INIT)
+            mock_table.schema_type = False
+            model.table = mock_table
+
+        with mock.patch.object(PostgresDbDuo, '__init__', return_value=None):
+            db = PostgresDbDuo(model)
+            db._data = model
+            db._schema = 'schema'
+
+        actual = db.get_record_field_value()
+
+        mock_get_records.assert_called_once_with()
+        mock_get_filtering_fields.assert_called_once_with()
+
+        self.assertEqual(actual, "value")
+
+    @mock.patch.object(Table, '__init__', return_value=None)
+    @mock.patch.object(PostgresDbDuo, 'get_records')
+    @mock.patch.object(DataModel, 'get_filtering_fields', return_value=["field"])
+    def test_should_return_none_when_get_records_has_no_value_on_get_record_field_value(self,
+                                                                                        mock_get_filtering_fields,
+                                                                                        mock_get_records,
+                                                                                        mock_table
+                                                                                        ):
+        mock_get_records.return_value = []
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            model = DataModel(Relation.INIT)
+            mock_table.schema_type = False
+            model.table = mock_table
+
+        with mock.patch.object(PostgresDbDuo, '__init__', return_value=None):
+            db = PostgresDbDuo(model)
+            db._data = model
+            db._schema = 'schema'
+
+        actual = db.get_record_field_value()
+
+        mock_get_records.assert_called_once_with()
+        assert not mock_get_filtering_fields.called
+
+        self.assertEqual(actual, None)
+
     @mock.patch.object(TableNotFoundException, '__init__', return_value=None)
     @mock.patch.object(Table, '__init__', return_value=None)
     @mock.patch.object(DataModel, 'frame_records')

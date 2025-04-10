@@ -33,8 +33,4 @@ class UserIdServices:
         Get user id by id value
         """
         self._data.on_select({"value": id_value, "is_verified": True}, "id")
-        records = self._db.get_records()
-        if len(records) > 0:
-            field = self._data.get_filtering_fields()[0]
-            return records[0][field]
-        return None
+        return self._db.get_record_field_value()
