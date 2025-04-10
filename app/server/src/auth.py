@@ -5,14 +5,14 @@ from functools import wraps
 
 from flask import request
 
-from src.services.auth_service import AuthServices
 from src.config import Config
 from src.responses import SecurityException, APIException
+from src.services.auth_service import AuthServices
 
 
-def validate(is_required: bool = True, resource: str = "", permission: str = ""):
+def validate(is_auth_mandatory: bool = True, is_required: bool = True, resource: str = "", permission: str = ""):
     """
-    :param is_required:
+    :param is_auth_mandatory:
     :param resource:
     :type resource:
     :param permission:
@@ -32,11 +32,15 @@ def validate(is_required: bool = True, resource: str = "", permission: str = "")
 
                 if is_required:
                     token = request.headers.get('x-access-key', "")
-                    if token == "":
+                    if is_auth_mandatory and token == "":
                         raise SecurityException('User Token', 'Not found')
 
-                    id_token, access_token = Config.get_tokens(token)
-                    user_id = AuthServices().validate_token(id_token, access_token, resource, record_id, permission)
+                    if token != "":
+                        id_token, access_token = Config.get_tokens(token)
+                        user_id = AuthServices().validate_token(id_token, access_token, resource, record_id, permission)
+
+                    else:
+                        user_id = None
                     return func(*args, **kwargs, user_id=user_id)
                 return func(*args, **kwargs)
             except APIException as e:

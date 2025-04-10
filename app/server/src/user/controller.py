@@ -12,7 +12,7 @@ USER_BLUEPRINT = Blueprint('user', __name__)
 
 
 @USER_BLUEPRINT.route("/app", methods=["GET"])
-@validate()
+@validate(is_auth_mandatory=False)
 @get_if_cached("app_user")
 def get_user_data(user_id: str | None) -> APIResponse:
     """
