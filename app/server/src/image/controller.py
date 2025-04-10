@@ -13,6 +13,7 @@ IMAGE_BLUEPRINT = Blueprint('image', __name__)
 
 IMAGE_TAG = "image"
 
+
 @IMAGE_BLUEPRINT.route("/add", methods=["POST"])
 @validate(resource=IMAGE_TAG, permission="create")
 def add_image(user_id: str | None) -> Response:
