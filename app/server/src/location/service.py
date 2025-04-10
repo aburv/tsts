@@ -27,8 +27,15 @@ class LocationServices:
         """
         Get location by id
         """
-        self._data.on_select({"id": location_id}, 's')
+        self._data.on_select({"id": location_id}, 'id')
         data = self._db.get_records()
         if len(data) > 0:
             return data[0]
         raise RecordNotFoundException("Location", location_id)
+
+    def get_location_id_by_long_lat(self, long: str, lat: str) -> str | None:
+        """
+        Get location id by longitude and latitude
+        """
+        self._data.on_select({"long": long, "lat": lat}, "point")
+        return self._db.get_record_field_value()

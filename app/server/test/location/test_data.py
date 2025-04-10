@@ -52,10 +52,20 @@ class LocationDataTest(unittest.TestCase):
     def test_should_return_query_fields_on_get_querying_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             data = LocationData()
+            data._filter_type = ""
 
         actual = data.get_querying_fields()
 
         self.assertEqual(['id'], actual)
+
+    def test_should_return_lat_long_field_when_filter_type_is_point_on_get_querying_fields(self):
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            data = LocationData()
+            data._filter_type = "point"
+
+        actual = data.get_querying_fields()
+
+        self.assertEqual(['long', 'lat'], actual)
 
     @mock.patch.object(DataModel, 'add_field', return_value=None)
     def test_should_return_none_on_add_fields(self, mock_add_field):
@@ -65,7 +75,9 @@ class LocationDataTest(unittest.TestCase):
         data.add_fields()
 
         mock_add_field.assert_has_calls([
-            call('id', 'id', str)
+            call('id', 'id', str),
+            call('long', 'long', str),
+            call('lat', 'lat', str)
         ])
 
     @mock.patch.object(DataModel, 'set_data')
@@ -81,11 +93,20 @@ class LocationDataTest(unittest.TestCase):
     def test_should_return_short_fields_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = LocationData()
-            image_data._filter_type = 's'
+            image_data._filter_type = 'id'
 
         actual = image_data.get_filtering_fields()
 
         self.assertEqual(['l_name', 'lat', 'long'], actual)
+
+    def test_should_return_id_field_when_filter_type_is_point_on_get_filtering_fields(self):
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            image_data = LocationData()
+            image_data._filter_type = 'point'
+
+        actual = image_data.get_filtering_fields()
+
+        self.assertEqual(['id'], actual)
 
     def test_should_return_long_fields_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):

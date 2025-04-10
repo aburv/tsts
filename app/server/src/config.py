@@ -123,3 +123,4 @@ class Relation(enum.Enum):
     USER = Table("t_user", True)
     UID = Table("user_identifier", True)
     ROLE = Table("t_role", True)
+    LOGIN = Table("t_login", True)

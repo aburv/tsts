@@ -31,8 +31,12 @@ class LocationData(DataModel):
 
     def add_fields(self):
         self.add_field('id', "id", str)
+        self.add_field('long', "long", str)
+        self.add_field('lat', "lat", str)
 
     def get_querying_fields(self) -> list:
+        if self._filter_type == "point":
+            return ['long', 'lat']
         return ['id']
 
     def get_record_count(self) -> int | None:
@@ -46,6 +50,8 @@ class LocationData(DataModel):
         self._filter_type = _filter_type
 
     def get_filtering_fields(self) -> list:
-        if self._filter_type == "s":
+        if self._filter_type == "id":
             return ['l_name', 'lat', 'long']
+        if self._filter_type == "point":
+            return ['id']
         return ['l_name', 'locality', 'l_city', 'l_state', 'l_country', 'l_pin', 'lat', 'long']

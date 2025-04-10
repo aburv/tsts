@@ -63,7 +63,7 @@ class LocationServiceTest(unittest.TestCase):
         actual = service.get_location_by_id("location_id")
 
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, 's')
+        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, 'id')
 
         self.assertEqual(actual, {"data": "location_data"})
 
@@ -87,4 +87,23 @@ class LocationServiceTest(unittest.TestCase):
 
         mock_exception.assert_called_once_with('Location', 'location_id')
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, "s")
+        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, "id")
+
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(LocationData, '__init__', return_value=None)
+    def test_should_return_location_id_on_get_location_id_by_long_lat(self,
+                                                                      mock_data,
+                                                                      mock_db):
+        with mock.patch.object(LocationServices, '__init__', return_value=None):
+            service = LocationServices()
+            mock_db.get_record_field_value.return_value = "location_id"
+            mock_data.get_filtering_fields.return_value = ["id"]
+            service._db = mock_db
+            service._data = mock_data
+
+        actual = service.get_location_id_by_long_lat("long", "lat")
+
+        mock_data.on_select.assert_called_once_with({'long': 'long', 'lat': 'lat'}, 'point')
+        mock_db.get_record_field_value.assert_called_once_with()
+
+        self.assertEqual(actual, "location_id")

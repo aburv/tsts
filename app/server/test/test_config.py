@@ -127,3 +127,5 @@ class RelationTest(unittest.TestCase):
         self.assertEqual(Relation.UID.value.get_name(), 'user_identifier')
         self.assertTrue(isinstance(Relation.ROLE, Relation))
         self.assertEqual(Relation.ROLE.value.get_name(), 't_role')
+        self.assertTrue(isinstance(Relation.LOGIN, Relation))
+        self.assertEqual(Relation.LOGIN.value.get_name(), 't_login')
