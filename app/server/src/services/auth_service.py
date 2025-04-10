@@ -8,7 +8,7 @@ import grpc
 from authentication_pb2 import LoginRequest, ValidateTokenRequest, RefreshTokenRequest
 from authentication_pb2_grpc import AuthenticationServiceStub
 from src.config import Config
-from src.responses import RuntimeException
+from src.responses import RuntimeException, SecurityException
 
 
 class AuthServices:
@@ -51,7 +51,13 @@ class AuthServices:
             response = self.client.ValidateToken(validate_request)
             return response.userId
         except grpc.RpcError as e:
+            if self.check_for_is_unauthenticated(e):
+                raise SecurityException("Invalid Token", "AccessToken")
             raise RuntimeException("Error in validating", f"{e}") from e
+
+    @staticmethod
+    def check_for_is_unauthenticated(e):
+        return e.code() == grpc.StatusCode.UNAUTHENTICATED  # pragma: no cover
 
     def refresh_token(self, id_token: str, access_token: str) -> (str, str):
         """

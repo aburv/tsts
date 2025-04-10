@@ -74,7 +74,7 @@ class Config:
             tokens = token.split(Config.get_separator())
             return (tokens[0]), (tokens[1])
         except Exception as e:
-            raise DataValidationException("Invalid Tokens ", f"{token} {e}")
+            raise DataValidationException("Invalid Tokens ", f"{token} {e}") from e
 
     @staticmethod
     def get_api_keys() -> list:

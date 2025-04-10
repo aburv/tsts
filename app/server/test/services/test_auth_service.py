@@ -7,9 +7,9 @@ from grpc import Channel
 
 from authentication_pb2 import LoginRequest, ValidateTokenRequest, RefreshTokenRequest
 from authentication_pb2_grpc import AuthenticationServiceStub
-from src.services.auth_service import AuthServices
 from src.config import Config
-from src.responses import RuntimeException
+from src.responses import RuntimeException, SecurityException
+from src.services.auth_service import AuthServices
 
 
 class AuthServicesTest(unittest.TestCase):
@@ -110,7 +110,13 @@ class AuthServicesTest(unittest.TestCase):
     @mock.patch.object(RuntimeException, "__init__", return_value=None)
     @mock.patch.object(ValidateTokenRequest, "__init__", return_value=None)
     @mock.patch.object(AuthenticationServiceStub, "__init__", return_value=None)
-    def test_should_raise_runtime_error_on_validate_token(self, mock_client, mock_request, mock_exception):
+    @mock.patch.object(AuthServices, "check_for_is_unauthenticated", return_value=False)
+    def test_should_raise_runtime_error_on_validate_token(self,
+                                                          mock_check_for_is_unauthenticated,
+                                                          mock_client,
+                                                          mock_request,
+                                                          mock_exception
+                                                          ):
         mock_client.ValidateToken.side_effect = grpc.RpcError('error')
 
         with mock.patch.object(AuthServices, "__init__", return_value=None):
@@ -123,8 +129,33 @@ class AuthServicesTest(unittest.TestCase):
         mock_request.assert_called_once_with(idToken='id_token', accessToken='access_token', objectKey='',
                                              recordId='', permission='')
         # mock_client.ValidateToken.assert_called_once_with(mock_request)
-
+        mock_check_for_is_unauthenticated.assert_called_once()
         mock_exception.assert_called_once_with('Error in validating', 'error')
+
+    @mock.patch.object(SecurityException, "__init__", return_value=None)
+    @mock.patch.object(ValidateTokenRequest, "__init__", return_value=None)
+    @mock.patch.object(AuthenticationServiceStub, "__init__", return_value=None)
+    @mock.patch.object(AuthServices, "check_for_is_unauthenticated", return_value=True)
+    def test_should_raise_security_exception_on_validate_token(self,
+                                                               mock_check_for_is_unauthenticated,
+                                                               mock_client,
+                                                               mock_request,
+                                                               mock_exception
+                                                               ):
+        mock_client.ValidateToken.side_effect = grpc.RpcError('error')
+
+        with mock.patch.object(AuthServices, "__init__", return_value=None):
+            services = AuthServices()
+            services.client = mock_client
+
+        with self.assertRaises(SecurityException):
+            services.validate_token("id_token", 'access_token', '', '', '')
+
+        mock_request.assert_called_once_with(idToken='id_token', accessToken='access_token', objectKey='',
+                                             recordId='', permission='')
+        # mock_client.ValidateToken.assert_called_once_with(mock_request)
+        mock_check_for_is_unauthenticated.assert_called_once()
+        mock_exception.assert_called_once_with('Invalid Token', 'AccessToken')
 
     @mock.patch.object(RuntimeException, "__init__", return_value=None)
     @mock.patch.object(RefreshTokenRequest, "__init__", return_value=None)
