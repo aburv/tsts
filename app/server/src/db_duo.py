@@ -113,7 +113,7 @@ class PostgresDbDuo:
             query += f" LIMIT {record_count}"
         return query, tuple(values)
 
-    def insert_record(self, my_id: str) -> None:
+    def insert_record(self, my_id: str, r_id: str | None = None) -> None:
         """
         Insert record into DB
         """
@@ -133,10 +133,12 @@ class PostgresDbDuo:
             if not self.is_operation_success("INSERT 0 1"):
                 raise DBOperationException('Data not inserted')
             if self._data.table.schema_type:
+                if r_id is None:
+                    r_id = self._data.get('id')
                 self.logger.info_entry('Updating Audits')
                 self.update_audit(
                     table_name,
-                    self._data.get('id'),
+                    r_id,
                     self._data.get_audit_payload(),
                     my_id
                 )
@@ -150,7 +152,7 @@ class PostgresDbDuo:
                     'Syntax' if (isinstance(e, SyntaxError)) else 'System') + ' error',
                 f'{table_name} {self._data.get_audit_payload()} : {e}') from e
 
-    def update_record(self, r_id: str, my_id: str) -> None:
+    def update_record(self, my_id: str, r_id: str | None = None) -> None:
         """
         Update record data by id into DB
         """
@@ -166,7 +168,7 @@ class PostgresDbDuo:
 
             self.client.execute(statement, query_values)
 
-            if not self.is_operation_success("UPDATE 0 1"):
+            if not self.is_operation_success("UPDATE 1"):
                 raise DBOperationException('Data not updated')
             if self._data.table.schema_type:
                 self.logger.info_entry('Updating Audits')
@@ -181,12 +183,12 @@ class PostgresDbDuo:
                 f'{table_name} : {self._data.get_audit_payload()} on {r_id}: {e}'
             ) from e
 
-    def get_update_statement(self):
+    def get_update_statement(self) -> (str, tuple):
         """
         Update Statement
         """
         query_param: dict = self._data.get_querying_fields_and_value()
-        updating_fields = self._data._fields
+        updating_fields = self._data.get_filtering_fields()
         query = ""
         if query_param is not None:
             query += " WHERE "
@@ -196,14 +198,18 @@ class PostgresDbDuo:
             query += " AND ".join(query_list)
             query_fields = query_param.keys()
 
-            updating_fields = {key: val for key, val in self._data._fields.items() if key not in query_fields}
+            updating_fields = {
+                key: val
+                for key, val in self._data._fields.items()
+                if key not in query_fields
+            }
         data_list = []
         values = []
         for field, value in updating_fields.items():
             values.append(str(value))
             data_list.append(f"{field}=%s")
         statement = f"UPDATE {self._data.get_table_name()} SET {', '.join(data_list)}" + query
-        return statement, tuple(query_param.values())
+        return statement, tuple(values + list(query_param.values()))
 
     def update_audit(self, table_name: str, r_id: str, data: dict, my_id: str):
         """

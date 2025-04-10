@@ -110,3 +110,5 @@ class UserDataTest(unittest.TestCase):
             call('u_name', "name", str),
             call('dp', "dp", str)
         ])
+
+        self.assertEqual(data._filter_type, "id")

@@ -75,7 +75,7 @@ class UserServiceTest(unittest.TestCase):
             service._db = mock_db
             mock_db.update_record = mock_update
 
-        service.update_user({"id": "u_id"})
+        service.update_user({"id": "u_id"}, "u_id")
 
         mock_user_data.on_data.assert_called_once_with({'id': 'u_id'}, False)
         mock_update.assert_called_once_with('u_id')

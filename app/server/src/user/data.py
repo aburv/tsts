@@ -31,6 +31,7 @@ class UserData(DataModel):
         self.add_field('dp', "dp", str)
 
     def add_fields(self):
+        self._filter_type = "id"
         self.add_field('id', "id", str)
         self.add_field('u_name', "name", str)
         self.add_field('dp', "dp", str)

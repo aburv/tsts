@@ -28,12 +28,12 @@ class UserServices:
 
         return u_id
 
-    def update_user(self, data: dict) -> None:
+    def update_user(self, data: dict, u_id: str) -> None:
         """
         Update user with data
         """
         self._data.on_data(data, False)
-        self._db.update_record(data["id"])
+        self._db.update_record(u_id)
 
     def get_user_by_id(self, user_id: str) -> dict | None:
         """

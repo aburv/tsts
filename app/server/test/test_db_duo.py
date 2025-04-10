@@ -299,10 +299,11 @@ class DbDuoTest(unittest.TestCase):
             db._data = model
 
         actual = db.get_update_statement()
+
         mock_table_name.assert_called_once_with()
         mock_get_querying_fields_and_value.assert_called_once_with()
         self.assertEqual(
-            ('UPDATE table SET field=%s WHERE field_1=%s AND field_2=%s', ('value_1', 'value_2')),
+            ('UPDATE table SET field=%s WHERE field_1=%s AND field_2=%s', ('value', 'value_1', 'value_2')),
             actual
         )
 
@@ -813,14 +814,14 @@ class DbDuoTest(unittest.TestCase):
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
 
-        db.update_record("record_id", "my_id")
+        db.update_record("my_id", "record_id")
 
         mock_is_empty.assert_called_once_with()
         mock_update_statement.assert_called_once_with()
         mock_table_name.assert_called_once_with()
         mock_audit_payload.assert_called_once_with()
         mock_is_success.assert_has_calls([
-            call('UPDATE 0 1'),
+            call('UPDATE 1'),
         ])
         mock_audit_update.assert_called_once_with('table', 'record_id', {'field': 'value', 'field_2': 1}, 'my_id')
         mock_execute.assert_has_calls([
@@ -873,7 +874,7 @@ class DbDuoTest(unittest.TestCase):
         mock_update_statement.assert_called_once_with()
         assert not mock_audit_update.called
         mock_is_success.assert_has_calls([
-            call('UPDATE 0 1'),
+            call('UPDATE 1'),
         ])
         mock_table_name.assert_called_once_with()
         mock_execute.assert_has_calls([
@@ -974,7 +975,7 @@ class DbDuoTest(unittest.TestCase):
 
         with self.assertRaises(DBExecutionException):
             with self.assertRaises(DataValidationException):
-                db.update_record("record_id", "my_id")
+                db.update_record("my_id", "record_id")
 
         mock_table_name.assert_called_once_with()
         mock_is_empty.assert_called_once_with()
@@ -1035,13 +1036,13 @@ class DbDuoTest(unittest.TestCase):
 
         with self.assertRaises(DBExecutionException):
             with self.assertRaises(DBOperationException):
-                db.update_record("record_id", "my_id")
+                db.update_record("my_id", "record_id")
 
         mock_table_name.assert_called_once_with()
         mock_is_empty.assert_called_once_with()
         mock_get_update_statement.assert_called_once_with()
         mock_is_success.assert_has_calls([
-            call('UPDATE 0 1'),
+            call('UPDATE 1'),
         ])
         mock_execute.assert_has_calls([
             call('BEGIN;'),
