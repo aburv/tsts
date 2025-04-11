@@ -79,8 +79,8 @@ describe('DeviceService', () => {
             os: 'unknown', 
             version: 'unknown', 
             other: agent, 
-            deviceType: 'Desktop', 
-            platform: 'Browser' 
+            deviceType: 'D', 
+            platform: 'B' 
         };
 
         const service = new DeviceService(dataSpy);
@@ -101,8 +101,8 @@ describe('DeviceService', () => {
             os: 'Windows', 
             version: '10.0', 
             other: agent, 
-            deviceType: 'Desktop', 
-            platform: 'Browser' 
+            deviceType: 'D', 
+            platform: 'B' 
         };
 
         const service = new DeviceService(dataSpy);
@@ -123,8 +123,8 @@ describe('DeviceService', () => {
             os: 'MacOS', 
             version: 'unknown', 
             other: agent, 
-            deviceType: 'Desktop', 
-            platform: 'Browser' 
+            deviceType: 'D', 
+            platform: 'B' 
         };
 
         const service = new DeviceService(dataSpy);
@@ -145,8 +145,8 @@ describe('DeviceService', () => {
             os: 'Android', 
             version: 'unknown', 
             other: agent, 
-            deviceType: 'Tab', 
-            platform: 'Browser' 
+            deviceType: 'T', 
+            platform: 'B' 
         };
 
         const service = new DeviceService(dataSpy);
@@ -167,8 +167,8 @@ describe('DeviceService', () => {
             os: 'Android', 
             version: 'unknown', 
             other: agent, 
-            deviceType: 'Phone', 
-            platform: 'Browser' 
+            deviceType: 'P', 
+            platform: 'B' 
         };
 
         const service = new DeviceService(dataSpy);
@@ -190,8 +190,8 @@ describe('DeviceService', () => {
             os: 'IOS', 
             version: 'unknown', 
             other: agent, 
-            deviceType: 'Tab', 
-            platform: 'Browser' 
+            deviceType: 'T', 
+            platform: 'B' 
         };
 
         const service = new DeviceService(dataSpy);
@@ -212,8 +212,8 @@ describe('DeviceService', () => {
             os: 'IOS', 
             version: 'unknown', 
             other: agent, 
-            deviceType: 'Phone', 
-            platform: 'Browser' 
+            deviceType: 'P', 
+            platform: 'B' 
         };
 
         const service = new DeviceService(dataSpy);
