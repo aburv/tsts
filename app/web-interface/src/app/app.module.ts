@@ -9,6 +9,7 @@ import { ButtonComponent } from './components/button/button.component';
 import { ChipSetComponent } from './components/chip-set/chip-set.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { IconComponent } from './components/icon/icon.component';
+import { ImageComponent } from './components/image/image.component';
 import { InputDateComponent } from './components/input-date/input-date.component';
 import { InputComponent } from './components/input-text/input.component';
 import { TogglerComponent } from './components/toggler/toggler.component';
@@ -22,6 +23,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     ChipSetComponent,
     DialogComponent,
     IconComponent,
+    ImageComponent,
     InputDateComponent,
     InputComponent,
     TogglerComponent,
