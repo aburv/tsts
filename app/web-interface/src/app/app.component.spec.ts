@@ -89,12 +89,11 @@ describe('AppComponent', () => {
     deviceService.sendDeviceDetails.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
-    loaderService.getIsLoading.and.returnValue(of(false));
+    LoaderService.status.set(false);
     pingService.getIsServerDown.and.returnValue(signal(false));
 
     spyOn(Config, "getSiteDomain").and.returnValue("https://host")
-
-  })
+  });
 
   it('Should create the app on success loading data', fakeAsync(() => {
     class Media implements MediaQueryList {
@@ -139,23 +138,21 @@ describe('AppComponent', () => {
   }));
 
   it('Should set the isLoading to true on call', () => {
-    loaderService.getIsLoading.calls.reset();
-    loaderService.getIsLoading.and.returnValue(of(true));
+    LoaderService.status.set(true);
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    expect(app.isLoading).toBe(true);
+    expect(app.isLoading()).toBe(true);
   });
 
   it('Should set the isLoading false on call', () => {
-    loaderService.getIsLoading.calls.reset();
-    loaderService.getIsLoading.and.returnValue(of(false));
+    LoaderService.status.set(false);
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    expect(app.isLoading).toBe(false);
+    expect(app.isLoading()).toBe(false);
   });
 
   it('Should create the app on failure loading data', fakeAsync(() => {
@@ -412,7 +409,7 @@ describe('AppComponent', () => {
 
     tick(1100);
 
-    app.isLoading = true;
+    LoaderService.status.set(true);
 
     fixture.detectChanges();
 
@@ -438,7 +435,7 @@ describe('AppComponent', () => {
 
     tick(1100);
 
-    app.isLoading = true;
+    LoaderService.status.set(true);
 
     fixture.detectChanges();
 
