@@ -24,7 +24,7 @@ export class AppComponent {
     return LoaderService.status();
   });
   isServerDown: Signal<boolean> = computed(() => {
-    return this.pingService.getIsServerDown()();
+    return PingService.isServerDown();
   });
 
   isInternetDown = signal(false);

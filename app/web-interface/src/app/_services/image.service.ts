@@ -9,8 +9,7 @@ import { PingService } from './ping.service';
 })
 export class ImageService {
   constructor(
-    private http: HttpClient,
-    private pingService: PingService
+    private http: HttpClient
   ) { }
 
   new(file: File): Observable<any> {
@@ -22,7 +21,7 @@ export class ImageService {
     };
     delete headers.headers['content-type']
 
-    if (!this.pingService.getIsServerDown()()) {
+    if (!PingService.isServerDown()) {
       return this.http.post((Config.getDomain() + "image/add"), formData, headers)
     }
     return of(null)

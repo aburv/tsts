@@ -1,7 +1,7 @@
 import { of, throwError } from "rxjs";
 import { Config } from "../config";
 import { DataService } from "./data.service";
-import { signal } from "@angular/core";
+import { PingService } from "./ping.service";
 
 describe('DataService', () => {
     it('Should return the response data on 200 on get call', () => {
@@ -15,7 +15,7 @@ describe('DataService', () => {
         const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
 
         const service = new DataService(httpSpy, pingSpy);
-
+        
         const actual = service.get('url/path');
 
         expect(httpSpy.get).toHaveBeenCalledOnceWith(
@@ -119,8 +119,8 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(of(responseData));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'getIsServerDown']);
-        pingSpy.getIsServerDown.and.returnValue(signal(false))
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
+        PingService.isServerDown.set(false);
 
         const service = new DataService(httpSpy, pingSpy);
 
@@ -147,8 +147,8 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(of(responseData));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'getIsServerDown']);
-        pingSpy.getIsServerDown.and.returnValue(signal(true))
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
+        PingService.isServerDown.set(true);
 
         const service = new DataService(httpSpy, pingSpy);
 

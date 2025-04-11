@@ -1,7 +1,7 @@
 import { of } from "rxjs";
 import { ImageService } from "./image.service";
 import { Config } from "../config";
-import { signal } from "@angular/core";
+import { PingService } from "./ping.service";
 
 describe('ImageService', () => {
     it('Should make a post call on new call', () => {
@@ -10,14 +10,12 @@ describe('ImageService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://host/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { 'content-type': 'header', header: 'header' } });
         const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
-        const pingSpy = jasmine.createSpyObj('PingService', ['getIsServerDown']);
-        pingSpy.getIsServerDown.and.returnValue(signal(false));
         httpSpy.post.and.returnValue(of(responseData));
-
+        PingService.isServerDown.set(false);
 
         const file = new File([], "");
 
-        const service = new ImageService(httpSpy, pingSpy);
+        const service = new ImageService(httpSpy);
 
         const actual = service.new(file);
 
@@ -40,13 +38,12 @@ describe('ImageService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://host/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { 'content-type': 'header', header: 'header' } });
         const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
-        const pingSpy = jasmine.createSpyObj('PingService', ['getIsServerDown']);
-        pingSpy.getIsServerDown.and.returnValue(signal(true));
         httpSpy.post.and.returnValue(of(responseData));
+        PingService.isServerDown.set(true);
 
         const file = new File([], "");
 
-        const service = new ImageService(httpSpy, pingSpy);
+        const service = new ImageService(httpSpy);
 
         const actual = service.new(file);
 
@@ -59,14 +56,13 @@ describe('ImageService', () => {
 
     it('Should make a get call on get call', () => {
         const responseData = { 'data': [] };
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
-        const pingSpy = jasmine.createSpyObj('PingService', ['getIsServerDown']);
         spyOn(Config, 'getDomain').and.returnValue('https://host/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
-
+        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(of(responseData));
+        PingService.isServerDown.set(false);
 
-        const service = new ImageService(httpSpy, pingSpy);
+        const service = new ImageService(httpSpy);
 
         const actual = service.get("id", "320");
 

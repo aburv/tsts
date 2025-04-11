@@ -31,7 +31,6 @@ describe('AppComponent', () => {
 
   const pingService = jasmine.createSpyObj('PingService', [
     'ping',
-    'getIsServerDown',
   ]);
   pingService.ping.and.returnValue(of(''));
 
@@ -90,7 +89,7 @@ describe('AppComponent', () => {
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
     LoaderService.status.set(false);
-    pingService.getIsServerDown.and.returnValue(signal(false));
+    PingService.isServerDown.set(false);
 
     spyOn(Config, "getSiteDomain").and.returnValue("https://host")
   });
@@ -459,8 +458,7 @@ describe('AppComponent', () => {
   }));
 
   it('View: Should set alert on isServerDown emits', fakeAsync(() => {
-    pingService.getIsServerDown.calls.reset();
-    pingService.getIsServerDown.and.returnValue(signal(true));
+    PingService.isServerDown.set(true);
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
@@ -478,6 +476,7 @@ describe('AppComponent', () => {
   }));
 
   it('View: Should hide alert on isServerDown emits', fakeAsync(() => {
+    PingService.isServerDown.set(false);
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
