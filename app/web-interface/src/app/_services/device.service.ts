@@ -32,7 +32,7 @@ export class DeviceService extends LocalDataService {
   }
 
   getDeviceInfo(): Device {
-    const info = window.navigator.userAgent
+    const info = navigator.userAgent
     let os = "unknown"
     let deviceType = "D"
     let osVersion = "unknown"
