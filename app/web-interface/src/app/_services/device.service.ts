@@ -76,4 +76,9 @@ export class DeviceService extends LocalDataService {
       platform: "B",
     }
   }
+
+  getDeviceId(): string {
+    return this.getValues()["id"];
+  }
+
 }

@@ -331,7 +331,7 @@ describe('AppComponent', () => {
     expect(root.children[0].classes['content']).toBe(true);
     expect(root.children[0].children.length).toBe(2);
     expect(root.children[0].children[0].classes['header-layout']).toBe(true);
-    expect(root.children[0].children[0].children.length).toBe(3);
+    expect(root.children[0].children[0].children.length).toBe(4);
     expect(root.children[0].children[0].children[0].classes['title']).toBe(true);
     root.children[0].children[0].children[0].triggerEventHandler('click');
     expect(app.navigateToDashboard).toHaveBeenCalledOnceWith();
@@ -357,6 +357,9 @@ describe('AppComponent', () => {
     expect(root.children[0].children[0].children[2].children[1]).toEqual(input);
     expect(input.attributes['placeholder']).toBe('Search here');
     expect(input.nativeElement.value).toBe('');
+
+    let appUserButton = root.children[0].children[0].query(By.css('app-user-button'));
+    expect(root.children[0].children[0].children[3]).toBe(appUserButton)
 
     expect(root.children[0].children[1].classes['layout']).toBe(true);
     expect(root.children[0].children[1].children.length).toBe(3);

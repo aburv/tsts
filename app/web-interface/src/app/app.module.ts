@@ -14,6 +14,8 @@ import { InputDateComponent } from './components/input-date/input-date.component
 import { InputComponent } from './components/input-text/input.component';
 import { TogglerComponent } from './components/toggler/toggler.component';
 
+import { UserButtonComponent } from './components/user-button/user-button.component';
+
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
@@ -27,6 +29,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     InputDateComponent,
     InputComponent,
     TogglerComponent,
+    UserButtonComponent,
     DashboardComponent
   ],
   imports: [

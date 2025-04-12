@@ -8,17 +8,18 @@ describe('Config', () => {
         expect(Config.getDomain()).toBe('http://localhost/api/');
     });
 
-
     it('Should return site domain', () => {
         spyOn(Config, 'getEnv').and.returnValue({ siteDomain: "localhost" })
 
         expect(Config.getSiteDomain()).toBe('http://localhost');
     });
 
-    it('Should return headers', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ key: 'key' })
+    it('Should return headers with no access token', () => {
+        const expected = { headers: { 'x-api-key': 'key', 'content-type': 'application/json', 'x-access-key': '' } }
+        
+        const actual =  Config.getHeaders()
 
-        expect(Config.getHeaders()).toEqual({ headers: { 'x-api-key': 'key', 'content-type': 'application/json' } });
+        expect(actual).toEqual(expected);
     });
 
     it('Should return env', () => {
@@ -27,6 +28,15 @@ describe('Config', () => {
             domain: 'localhost',
             siteDomain: 'localhost',
             key: 'key',
+            authKey: 'aukk',
+            separator: '***',
+            googleServiceAccount: 'googleServiceAccount'
         });
+    });
+
+    it('Should return GCID', () => {
+        spyOn(Config, 'getEnv').and.returnValue({ googleServiceAccount: 'googleServiceAccount' })
+
+        expect(Config.getGCID()).toEqual('googleServiceAccount');
     });
 });

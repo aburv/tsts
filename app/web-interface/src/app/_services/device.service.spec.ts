@@ -223,4 +223,19 @@ describe('DeviceService', () => {
         expect(actual).toEqual(data);
 
     });
+
+    it('Should return device id from localstorage', () => {
+        const dataSpy = jasmine.createSpyObj('DataService', ['post']);
+
+        const service = new DeviceService(dataSpy);
+
+        const getValuesSpy = spyOn(service, 'getValues');
+        getValuesSpy.and.returnValue({ 
+            id: 'id',
+        })
+
+        const actual = service.getDeviceId();
+
+        expect(actual).toEqual("id");
+    });
 });
