@@ -218,7 +218,7 @@ describe('UserButtonComponent', () => {
     };
 
     spyOn(component, 'setLocation');
-    spyOn(navigator.geolocation, 'getCurrentPosition').and.callFake(function (locationSuccess, locationError) {
+    spyOn(navigator.geolocation, 'getCurrentPosition').and.callFake(function (_locationSuccess, _locationError) {
       arguments[0](mockPosition);
     });
 

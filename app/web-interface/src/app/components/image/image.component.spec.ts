@@ -36,6 +36,8 @@ describe('ImageComponent', () => {
     componentRef = fixture.componentRef;
 
     const fetchSpy = spyOn(component, 'fetch');
+
+    fetchSpy.calls.reset();
   });
 
   it('Should create', () => {

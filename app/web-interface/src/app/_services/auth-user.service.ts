@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, signal } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { AuthUtils } from "../auth-util";
 import { GAuthUser } from "../_models/user";
 import { Observable } from "rxjs";

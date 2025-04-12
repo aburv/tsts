@@ -1,4 +1,4 @@
-import { Component, computed, effect, input, signal, Signal } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { ImageService } from 'src/app/_services/image.service';
 
 @Component({

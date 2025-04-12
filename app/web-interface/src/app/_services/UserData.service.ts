@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, of, tap } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { LocalDataService } from './localStore.service';
 import { AuthService } from './auth.service';
 import { Config } from '../config';

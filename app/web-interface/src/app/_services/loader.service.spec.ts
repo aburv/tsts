@@ -1,4 +1,3 @@
-import { signal } from "@angular/core";
 import { LoaderService } from "./loader.service";
 
 describe('LoaderService', () => {

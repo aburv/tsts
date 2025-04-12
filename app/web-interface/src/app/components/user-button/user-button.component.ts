@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Config } from '../../config';
 import { AuthUserService } from '../../_services/auth-user.service';
 import { UserDataService } from '../../_services/UserData.service';

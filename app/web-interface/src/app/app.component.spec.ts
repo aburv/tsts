@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { of, throwError } from 'rxjs';
-import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
@@ -358,7 +358,7 @@ describe('AppComponent', () => {
     expect(input.attributes['placeholder']).toBe('Search here');
     expect(input.nativeElement.value).toBe('');
 
-    let appUserButton = root.children[0].children[0].query(By.css('app-user-button'));
+    const appUserButton = root.children[0].children[0].query(By.css('app-user-button'));
     expect(root.children[0].children[0].children[3]).toBe(appUserButton)
 
     expect(root.children[0].children[1].classes['layout']).toBe(true);
@@ -407,7 +407,6 @@ describe('AppComponent', () => {
 
   it('View: Should set loading layout', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
 
     tick(1100);
 
