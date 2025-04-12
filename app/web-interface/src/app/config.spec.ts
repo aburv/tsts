@@ -4,12 +4,27 @@ describe('Config', () => {
 
     it('Should return domain url', () => {
         spyOn(Config, 'getEnv').and.returnValue({ domain: "localhost" })
+        spyOn(Config, 'getApiProtocol').and.returnValue('http')
 
         expect(Config.getDomain()).toBe('http://localhost/api/');
     });
 
+    it('Should return http api protocol url', () => {
+        spyOn(Config, 'getEnv').and.returnValue({ production: false })
+
+        expect(Config.getApiProtocol()).toBe('http');
+    });
+
+    it('hould return https api protocol', () => {
+        spyOn(Config, 'getEnv').and.returnValue({ production: true })
+
+        expect(Config.getApiProtocol()).toBe('https');
+    });
+
+
     it('Should return site domain', () => {
         spyOn(Config, 'getEnv').and.returnValue({ siteDomain: "localhost" })
+        spyOn(Config, 'getApiProtocol').and.returnValue('http')
 
         expect(Config.getSiteDomain()).toBe('http://localhost');
     });
