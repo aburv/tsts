@@ -1,12 +1,15 @@
 package com.aburv.takbuff.data
 
+import android.content.Context
 import android.os.StrictMode
 import android.util.Log
 import com.aburv.takbuff.BuildConfig
+import com.aburv.takbuff.db.UserTokenDB
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -15,27 +18,40 @@ import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.URL
 
-open class APIRequest {
+open class APIRequest(private val context: Context) {
     companion object {
-        const val DOMAIN: String = "${BuildConfig.API_DOMAIN}/api"
+        private const val TAG: String = "App-Request"
+        internal const val DOMAIN: String = "${BuildConfig.API_DOMAIN}/api"
     }
 
-    fun get(path: String, response: Response) {
+    suspend fun get(path: String, response: Response) {
+        Log.i(TAG, "Get $path")
         val url = URL("$DOMAIN/$path")
-        val httpURLConnection = url.openConnection() as HttpURLConnection
+        val httpURLConnection = withContext(Dispatchers.IO) {
+            url.openConnection()
+        } as HttpURLConnection
         httpURLConnection.requestMethod = "GET"
         setHeaders(httpURLConnection)
         this.dataCall(httpURLConnection, response)
     }
 
-    fun setHeaders(httpURLConnection: HttpURLConnection) {
+    suspend fun setHeaders(httpURLConnection: HttpURLConnection) {
+        Log.i(TAG, "Set headers")
+
+        val userTokens = UserTokenDB(context).getUserToken()
+        val accessToken = if (userTokens.isNotEmpty()) {
+            userTokens[0].idToken + BuildConfig.SEPARATOR + userTokens[0].accessToken
+        } else {
+            ""
+        }
+
         httpURLConnection.setRequestProperty(
             "x-api-key",
             BuildConfig.API_KEY
         )
         httpURLConnection.setRequestProperty(
             "x-access-key",
-            ""
+            accessToken
         )
         httpURLConnection.setRequestProperty(
             "Content-Type",
@@ -47,24 +63,31 @@ open class APIRequest {
         )
     }
 
-    fun post(path: String, data: JSONObject, response: Response) {
+    suspend fun post(path: String, data: JSONObject, response: Response) {
+        Log.i(TAG, "POST $path $data")
+
         val body = JSONObject()
         body.put("data", data)
         val dataString = body.toString()
         val url = URL("$DOMAIN/$path")
-        val httpURLConnection = url.openConnection() as HttpURLConnection
+        val httpURLConnection = withContext(Dispatchers.IO) {
+            url.openConnection()
+        } as HttpURLConnection
         httpURLConnection.requestMethod = "POST"
         setHeaders(httpURLConnection)
         httpURLConnection.doInput = true
         httpURLConnection.doOutput = true
         val outputStreamWriter = OutputStreamWriter(httpURLConnection.outputStream)
-        outputStreamWriter.write(dataString)
-        outputStreamWriter.flush()
+        withContext(Dispatchers.IO) {
+            outputStreamWriter.write(dataString)
+            outputStreamWriter.flush()
+        }
         this.dataCall(httpURLConnection, response)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun dataCall(httpURLConnection: HttpURLConnection, response: Response) {
+        Log.i(TAG, "Data call")
         val policy: StrictMode.ThreadPolicy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         var responseDataText: String?
@@ -78,12 +101,12 @@ open class APIRequest {
                     val responseText = httpURLConnection.inputStream.bufferedReader().readText()
                     responseDataText = try {
                         JSONObject(responseText).getJSONObject("data").toString()
-                    } catch (e: JSONException) {
+                    } catch (_: JSONException) {
                         JSONObject(responseText).getString("data")
                     }
                     Log.i("API Request: success", responseDataText!!)
                     launch(Dispatchers.Main) {
-                        response.onData(responseDataText!!)
+                        response.onData(responseDataText)
                     }
                 }
             } catch (e: ConnectException) {
@@ -105,6 +128,7 @@ open class APIRequest {
     @OptIn(DelicateCoroutinesApi::class)
     fun ping() {
         GlobalScope.launch(Dispatchers.IO) {
+            Log.i(TAG, "Ping call")
             try {
                 val url = URL("$DOMAIN/ping/")
                 val httpURLConnection = url.openConnection() as HttpURLConnection
