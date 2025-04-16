@@ -8,5 +8,5 @@
 import Foundation
 
 enum Screen {
-    case SPLASH, HOME
+    case SPLASH, HOME, USER, NEWUSER
 }

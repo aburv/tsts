@@ -27,7 +27,14 @@
 		4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84E2B3362E3000C6B06 /* Loader.swift */; };
 		478E890B2DAFEA4C00BE947D /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478E890A2DAFEA4600BE947D /* LocationService.swift */; };
 		479854FD2DB00B5F00B7B010 /* info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 479854FC2DB00B5400B7B010 /* info.plist */; };
-		47D15F6E2B5806110057981A /* keys.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 47D15F6D2B5806110057981A /* keys.xcconfig */; };
+		479854FF2DB0128D00B7B010 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479854FE2DB0128A00B7B010 /* Icon.swift */; };
+		479855012DB0129800B7B010 /* NewUserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479855002DB0129200B7B010 /* NewUserScreen.swift */; };
+		479855032DB0129F00B7B010 /* UserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479855022DB0129B00B7B010 /* UserScreen.swift */; };
+		479855052DB012CA00B7B010 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 479855042DB012B800B7B010 /* Debug.xcconfig */; };
+		4798550A2DB0130900B7B010 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479855092DB0130700B7B010 /* User.swift */; };
+		4798550C2DB0131200B7B010 /* GAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4798550B2DB0130C00B7B010 /* GAuthService.swift */; };
+		4798550F2DB0187500B7B010 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 4798550E2DB0187500B7B010 /* GoogleSignIn */; };
+		479855112DB0187500B7B010 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 479855102DB0187500B7B010 /* GoogleSignInSwift */; };
 		47EB547B2C68E40C00E43E19 /* dashboardScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */; };
 		47F4B2532CA3349A007FD5D6 /* AppUserDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F4B2522CA3348E007FD5D6 /* AppUserDevice.swift */; };
 		47F4B2572CA554A5007FD5D6 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F4B2562CA55497007FD5D6 /* Data.swift */; };
@@ -76,7 +83,12 @@
 		4776B84E2B3362E3000C6B06 /* Loader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
 		478E890A2DAFEA4600BE947D /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		479854FC2DB00B5400B7B010 /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
-		47D15F6D2B5806110057981A /* keys.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = keys.xcconfig; sourceTree = "<group>"; };
+		479854FE2DB0128A00B7B010 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
+		479855002DB0129200B7B010 /* NewUserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewUserScreen.swift; sourceTree = "<group>"; };
+		479855022DB0129B00B7B010 /* UserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScreen.swift; sourceTree = "<group>"; };
+		479855042DB012B800B7B010 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		479855092DB0130700B7B010 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		4798550B2DB0130C00B7B010 /* GAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GAuthService.swift; sourceTree = "<group>"; };
 		47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dashboardScreen.swift; sourceTree = "<group>"; };
 		47F4B2522CA3348E007FD5D6 /* AppUserDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUserDevice.swift; sourceTree = "<group>"; };
 		47F4B2562CA55497007FD5D6 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -92,6 +104,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4798550F2DB0187500B7B010 /* GoogleSignIn in Frameworks */,
+				479855112DB0187500B7B010 /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +150,7 @@
 		4741C5952A9625DF00D73EA0 /* takbuff */ = {
 			isa = PBXGroup;
 			children = (
+				479855042DB012B800B7B010 /* Debug.xcconfig */,
 				479854FC2DB00B5400B7B010 /* info.plist */,
 				478E89092DAFEA2400BE947D /* services */,
 				475E2B412D97DAF200AF5026 /* models */,
@@ -148,7 +163,6 @@
 				4741C5962A9625DF00D73EA0 /* takbuffApp.swift */,
 				4741C59A2A9625E000D73EA0 /* Assets.xcassets */,
 				4741C59C2A9625E000D73EA0 /* Preview Content */,
-				47D15F6D2B5806110057981A /* keys.xcconfig */,
 			);
 			path = takbuff;
 			sourceTree = "<group>";
@@ -181,6 +195,7 @@
 		475E2B412D97DAF200AF5026 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				479855092DB0130700B7B010 /* User.swift */,
 				475E2B422D97DAF800AF5026 /* Screen.swift */,
 			);
 			path = models;
@@ -189,6 +204,8 @@
 		4776B83E2B33552C000C6B06 /* screens */ = {
 			isa = PBXGroup;
 			children = (
+				479855022DB0129B00B7B010 /* UserScreen.swift */,
+				479855002DB0129200B7B010 /* NewUserScreen.swift */,
 				4776B84A2B3355EF000C6B06 /* HomeScreen.swift */,
 				4741C5982A9625DF00D73EA0 /* SplashScreen.swift */,
 			);
@@ -198,6 +215,7 @@
 		4776B83F2B33553A000C6B06 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				479854FE2DB0128A00B7B010 /* Icon.swift */,
 				4776B8402B3355AD000C6B06 /* AppLogo.swift */,
 				4776B8442B3355AD000C6B06 /* ScalingButton.swift */,
 				4776B8412B3355AD000C6B06 /* SearchLayout.swift */,
@@ -214,6 +232,7 @@
 		478E89092DAFEA2400BE947D /* services */ = {
 			isa = PBXGroup;
 			children = (
+				4798550B2DB0130C00B7B010 /* GAuthService.swift */,
 				478E890A2DAFEA4600BE947D /* LocationService.swift */,
 			);
 			path = services;
@@ -327,6 +346,9 @@
 				Base,
 			);
 			mainGroup = 4741C58A2A9625DF00D73EA0;
+			packageReferences = (
+				4798550D2DB0187500B7B010 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			productRefGroup = 4741C5942A9625DF00D73EA0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -343,9 +365,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				479855052DB012CA00B7B010 /* Debug.xcconfig in Resources */,
 				479854FD2DB00B5F00B7B010 /* info.plist in Resources */,
 				4741C59E2A9625E000D73EA0 /* Preview Assets.xcassets in Resources */,
-				47D15F6E2B5806110057981A /* keys.xcconfig in Resources */,
 				4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -375,6 +397,9 @@
 				475E211F2B3A039C004DA9BD /* ImageView.swift in Sources */,
 				4741C5992A9625DF00D73EA0 /* SplashScreen.swift in Sources */,
 				4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */,
+				479854FF2DB0128D00B7B010 /* Icon.swift in Sources */,
+				4798550A2DB0130900B7B010 /* User.swift in Sources */,
+				479855012DB0129800B7B010 /* NewUserScreen.swift in Sources */,
 				4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */,
 				478E890B2DAFEA4C00BE947D /* LocationService.swift in Sources */,
 				47F4B2572CA554A5007FD5D6 /* Data.swift in Sources */,
@@ -386,9 +411,11 @@
 				4776B8482B3355AD000C6B06 /* SubScreenLayout.swift in Sources */,
 				4776B8452B3355AD000C6B06 /* AppLogo.swift in Sources */,
 				4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */,
+				479855032DB0129F00B7B010 /* UserScreen.swift in Sources */,
 				470ADB522C8DC55800E480D4 /* TabBarView.swift in Sources */,
 				47F4B2532CA3349A007FD5D6 /* AppUserDevice.swift in Sources */,
 				4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */,
+				4798550C2DB0131200B7B010 /* GAuthService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,6 +454,7 @@
 /* Begin XCBuildConfiguration section */
 		4741C5B52A9625E000D73EA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 479855042DB012B800B7B010 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -549,6 +577,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"takbuff/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = takbuff/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Takbuff;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show content near you.";
@@ -580,6 +609,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"takbuff/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = takbuff/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Takbuff;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show content near you.";
@@ -713,6 +743,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4798550D2DB0187500B7B010 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4798550E2DB0187500B7B010 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4798550D2DB0187500B7B010 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		479855102DB0187500B7B010 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4798550D2DB0187500B7B010 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4741C58B2A9625DF00D73EA0 /* Project object */;
 }

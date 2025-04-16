@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>$(G_CLIENT_ID_REVERSED)</string>
+		</array>
+	</dict>
+	</array>
+	<key>GIDClientID</key>
+	<string>$(G_CLIENT_ID)</string>
+</dict>
 </plist>

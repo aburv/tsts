@@ -8,13 +8,32 @@
 import SwiftUI
 
 struct ScalingButton: ButtonStyle {
+    @State var backgroundColor: Color;
+    @State var color: Color;
+    @State var border: Color;
+    @State var cornerRadius: CGFloat;
+    
+    let lineWidth: CGFloat = 2;
+    
+    let animateDuration = 0.2;
+    
+    let extentedSize: CGFloat = 1.3;
+    let normalSize: CGFloat = 1.0;
+    
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding()
-            .background(.white)
-            .foregroundStyle(.black)
+            .background(backgroundColor)
+            .foregroundStyle(color)
             .clipShape(Capsule())
-            .scaleEffect(configuration.isPressed ? 1.2 : 1)
-            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(border, lineWidth: lineWidth)
+            )
+            .animation(
+                .easeOut(duration: animateDuration),
+                value: configuration.isPressed
+            )
+            .scaleEffect(configuration.isPressed ? extentedSize : normalSize)
     }
 }
