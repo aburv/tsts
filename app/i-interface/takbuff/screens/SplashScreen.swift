@@ -18,15 +18,17 @@ struct SplashScreen: View {
     let logo: Namespace.ID
     
     @Binding public var screen: Screen
-
+    
     let dimen: SplashDimensValues
     
     @State private var rotateDegree = 0.0
     @State private var offset = 0.0
     @State private var isSubTitleVisible = true
     @State private var isLoading = true
-
+    
     @State private var canSignIn = false
+
+    @StateObject private var viewModel = LocationViewModel()
     
     let appName = "Takbuff"
     let subTitle = "An Open Source Application"
@@ -48,7 +50,7 @@ struct SplashScreen: View {
         .linear(duration: 1.0)
         .speed(0.7)
         .repeatForever(autoreverses: false)
-    
+        
     var body: some View {
         VStack {
             

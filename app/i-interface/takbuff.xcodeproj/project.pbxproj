@@ -25,6 +25,8 @@
 		4776B8492B3355AD000C6B06 /* ScalingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B8442B3355AD000C6B06 /* ScalingButton.swift */; };
 		4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84A2B3355EF000C6B06 /* HomeScreen.swift */; };
 		4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84E2B3362E3000C6B06 /* Loader.swift */; };
+		478E890B2DAFEA4C00BE947D /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478E890A2DAFEA4600BE947D /* LocationService.swift */; };
+		479854FD2DB00B5F00B7B010 /* info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 479854FC2DB00B5400B7B010 /* info.plist */; };
 		47D15F6E2B5806110057981A /* keys.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 47D15F6D2B5806110057981A /* keys.xcconfig */; };
 		47EB547B2C68E40C00E43E19 /* dashboardScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */; };
 		47F4B2532CA3349A007FD5D6 /* AppUserDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F4B2522CA3348E007FD5D6 /* AppUserDevice.swift */; };
@@ -72,6 +74,8 @@
 		4776B8442B3355AD000C6B06 /* ScalingButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalingButton.swift; sourceTree = "<group>"; };
 		4776B84A2B3355EF000C6B06 /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		4776B84E2B3362E3000C6B06 /* Loader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
+		478E890A2DAFEA4600BE947D /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		479854FC2DB00B5400B7B010 /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
 		47D15F6D2B5806110057981A /* keys.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = keys.xcconfig; sourceTree = "<group>"; };
 		47EB547A2C68E40C00E43E19 /* dashboardScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dashboardScreen.swift; sourceTree = "<group>"; };
 		47F4B2522CA3348E007FD5D6 /* AppUserDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUserDevice.swift; sourceTree = "<group>"; };
@@ -132,6 +136,8 @@
 		4741C5952A9625DF00D73EA0 /* takbuff */ = {
 			isa = PBXGroup;
 			children = (
+				479854FC2DB00B5400B7B010 /* info.plist */,
+				478E89092DAFEA2400BE947D /* services */,
 				475E2B412D97DAF200AF5026 /* models */,
 				47F4B2592CA564A0007FD5D6 /* data */,
 				47F4B2562CA55497007FD5D6 /* Data.swift */,
@@ -203,6 +209,14 @@
 				475E21202B3A03D7004DA9BD /* InputText.swift */,
 			);
 			path = views;
+			sourceTree = "<group>";
+		};
+		478E89092DAFEA2400BE947D /* services */ = {
+			isa = PBXGroup;
+			children = (
+				478E890A2DAFEA4600BE947D /* LocationService.swift */,
+			);
+			path = services;
 			sourceTree = "<group>";
 		};
 		47EB54792C68D40C00E43E19 /* subScreens */ = {
@@ -329,6 +343,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				479854FD2DB00B5F00B7B010 /* info.plist in Resources */,
 				4741C59E2A9625E000D73EA0 /* Preview Assets.xcassets in Resources */,
 				47D15F6E2B5806110057981A /* keys.xcconfig in Resources */,
 				4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */,
@@ -361,6 +376,7 @@
 				4741C5992A9625DF00D73EA0 /* SplashScreen.swift in Sources */,
 				4776B8462B3355AD000C6B06 /* SearchLayout.swift in Sources */,
 				4741C5972A9625DF00D73EA0 /* takbuffApp.swift in Sources */,
+				478E890B2DAFEA4C00BE947D /* LocationService.swift in Sources */,
 				47F4B2572CA554A5007FD5D6 /* Data.swift in Sources */,
 				47F4B25E2CA568D9007FD5D6 /* Image.swift in Sources */,
 				475E21212B3A03D7004DA9BD /* InputText.swift in Sources */,
@@ -535,6 +551,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Takbuff;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show content near you.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -565,6 +582,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Takbuff;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show content near you.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

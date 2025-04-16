@@ -23,6 +23,8 @@ struct HomeScreen: View {
     @State private var isLoading = false
     @State private var searchResultList: Array<Result> = []
     
+    @StateObject private var viewModel = LocationViewModel()
+
     let appName = "Takbuff"
     
     let appLogoSize = 50.0
