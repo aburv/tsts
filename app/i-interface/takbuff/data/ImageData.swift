@@ -22,20 +22,17 @@ class ImageData: ObservableObject {
     
     private func loadImage(imageId: String, size: String) {
         let urlString = ImageData.NAMESPACE +  imageId + "/" + size
-        
-        if let imageFromCache = ImageCache().get(from: urlString) {
-            self.image = imageFromCache
-            return
-        }
 
-        data.get(path: urlString){ data, error in
-            guard let data = data else {
-                return
-            }
-            DispatchQueue.main.async {
+        if let imageFromCache = ImageStore().get(from: urlString) {
+            self.image = imageFromCache
+        } else {
+            data.get(path: urlString){ data, error in
+                guard let data = data else {
+                    return
+                }
                 guard let loadedImage = UIImage(data: data) else { return }
                 self.image = loadedImage
-                ImageCache().set(image: loadedImage, key: urlString)
+                ImageStore().set(image: loadedImage, key: urlString)
             }
         }
     }
