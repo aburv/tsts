@@ -19,17 +19,17 @@ class DeviceData {
         
         let dtype = switch(UIDevice.current.userInterfaceIdiom) {
         case .pad :
-            "Tablet"
+            "T"
         case .phone:
-            "Phone"
+            "P"
         case .tv:
-            "Desktop"
+            "D"
         case .carPlay:
-            "Desktop"
+            "D"
         case .mac:
-            "Desktop"
+            "D"
         case .vision:
-            "Desktop"
+            "D"
         case .unspecified:
             ""
         @unknown default:
@@ -42,7 +42,7 @@ class DeviceData {
             "version": device.systemVersion,
             "other": [device.localizedModel, device.name, device.model].joined(separator:" "),
             "deviceType": dtype,
-            "platform": "App"
+            "platform": "A"
         ]
         
         dataAPI.post(path: namespace + "register", body: dData) { data, error in
