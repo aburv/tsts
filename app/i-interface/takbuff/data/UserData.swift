@@ -25,17 +25,4 @@ class UserData {
             completion(dd, nil)
         }
     }
-    
-    func auth(completion:@escaping ([String], Error?) -> ()) {
-        data.get(path: UserData.namespace + "auth") { data, error in
-            guard let data = data else{
-                completion([], error)
-                return
-            }
-            let posts = try! JSONDecoder().decode([String].self, from: data)
-            DispatchQueue.main.async {
-                completion(posts, error)
-            }
-        }
-    }
 }
