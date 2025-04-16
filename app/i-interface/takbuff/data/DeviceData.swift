@@ -12,9 +12,11 @@ import UIKit
 class DeviceData {
     
     private let dataAPI: ApiRequest = ApiRequest()
-    let namespace = "device/"
+    private static let namespace = "device/"
     
-    func registerDevice(modelContext: ModelContext) {
+    func registerDevice(
+        completion:@escaping (String?, Error?) -> ()
+    ) {
         let device = UIDevice.current
         
         let dtype = switch(UIDevice.current.userInterfaceIdiom) {
@@ -44,22 +46,17 @@ class DeviceData {
             "deviceType": dtype,
             "platform": "A"
         ]
-        
-        dataAPI.post(path: namespace + "register", body: dData) { data, error in
+        dataAPI.post(path: DeviceData.namespace + "register", body: dData) { data, error in
             guard let data = data else {
+                completion(nil, error)
                 return
             }
             
-            var device = try! JSONDecoder().decode(Dictionary<String, String>.self, from: data)
+            var regResponse = try! JSONDecoder().decode(Dictionary<String, String>.self, from: data)
             DispatchQueue.main.async {
-                DeviceDb().save(modelContext: modelContext, deviceId: device.removeValue(forKey: "data")!)
+                let deviceData = regResponse.removeValue(forKey: "data")!
+                completion(deviceData, nil)
             }
-        }
-    }
-    
-    func isRegistered(modelContext: ModelContext, device: [AppUserDevice]) {
-        if (device.count == 0) {
-            registerDevice(modelContext: modelContext)
         }
     }
 }

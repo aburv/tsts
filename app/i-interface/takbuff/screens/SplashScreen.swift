@@ -11,7 +11,7 @@ import SwiftData
 
 struct SplashScreen: View {
     @Environment(\.modelContext) var modelContext
-    @Query() var device: [AppUserDevice]
+    @Query() var devices: [AppUserDevice]
     
     let animation: Namespace.ID
     let name: Namespace.ID
@@ -105,7 +105,23 @@ struct SplashScreen: View {
         }
         .frame(maxWidth: .infinity)
         .onAppear{
-            DeviceData().isRegistered(modelContext: modelContext, device: device)
+            if (devices.isEmpty) {
+                DeviceData().registerDevice() { dData, error in
+                    if error != nil {
+                        return
+                    }
+                    guard let dData = dData else {
+                        return
+                    }
+                    let deviceData = AppUserDevice(appDeviceId: dData)
+                    modelContext.insert(deviceData)
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("Failed to save context:", error)
+                    }
+                }
+            }
             UserData().getAppData { data, error in
                 guard error == nil else {return}
                 DispatchQueue.main.asyncAfter(deadline: .now() + threeDelay){
