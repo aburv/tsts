@@ -1,22 +1,16 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import { Observable } from 'rxjs';
+import {Injectable, signal} from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoaderService {
-  private isLoading = new EventEmitter<boolean>();
-
-  getIsLoading(): Observable<boolean>{
-    return this.isLoading;
-  }
+  static status = signal<boolean>(false);
 
   loadingOn(): void{
-    this.isLoading.emit(true);
+    LoaderService.status.set(true);
   }
 
   loadingOff(): void{
-    this.isLoading.emit(false);
+    LoaderService.status.set(false);
   }
-
 }

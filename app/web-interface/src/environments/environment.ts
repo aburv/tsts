@@ -6,7 +6,10 @@ export const environment = {
   production: false,
   domain: 'localhost',
   siteDomain: 'localhost',
-  key: 'key'
+  key: 'key',
+  authKey: 'aukk',
+  googleServiceAccount: 'googleServiceAccount',
+  separator: "***",
 };
 
 /*

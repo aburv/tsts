@@ -3,13 +3,13 @@ Ping Controller
 """
 from flask import Blueprint, Response, make_response
 
-from src.auth import client_auth
+from src.auth import validate
 
 PING_BLUEPRINT = Blueprint('ping', __name__)
 
 
 @PING_BLUEPRINT.route("/", methods=["POST"])
-@client_auth
+@validate(is_required=False)
 def ping() -> Response:
     """
     :return:

@@ -16,12 +16,13 @@ class CacheConfigTest(unittest.TestCase):
     @patch.object(Config, 'get_caching_parameters')
     def test_checks_Redis_config(self, mock_get_caching_params):
         mock_get_caching_params.return_value = {
+            'user': 'user',
             'host': 'host',
             'port': 'port',
             'pass': 'pass'
         }
 
-        url = "redis://pass@host:port/0"
+        url = "redis://user:pass@host:port/0"
 
         self.assertEqual(RedisConfig.get_cache_url(), url)
 

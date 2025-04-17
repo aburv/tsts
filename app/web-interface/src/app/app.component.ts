@@ -20,9 +20,11 @@ export class AppComponent {
   @ViewChild('searchInput') searchInput!: ElementRef;
 
   isInInit = true;
-  isLoading = false;
+  isLoading = computed(() => {
+    return LoaderService.status();
+  });
   isServerDown: Signal<boolean> = computed(() => {
-    return this.pingService.getIsServerDown()();
+    return PingService.isServerDown();
   });
 
   isInternetDown = signal(false);
@@ -107,10 +109,6 @@ export class AppComponent {
           this.isInInit = false;
         }, 500);
       }
-    });
-
-    loaderService.getIsLoading().subscribe((status: boolean) => {
-      this.isLoading = status;
     });
   }
 

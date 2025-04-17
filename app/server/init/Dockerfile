@@ -11,6 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN mkdir src
 
+COPY resources /app/resources
+
 COPY src/config.py /app/src/config.py
 COPY src/data.py /app/src/data.py
 COPY src/db_duo.py /app/src/db_duo.py

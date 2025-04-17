@@ -1,4 +1,4 @@
-import { Injectable, Signal, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Config } from '../config';
 
@@ -10,7 +10,7 @@ function getPingUrl(): string {
   providedIn: 'root',
 })
 export class PingService {
-  private isServerDown = signal<boolean>(false);
+  static isServerDown = signal<boolean>(false);
 
   constructor(private http: HttpClient) { }
 
@@ -18,19 +18,15 @@ export class PingService {
     const url = getPingUrl();
     this.http.post(url, Config.getHeaders()).subscribe({
       next: () => {
-        this.isServerDown.set(false);
+        PingService.isServerDown.set(false);
       },
       error: (error: HttpErrorResponse) => {
         if (error.status === 404 || error.status === 0) {
-          this.isServerDown.set(true);
+          PingService.isServerDown.set(true);
         } else {
-          this.isServerDown.set(false);
+          PingService.isServerDown.set(false);
         }
       }
     });
-  }
-
-  getIsServerDown(): Signal<boolean> {
-    return this.isServerDown;
   }
 }

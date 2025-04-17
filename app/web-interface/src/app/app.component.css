@@ -54,6 +54,7 @@
   align-items: center;
   background-color: var(--bg);
   border-radius: 20px;
+  z-index: 2;
 }
 
 .search>input {
@@ -65,6 +66,7 @@
   display: block;
   width: 200px;
   margin: 10px 2px;
+  padding: 1px 10px;
   font-size: 15px;
   background-color: var(--bg);
   border: 0px;
@@ -85,7 +87,7 @@
 }
 
 .search>app-icon {
-  margin: 5px 5px 3px 5px;
+  margin: 5px 5px 2px 5px;
 }
 
 .search-result-item {
@@ -250,6 +252,10 @@
     left: auto;
     justify-self: center;
   }
+
+  .search .disp-input {
+    width: 160px;
+  }
 }
 
 @media only screen and (max-width: 550px) {
@@ -281,7 +287,7 @@
 
   .search {
     position: absolute;
-    right: 50px;
+    right: 75px;
   }
 
   .is-searching {

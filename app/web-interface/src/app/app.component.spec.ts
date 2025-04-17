@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { of, throwError } from 'rxjs';
-import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
@@ -31,7 +31,6 @@ describe('AppComponent', () => {
 
   const pingService = jasmine.createSpyObj('PingService', [
     'ping',
-    'getIsServerDown',
   ]);
   pingService.ping.and.returnValue(of(''));
 
@@ -89,12 +88,11 @@ describe('AppComponent', () => {
     deviceService.sendDeviceDetails.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
-    loaderService.getIsLoading.and.returnValue(of(false));
-    pingService.getIsServerDown.and.returnValue(signal(false));
+    LoaderService.status.set(false);
+    PingService.isServerDown.set(false);
 
     spyOn(Config, "getSiteDomain").and.returnValue("https://host")
-
-  })
+  });
 
   it('Should create the app on success loading data', fakeAsync(() => {
     class Media implements MediaQueryList {
@@ -139,23 +137,21 @@ describe('AppComponent', () => {
   }));
 
   it('Should set the isLoading to true on call', () => {
-    loaderService.getIsLoading.calls.reset();
-    loaderService.getIsLoading.and.returnValue(of(true));
+    LoaderService.status.set(true);
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    expect(app.isLoading).toBe(true);
+    expect(app.isLoading()).toBe(true);
   });
 
   it('Should set the isLoading false on call', () => {
-    loaderService.getIsLoading.calls.reset();
-    loaderService.getIsLoading.and.returnValue(of(false));
+    LoaderService.status.set(false);
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    expect(app.isLoading).toBe(false);
+    expect(app.isLoading()).toBe(false);
   });
 
   it('Should create the app on failure loading data', fakeAsync(() => {
@@ -335,7 +331,7 @@ describe('AppComponent', () => {
     expect(root.children[0].classes['content']).toBe(true);
     expect(root.children[0].children.length).toBe(2);
     expect(root.children[0].children[0].classes['header-layout']).toBe(true);
-    expect(root.children[0].children[0].children.length).toBe(3);
+    expect(root.children[0].children[0].children.length).toBe(4);
     expect(root.children[0].children[0].children[0].classes['title']).toBe(true);
     root.children[0].children[0].children[0].triggerEventHandler('click');
     expect(app.navigateToDashboard).toHaveBeenCalledOnceWith();
@@ -361,6 +357,9 @@ describe('AppComponent', () => {
     expect(root.children[0].children[0].children[2].children[1]).toEqual(input);
     expect(input.attributes['placeholder']).toBe('Search here');
     expect(input.nativeElement.value).toBe('');
+
+    const appUserButton = root.children[0].children[0].query(By.css('app-user-button'));
+    expect(root.children[0].children[0].children[3]).toBe(appUserButton)
 
     expect(root.children[0].children[1].classes['layout']).toBe(true);
     expect(root.children[0].children[1].children.length).toBe(3);
@@ -408,11 +407,10 @@ describe('AppComponent', () => {
 
   it('View: Should set loading layout', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
 
     tick(1100);
 
-    app.isLoading = true;
+    LoaderService.status.set(true);
 
     fixture.detectChanges();
 
@@ -438,7 +436,7 @@ describe('AppComponent', () => {
 
     tick(1100);
 
-    app.isLoading = true;
+    LoaderService.status.set(true);
 
     fixture.detectChanges();
 
@@ -462,8 +460,7 @@ describe('AppComponent', () => {
   }));
 
   it('View: Should set alert on isServerDown emits', fakeAsync(() => {
-    pingService.getIsServerDown.calls.reset();
-    pingService.getIsServerDown.and.returnValue(signal(true));
+    PingService.isServerDown.set(true);
 
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
@@ -481,6 +478,7 @@ describe('AppComponent', () => {
   }));
 
   it('View: Should hide alert on isServerDown emits', fakeAsync(() => {
+    PingService.isServerDown.set(false);
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 

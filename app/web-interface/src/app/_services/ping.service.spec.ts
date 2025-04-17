@@ -22,7 +22,7 @@ describe('PingService', () => {
             }
         );
 
-        expect(service.getIsServerDown()()).toEqual(false);
+        expect(PingService.isServerDown()).toEqual(false);
     });
 
     it('Should emit true on isServerDown on 404 status on ping call', () => {
@@ -43,7 +43,7 @@ describe('PingService', () => {
             }
         );
 
-        expect(service.getIsServerDown()()).toEqual(true);
+        expect(PingService.isServerDown()).toEqual(true);
     });
 
     it('Should emit true on isServerDown on 0 status on ping call', () => {
@@ -64,7 +64,7 @@ describe('PingService', () => {
             }
         );
 
-        expect(service.getIsServerDown()()).toEqual(true);
+        expect(PingService.isServerDown()).toEqual(true);
     });
 
     it('Should emit false on isServerDown other than 404,0 status errors  on ping call', () => {
@@ -85,6 +85,6 @@ describe('PingService', () => {
             }
         );
 
-        expect(service.getIsServerDown()()).toEqual(false);
+        expect(PingService.isServerDown()).toEqual(false);
     });
 });

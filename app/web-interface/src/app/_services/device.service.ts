@@ -32,38 +32,38 @@ export class DeviceService extends LocalDataService {
   }
 
   getDeviceInfo(): Device {
-    const info = window.navigator.userAgent
+    const info = navigator.userAgent
     let os = "unknown"
-    let deviceType = "Desktop"
+    let deviceType = "D"
     let osVersion = "unknown"
 
     if (/Windows NT (\d+\.\d+)/.exec(info)) {
       const winVersion = /Windows NT (\d+\.\d+)/.exec(info);
       osVersion = winVersion![1]
       os = "Windows"
-      deviceType = 'Desktop'
+      deviceType = 'D'
     }
 
     if (/Android/.test(info)) {
       os = "Android"
       if (/Mobile/.test(info)) {
-        deviceType = 'Phone'
+        deviceType = 'P'
       }
       else{
-        deviceType = 'Tab'
+        deviceType = 'T'
       }
     }
    
     if (/iPhone/.test(info)) {
-      deviceType = 'Phone'
+      deviceType = 'P'
       os = "IOS"
     }
     if (/iPad/.test(info)) {
-      deviceType = 'Tab'
+      deviceType = 'T'
       os = "IOS"
     }
     if (/Macintosh/.test(info)) {
-      deviceType = 'Desktop'
+      deviceType = 'D'
       os = "MacOS"
     }
 
@@ -73,7 +73,12 @@ export class DeviceService extends LocalDataService {
       version: osVersion,
       other: info,
       deviceType: deviceType,
-      platform: "Browser",
+      platform: "B",
     }
   }
+
+  getDeviceId(): string {
+    return this.getValues()["id"];
+  }
+
 }

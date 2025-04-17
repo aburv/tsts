@@ -23,6 +23,8 @@
                 <app-icon name="cross" [size]=20 style="cursor: pointer;" *ngIf="isSearching"
                     (click)="onSearchClose()"></app-icon>
             </div>
+
+            <app-user-button></app-user-button>
         </div>
 
         <div class="layout">
@@ -80,7 +82,7 @@
         </div>
     </div>
 
-    <div class="loader-layout" *ngIf="isLoading">
+    <div class="loader-layout" *ngIf="isLoading()">
         <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
     </div>
 

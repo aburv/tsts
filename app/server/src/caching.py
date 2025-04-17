@@ -64,7 +64,7 @@ class RedisConfig:
     Redis DB Config
     """
     CACHE_TYPE = 'redis'
-    CACHE_KEY_PREFIX = 'myapp:'  # Optional: Prefix for cache keys
+    CACHE_KEY_PREFIX = 'myapp:'
 
     @staticmethod
     def get_cache_url():
@@ -72,9 +72,7 @@ class RedisConfig:
         Frames redis cache url
         """
         params = Config.get_caching_parameters()
-        return f'redis://{params.get("pass")}@{params.get("host")}:{params.get("port")}/0'
+        return f'redis://{params.get("user")}:{params.get("pass")}@{params.get("host")}:{params.get("port")}/0'
 
     CACHE_REDIS_URL = get_cache_url()
 
-    # openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out cert.pem
-# cache.delete(f'{Config.CACHE_KEY_PREFIX}:data/{i_id}')

@@ -2,7 +2,7 @@ import { LocalDataService } from "./localStore.service";
 
 describe('Local Data Services', () => {
     it('Should call getItem and return data on getValues call', () => {
-        const getSpy = spyOn(window.localStorage, 'getItem');
+        const getSpy = spyOn(localStorage, 'getItem');
         getSpy.and.returnValue('ImRhdGEi');
 
         const services = new LocalDataService("key");
@@ -14,7 +14,7 @@ describe('Local Data Services', () => {
     });
 
     it('Should return null if key is not in storage on getValues call', () => {
-        const getSpy = spyOn(window.localStorage, 'getItem');
+        const getSpy = spyOn(localStorage, 'getItem');
         getSpy.and.returnValue(null);
 
         const services = new LocalDataService('key');
@@ -26,7 +26,7 @@ describe('Local Data Services', () => {
     });
 
     it('Should call setItem get on setValues call', () => {
-        const setSpy = spyOn(window.localStorage, 'setItem');
+        const setSpy = spyOn(localStorage, 'setItem');
 
         const services = new LocalDataService('key');
 
@@ -36,7 +36,7 @@ describe('Local Data Services', () => {
     });
 
     it('Should call removeItem get on clearData call', () => {
-        const removeSpy = spyOn(window.localStorage, 'removeItem');
+        const removeSpy = spyOn(localStorage, 'removeItem');
 
         const services = new LocalDataService('key');
 

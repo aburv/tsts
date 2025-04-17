@@ -6,31 +6,36 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.aburv.takbuff.R
-import com.aburv.takbuff.db.AppUserDevice
+import com.aburv.takbuff.db.AppDevice
 import com.aburv.takbuff.db.DeviceDB
+import com.aburv.takbuff.services.GAuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
-class DeviceData {
+class DeviceData(private val context: Context) {
     companion object {
-        const val NAMESPACE: String = "device/"
+        private const val TAG = "App-Device"
+        private const val NAMESPACE: String = "device/"
     }
 
-    fun isDeviceRegistered(context: Context) {
+    fun isDeviceRegistered() {
         val deviceDb = DeviceDB(context)
 
         CoroutineScope(Dispatchers.Default).launch {
-            val devices: List<AppUserDevice> = deviceDb.getDevices()
+            val devices: List<AppDevice> = deviceDb.getDevices()
             if (devices.isEmpty()) {
+                Log.i(TAG, "No Device Registered")
                 sendDeviceData(context, deviceDb)
             }
         }
     }
 
     @SuppressLint("HardwareIds")
-    private fun sendDeviceData(context: Context, deviceDB: DeviceDB) {
+    private suspend fun sendDeviceData(context: Context, deviceDB: DeviceDB) {
+        Log.i(TAG, "Registering New device")
+
         val isTablet = context.resources.getBoolean(R.bool.isTablet)
         val deviceId =
             Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
@@ -56,29 +61,25 @@ class DeviceData {
         data.put("os", "Android")
         data.put("version", Build.VERSION.RELEASE)
         data.put("other", otherDetails.joinToString(separator = " "))
-        data.put("deviceType", if (isTablet) "Tablet" else "Phone")
-        data.put("platform", "App")
+        data.put("deviceType", if (isTablet) "T" else "P")
+        data.put("platform", "A")
 
         try {
-            APIRequest().post(path, data, object : Response {
+            APIRequest(context).post(path, data, object : Response {
                 override fun onData(value: String) {
-                    val newDevise = AppUserDevice(
-                        appDeviceId = value,
+                    val newDevise = AppDevice(
                         isActive = true,
-                        id = null,
-                        email = null,
-                        name = null,
-                        dp = null,
-                        accessKey = null
+                        appDeviceId = value
                     )
                     CoroutineScope(Dispatchers.Default).launch {
+                        Log.i(TAG, "Device Registered")
                         deviceDB.insertDevice(newDevise)
                     }
                 }
 
                 override fun onError(value: String) {}
             })
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Log.e("API Call", "Failed in posting device info")
         }
     }
