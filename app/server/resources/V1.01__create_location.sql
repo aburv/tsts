@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS t_location (
     l_pin VARCHAR(7),
     lat VARCHAR(20),
     long VARCHAR(20),
-    is_active Boolean
+    is_active BOOLEAN
 );
 
 CREATE INDEX IF NOT EXISTS idx_location ON t_location(id);
