@@ -12,6 +12,7 @@ from src.responses import DataValidationException, RecordNotFoundException
 from src.services.auth_service import AuthServices
 from src.user.service import UserServices
 from src.user_id.service import UserIdServices
+from src.user_role.service import UserRoleServices
 
 
 class LoginServiceTest(unittest.TestCase):
@@ -31,12 +32,12 @@ class LoginServiceTest(unittest.TestCase):
         self.assertIsInstance(actual, LoginServices)
 
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(UserRoleServices, '__init__', return_value=None)
+    @mock.patch.object(UserRoleServices, 'assign_user_permission', return_value=None)
     @mock.patch.object(UserLoginData, '__init__', return_value=None)
     @mock.patch.object(UserIdServices, '__init__', return_value=None)
     @mock.patch.object(UserIdServices, 'get_user_id_by_id_value', return_value=None)
-    @mock.patch.object(UserIdServices, 'get_user_ids_by_user', return_value=None)
     @mock.patch.object(UserServices, '__init__', return_value=None)
-    @mock.patch.object(UserServices, 'get_user_data', return_value=None)
     @mock.patch.object(UserServices, 'create_user', return_value="user_id")
     @mock.patch.object(UserServices, 'update_user', return_value=None)
     @mock.patch.object(LocationServices, 'get_location_id_by_long_lat', return_value=None)
@@ -56,12 +57,12 @@ class LoginServiceTest(unittest.TestCase):
                                                                                      mock_get_location,
                                                                                      mock_update_user,
                                                                                      mock_create_user,
-                                                                                     mock_get_user_data,
                                                                                      mock_user_service,
-                                                                                     mock_user_ids_by_user,
                                                                                      mock_get_user_id_by_id,
                                                                                      mock_user_id_service,
                                                                                      mock_data,
+                                                                                     mock_assign_role,
+                                                                                     mock_role_service,
                                                                                      mock_db):
         user_data = {
             "uId": {
@@ -84,8 +85,6 @@ class LoginServiceTest(unittest.TestCase):
         mock_get_user_id_by_id.assert_called_once_with('id')
         mock_user_service.assert_has_calls([call(), call()])
         mock_create_user.assert_called_once_with({'uId': {'value': 'id'}, 'idToken': 'id_token', 'picUrl': 'url'})
-        assert not mock_get_user_data.called
-        assert not mock_user_ids_by_user.called
         mock_location_service.assert_has_calls([call(), call()])
         mock_get_location.assert_called_once_with("long", "lat")
         mock_create_location.assert_called_once_with({'lat': 'lat', 'long': 'long'}, 'user_id')
@@ -95,6 +94,8 @@ class LoginServiceTest(unittest.TestCase):
         mock_data.on_data.assert_called_once_with(
             {'location': {'lat': 'lat', 'long': 'long'}, 'userId': 'user_id', 'locationId': 'location_id'})
         mock_db.insert_record.assert_called_once_with("user_id", "user_id")
+        mock_assign_role.assert_called_once_with({'user': 'user_id', 'resource': 'I', 'record_id': 'i_id', 'permission': 'V'}, 'user_id')
+        mock_role_service.assert_called_once_with()
         mock_auth_service.assert_called_once_with()
         mock_login.assert_called_once_with("user_id")
 
@@ -165,6 +166,8 @@ class LoginServiceTest(unittest.TestCase):
     @mock.patch.object(DataValidationException, '__init__', return_value=None)
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
     @mock.patch.object(UserLoginData, '__init__', return_value=None)
+    @mock.patch.object(UserRoleServices, '__init__', return_value=None)
+    @mock.patch.object(UserRoleServices, 'assign_user_permission', return_value=None)
     @mock.patch.object(UserIdServices, '__init__', return_value=None)
     @mock.patch.object(UserIdServices, 'get_user_id_by_id_value', return_value=None)
     @mock.patch.object(UserIdServices, 'get_user_ids_by_user', return_value=None)
@@ -194,6 +197,8 @@ class LoginServiceTest(unittest.TestCase):
                                                                                   mock_user_ids_by_user,
                                                                                   mock_get_user_id_by_id,
                                                                                   mock_user_id_service,
+                                                                                  mock_assign_role,
+                                                                                  mock_role_service,
                                                                                   mock_data,
                                                                                   mock_db,
                                                                                   mock_exception):
@@ -231,6 +236,8 @@ class LoginServiceTest(unittest.TestCase):
         assert not mock_db.insert_record.called
         assert not mock_auth_service.called
         assert not mock_login.called
+        mock_assign_role.assert_called_once_with({'user': 'user_id', 'resource': 'I', 'record_id': 'i_id', 'permission': 'V'}, 'user_id')
+        mock_role_service.assert_called_once_with()
 
         mock_exception.assert_called_once_with('Get Location', "Necessary fields not present: 'lat'")
 

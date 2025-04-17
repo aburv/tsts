@@ -256,7 +256,7 @@ class SplashActivity : AppCompatActivity() {
             googleUser.displayName!!,
             googleUser.profilePictureUri.toString(),
             googleUser.id,
-            AuthUtil.parseToken(googleUser.idToken, "sub")!!,
+            AuthUtil.getData(AuthUtil.parseToken(googleUser.idToken)!!, "sub")!!,
             locationData,
             object : LoginResponse {
                 override fun onNewUser() {

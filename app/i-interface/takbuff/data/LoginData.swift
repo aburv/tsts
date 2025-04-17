@@ -38,7 +38,10 @@ class LoginData {
             let idPayload = self.decodeJWTPayload(idToken)
             var userData = idPayload!["user"] as! [String: Any]
             
-            userData["isNew"] = true
+            if let accessPayload = self.decodeJWTPayload(accessToken) {
+                userData["isNew"] = LoginData.isNewToApp(accessPayload: accessPayload)
+            }
+            
             userData["idToken"] = idToken
             userData["accessToken"] = accessToken
             
@@ -51,7 +54,7 @@ class LoginData {
     func refresh(
         completion:@escaping (Dictionary<String, Any>?, Error?) -> ()
     ) {
-        
+
         data.get(path: LoginData.namespace + "refresh_token") { tokenData, error in
             guard let tokenData = tokenData else {
                 completion(nil, error)
@@ -97,6 +100,19 @@ class LoginData {
             print("JSON decoding error:", error)
             return nil
         }
+    }
+    
+    private static func isNewToApp(accessPayload: [String: Any]) -> Bool {
+        if let accesses = accessPayload["accesses"] as? [[String: String]] {
+            for accessValue in accesses {
+                for (key, value) in accessValue {
+                    if (((key == "object_type") && (value == "U"))){
+                        return false
+                    }
+                }
+            }
+        }
+        return true
     }
 
     func base64UrlDecode(_ base64Url: String) -> Data? {

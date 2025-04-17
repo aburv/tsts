@@ -143,8 +143,12 @@ struct NewUserScreen: View {
                     
                 }
                 else {
-                    withAnimation {
-                        self.screen = .HOME
+                    UserData().setOnBoardingDone() { (isDone, error) in
+                        guard let _ = isDone else { return }
+                        
+                        withAnimation {
+                            self.screen = .HOME
+                        }
                     }
                 }
             }

@@ -35,11 +35,11 @@ class UserRoleServiceTest(unittest.TestCase):
             service._db = mock_db
             mock_db.insert_record = mock_insert
 
-        service.assign_user_permission({}, "")
+        service.assign_user_permission({}, "u_id")
 
         mock_data.on_data.assert_called_once_with({})
         mock_insert.assert_called_once()
-        mock_insert.assert_called_once_with("")
+        mock_insert.assert_called_once_with("u_id", r_id="u_id")
 
     @mock.patch.object(PostgresDbDuo, 'get_records')
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)

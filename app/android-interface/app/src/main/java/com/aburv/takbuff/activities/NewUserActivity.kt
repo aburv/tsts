@@ -21,11 +21,13 @@ import androidx.fragment.app.Fragment
 import com.aburv.takbuff.R
 import com.aburv.takbuff.data.Image
 import com.aburv.takbuff.data.ImageViewUtil
+import com.aburv.takbuff.data.Response
 import com.aburv.takbuff.data.UserData
 import com.aburv.takbuff.databinding.ActivityNewUserBinding
 import com.aburv.takbuff.db.AppUser
 import com.aburv.takbuff.userFragments.CheckPlayerFragment
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 
@@ -71,7 +73,17 @@ class NewUserActivity : AppCompatActivity() {
             Log.i(TAG, "Action Button pressed")
 
             if (isFinalStep()) {
-                navigateMain()
+                CoroutineScope(Default).launch {
+                    userData.setOnBoardingDone(object : Response {
+                        override fun onData(value: String) {
+                            navigateMain()
+                        }
+
+                        override fun onError(value: String) {
+                            Log.e(TAG, value)
+                        }
+                    })
+                }
             } else {
                 currentStep += 1
                 updateFragment()
@@ -178,7 +190,7 @@ class NewUserActivity : AppCompatActivity() {
         animatorSet.duration = 1000
 
         animatorSet.start()
-        animateWidthAndHeight();
+        animateWidthAndHeight()
     }
 
     private fun animateWidthAndHeight() {
@@ -189,10 +201,10 @@ class NewUserActivity : AppCompatActivity() {
 
         val heightAnimator =
             ValueAnimator.ofInt(180.iDp2Px, 80.iDp2Px)
-        heightAnimator.setDuration(1000)
+        heightAnimator.duration = 1000
         heightAnimator.interpolator = LinearInterpolator()
 
-        widthAnimator.addUpdateListener { animation: ValueAnimator ->
+                widthAnimator.addUpdateListener { animation: ValueAnimator ->
             val width = animation.animatedValue as Int
             updateImageViewSize(width, binding.userDp.layoutParams.height)
         }
@@ -212,7 +224,7 @@ class NewUserActivity : AppCompatActivity() {
         layoutParams.width = width
         layoutParams.height = height
 
-        binding.userDp.setLayoutParams(layoutParams)
+        binding.userDp.layoutParams = layoutParams
     }
 
     private fun isFinalStep() = currentStep == FINAL_STEP

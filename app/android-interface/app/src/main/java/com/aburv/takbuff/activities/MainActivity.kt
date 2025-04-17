@@ -22,7 +22,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.util.Pair
+import androidx.core.util.Pair as UtilPair
 import com.aburv.takbuff.R
 import com.aburv.takbuff.data.Auth
 import com.aburv.takbuff.data.AuthUtil
@@ -245,14 +245,14 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun appLogin(googleUser: GoogleIdTokenCredential) {
         Log.i(TAG, "Login api Start")
-        val locationData: kotlin.Pair<String, String>? = if (location != null)
-            kotlin.Pair(location!!.latitude.toString(), location!!.longitude.toString())
+        val locationData: Pair<String, String>? = if (location != null)
+            Pair(location!!.latitude.toString(), location!!.longitude.toString())
         else null
         authData!!.login(
             googleUser.displayName!!,
             googleUser.profilePictureUri.toString(),
             googleUser.id,
-            AuthUtil.parseToken(googleUser.idToken, "sub")!!,
+            AuthUtil.getData(AuthUtil.parseToken(googleUser.idToken)!!, "sub")!!,
             locationData,
             object : LoginResponse {
                 override fun onNewUser() {
@@ -347,8 +347,8 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "Navigate to User")
 
         val intent = Intent(this, UserActivity::class.java)
-        val p1: Pair<View, String> = Pair.create(binding.icProfile as View, "dp")
-        val p2: Pair<View, String> = Pair.create(binding.appIcon as View, "logo")
+        val p1: UtilPair<View, String> = UtilPair.create(binding.icProfile as View, "dp")
+        val p2: UtilPair<View, String> = UtilPair.create(binding.appIcon as View, "logo")
         val options =
             ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity, p1, p2)
         startActivity(intent, options.toBundle())
@@ -358,7 +358,7 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "Navigate to New User")
 
         val intent = Intent(this, NewUserActivity::class.java)
-        val p1: Pair<View, String> = Pair.create(binding.appIcon as View, "logo")
+        val p1: UtilPair<View, String> = UtilPair.create(binding.appIcon as View, "logo")
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity, p1)
         startActivity(intent, options.toBundle())
     }

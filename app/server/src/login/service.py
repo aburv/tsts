@@ -11,6 +11,7 @@ from src.responses import DataValidationException, RecordNotFoundException
 from src.services.auth_service import AuthServices
 from src.user.service import UserServices
 from src.user_id.service import UserIdServices
+from src.user_role.service import UserRoleServices
 
 
 class LoginServices:
@@ -39,9 +40,18 @@ class LoginServices:
         if u_id is None:
             u_id = UserServices().create_user(user_data)
             pic_url = user_data.get("picUrl", "")
-            if pic_url != "" and user_data.get("dp", "") == "":
+            if user_data.get("dp", "") == "" and pic_url != "":
                 i_id = ImageServices().load_and_save(pic_url, u_id)
                 UserServices().update_user({"id": u_id, "dp": i_id}, u_id)
+                UserRoleServices().assign_user_permission(
+                    {
+                        'user': u_id,
+                        'resource': "I",
+                        'record_id': i_id,
+                        'permission': "V"
+                    },
+                    u_id
+                )
         else:
             user = UserServices().get_user_by_id(u_id)
             if not user:

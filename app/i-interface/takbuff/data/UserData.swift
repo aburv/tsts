@@ -25,4 +25,17 @@ class UserData {
             completion(dd, nil)
         }
     }
+    
+    func setOnBoardingDone(completion:@escaping (String?, Error?) -> ()) {
+        data.post(path: UserData.namespace + "done_onboarding", body: [:]) { data, error in
+            guard let data = data else {
+                completion(nil, error)
+                return
+            }
+            
+            var userData = try! JSONDecoder().decode(Dictionary<String, String>.self, from: data)
+            let dd = userData.removeValue(forKey: "data")!
+            completion(dd, nil)
+        }
+    }
 }

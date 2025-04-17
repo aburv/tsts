@@ -44,4 +44,22 @@ class UserData(private val context: Context) {
             Log.e("Get user data", "Unable to retrieve $e")
         }
     }
+
+    suspend fun setOnBoardingDone(response: Response) {
+        Log.i(TAG, "Set done onboarding")
+        val path = "${NAMESPACE}done_onboarding"
+        try {
+            APIRequest(context).post(path, JSONObject(), object : Response {
+                override fun onData(value: String) {
+                    response.onData(value)
+                }
+                override fun onError(value: String) {
+                    response.onError(value)
+                }
+            })
+        } catch (e: Exception) {
+            Log.e("Set user onboarding Done", "Unable to retrieve $e")
+            response.onError(e.toString())
+        }
+    }
 }

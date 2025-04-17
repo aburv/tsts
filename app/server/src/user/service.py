@@ -4,6 +4,7 @@ User Service
 from src.db_duo import PostgresDbDuo
 from src.user.data import UserData
 from src.user_id.service import UserIdServices
+from src.user_role.service import UserRoleServices
 
 
 class UserServices:
@@ -51,3 +52,21 @@ class UserServices:
         :rtype:
         """
         return {}
+
+    def done_user_onboarding(self, u_id) -> str:
+        """
+        mark done on OnBoarding
+        :return:
+        :rtype:
+        """
+        UserRoleServices().assign_user_permission(
+            {
+                'user': u_id,
+                'resource': "U",
+                'record_id': u_id,
+                'permission': "E"
+            },
+            u_id
+        )
+
+        return "t"

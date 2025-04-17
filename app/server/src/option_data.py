@@ -31,3 +31,19 @@ class OptionData:
         :rtype: list
         """
         return {"P": "Phone", "M": "Mail"}
+
+    @staticmethod
+    def get_resources() -> dict:
+        """
+        :return: resources
+        :rtype: list
+        """
+        return {"U": "User", "I": "Image"}
+
+    @staticmethod
+    def get_permissions() -> dict:
+        """
+        :return: permissions
+        :rtype: list
+        """
+        return {"V": "View", "E": "Edit", "C": "Create"}

@@ -31,9 +31,10 @@ class UserDataTest(unittest.TestCase):
             UserRoleData().add_insert_fields()
 
         mock_add_field.assert_has_calls([
-            call('user', 'user', str, is_optional=False),
-            call('record_id', 'id', str, is_optional=False),
-            call('permission', 'permission', str, is_optional=False)
+            call('t_user', 'user', str, is_optional=False),
+            call('resource', 'resource', str, is_optional=False, data_list=['U', 'I']),
+            call('record_id', 'record_id', str, is_optional=False),
+            call('permission', 'permission', str, is_optional=False, data_list=['V', 'E', 'C'])
         ])
 
     def test_should_return_user_role_querying_fields_on_get_querying_fields(self):

@@ -10,6 +10,7 @@ import com.aburv.takbuff.db.UserTokenDB
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
 
 class Auth(private val context: Context) {
@@ -80,29 +81,34 @@ class Auth(private val context: Context) {
                         accessToken = accessToken,
                         idToken = idToken,
                     )
+                    val idPayload: JSONObject? = AuthUtil.parseToken(idToken)
 
-                    val userId = AuthUtil.parseToken(idToken, "user.id") ?: ""
-                    val userDp = AuthUtil.parseToken(idToken, "user.dp") ?: ""
-                    val userName = AuthUtil.parseToken(idToken, "user.name") ?: ""
-                    val userEmail = AuthUtil.parseToken(idToken, "user.user_id.val") ?: ""
+                    if (idPayload != null) {
+                        val userId = AuthUtil.getData(idPayload, "user.id") ?: ""
+                        val userDp = AuthUtil.getData(idPayload, "user.dp") ?: ""
+                        val userName = AuthUtil.getData(idPayload, "user.name") ?: ""
+                        val userEmail = AuthUtil.getData(idPayload, "user.user_id.val") ?: ""
 
-                    val appUser = AppUser(
-                        isActive = true,
-                        id = userId,
-                        email = userEmail,
-                        dp = userDp,
-                        name = userName
-                    )
+                        val appUser = AppUser(
+                            isActive = true,
+                            id = userId,
+                            email = userEmail,
+                            dp = userDp,
+                            name = userName
+                        )
 
-                    CoroutineScope(Dispatchers.Default).launch {
-                        userTokenDb.insertUserToken(appUserToken)
-                        userDb.insertUser(appUser)
+                        CoroutineScope(Dispatchers.Default).launch {
+                            userTokenDb.insertUserToken(appUserToken)
+                            userDb.insertUser(appUser)
+                        }
+
+                        val accessPayload: JSONObject? = AuthUtil.parseToken(accessToken)
+                        val isNew = isNewToApp(accessPayload!!)
+                        if (isNew)
+                            response.onNewUser()
+                        else
+                            response.onExistingUser()
                     }
-                    val isNew = true
-                    if (isNew)
-                        response.onNewUser()
-                    else
-                        response.onExistingUser()
                 }
 
                 override fun onError(value: String) {
@@ -113,6 +119,23 @@ class Auth(private val context: Context) {
         } catch (e: Exception) {
             Log.i(TAG, "Failed in get auth info: $e")
         }
+    }
+
+    private fun isNewToApp(accessPayload: JSONObject): Boolean {
+        val accesses: JSONArray = accessPayload.getJSONArray("accesses")
+        for (i in 0 until accesses.length()) {
+            val accessValue = accesses.get(i) as JSONObject
+
+            for (key in accessValue.keys()) {
+                if (key == "object_type") {
+                    val value = accessValue.getString(key)
+                    if (value == "U") {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
     }
 
     suspend fun refreshToken() {
@@ -152,28 +175,30 @@ interface LoginResponse {
 }
 
 object AuthUtil {
-    fun parseToken(idToken: String, key: String): String? {
+    fun parseToken(idToken: String): JSONObject? {
         val parts = idToken.split(".")
         if (parts.size != 3) return null
 
         try {
             val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.URL_SAFE))
             Log.i("Parse", payload)
-            val json = JSONObject(payload)
-
-            val keys = key.split(".")
-            var current: JSONObject = json
-
-            for ((index, currentKey) in keys.withIndex()) {
-                if (index == keys.lastIndex) {
-                    return current.optString(currentKey)
-                }
-                current = current.optJSONObject(currentKey) ?: return null
-            }
-            return null
+            return JSONObject(payload)
         } catch (e: Exception) {
-            Log.i("Parse on $key", e.toString())
+            Log.i("Parse token", e.toString())
             return null
         }
+    }
+
+    fun getData(data: JSONObject, key: String): String? {
+        val keys = key.split(".")
+        var current: JSONObject = data
+
+        for ((index, currentKey) in keys.withIndex()) {
+            if (index == keys.lastIndex) {
+                return current.optString(currentKey)
+            }
+            current = current.optJSONObject(currentKey) ?: return null
+        }
+        return null
     }
 }

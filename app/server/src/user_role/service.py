@@ -19,7 +19,7 @@ class UserRoleServices:
         Assign user with record with permission
         """
         self._data.on_data(data)
-        self._db.insert_record(u_id)
+        self._db.insert_record(u_id, r_id=u_id)
 
     def get_user_permission(self, u_id: str) -> list:
         """

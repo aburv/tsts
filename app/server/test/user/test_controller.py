@@ -209,3 +209,43 @@ class UserControllerTest(unittest.TestCase):
         mock_user_data.assert_called_once_with('user_id')
         mock_response.assert_called_once_with()
         self.assertEqual(expected_response_data, actual_response.data)
+
+    @mock.patch.object(APIResponse, 'get_response_json', return_value='response_json')
+    @mock.patch.object(ValidResponse, '__init__', return_value=None)
+    @mock.patch.object(UserServices, '__init__', return_value=None)
+    @mock.patch.object(UserServices, 'done_user_onboarding', return_value='t')
+    @mock.patch.object(AuthServices, '__init__', return_value=None)
+    @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
+    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
+    def test_should_return_t_valid_response_on_set_done_onboarding(self,
+                                                                   mock_get_tokens,
+                                                                   mock_secret_config,
+                                                                   mock_validate_token,
+                                                                   mock_auth_service,
+                                                                   mock_done_user_onboarding,
+                                                                   mock_service,
+                                                                   mock_response_init,
+                                                                   mock_response
+                                                                   ):
+        mock_secret_config.return_value = 'test_key'
+        expected_response_data = b'response_json'
+
+        with mock.patch.object(Caching, 'init_cache'):
+            app = App.create()
+            with app.test_client() as c:
+                actual_response = c.post(
+                    "/api/user/done_onboarding",
+                    json={'data': {}},
+                    headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
+                )
+
+        mock_secret_config.assert_called_once_with()
+        mock_get_tokens.assert_called_once_with('token')
+        mock_auth_service.assert_called_once_with()
+        mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
+        mock_service.assert_called_once_with()
+        mock_done_user_onboarding.assert_called_once_with('user_id')
+        mock_response_init.assert_called_once_with(domain='Done user onboarding', detail='user_id', data='t')
+        mock_response.assert_called_once_with()
+        self.assertEqual(expected_response_data, actual_response.data)

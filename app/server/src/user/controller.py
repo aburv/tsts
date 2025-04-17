@@ -1,7 +1,7 @@
 """
 User Controller
 """
-from flask import Blueprint
+from flask import Blueprint, Response
 
 from src.auth import validate
 from src.caching import get_if_cached
@@ -25,3 +25,18 @@ def get_user_data(user_id: str | None) -> APIResponse:
         detail=user_id,
         data=data
     )
+
+
+@USER_BLUEPRINT.route("/done_onboarding", methods=["POST"])
+@validate()
+def set_user_onboarding_done(user_id: str | None) -> Response:
+    """
+    :return:
+    :rtype:
+    """
+    data = UserServices().done_user_onboarding(user_id)
+    return ValidResponse(
+        domain="Done user onboarding",
+        detail=user_id,
+        data=data
+    ).get_response_json()

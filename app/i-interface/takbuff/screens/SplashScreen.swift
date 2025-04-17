@@ -256,7 +256,7 @@ struct SplashScreen: View {
             }
         }
         
-        if !devices.isEmpty && devices[0].idToken != nil {
+        if !devices.isEmpty && devices[0].idToken != nil && devices[0].accessToken != nil {
             needsSignIn = false
             AuthVar.setAccessToken(
                 idToken: devices[0].idToken!,

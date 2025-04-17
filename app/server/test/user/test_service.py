@@ -5,6 +5,7 @@ from src.db_duo import PostgresDbDuo
 from src.user.data import UserData
 from src.user.service import UserServices
 from src.user_id.service import UserIdServices
+from src.user_role.service import UserRoleServices
 
 
 class UserServiceTest(unittest.TestCase):
@@ -121,6 +122,22 @@ class UserServiceTest(unittest.TestCase):
             service = UserServices()
         expected = {}
 
-        actual = service.get_user_data('data')
+        actual = service.get_user_data('u_id')
 
+        self.assertEqual(actual, expected)
+
+    @mock.patch.object(UserRoleServices, '__init__', return_value=None)
+    @mock.patch.object(UserRoleServices, 'assign_user_permission', return_value=None)
+    def test_should_return_t_on_done_user_onboarding(self, mock_assign_user_permission, mock_role_services):
+        with mock.patch.object(UserServices, '__init__', return_value=None):
+            service = UserServices()
+        expected = 't'
+
+        actual = service.done_user_onboarding('u_id')
+
+        mock_assign_user_permission.assert_called_once_with(
+            {'user': 'u_id', 'resource': 'U', 'record_id': 'u_id', 'permission': 'E'},
+            'u_id'
+        )
+        mock_role_services.assert_called_once_with()
         self.assertEqual(actual, expected)
