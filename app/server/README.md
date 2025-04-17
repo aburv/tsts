@@ -29,6 +29,7 @@ pip install -r requirements.txt
 * Generate the python code for gRPC code schemas
 ```commandline
  python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/broker.proto
+ python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/authentication.proto
 ```
 
 * Run local server.

@@ -11,28 +11,28 @@ import SwiftData
 final class AppUserDevice {
     @Attribute(.unique) var appDeviceId: String
     var isActive: Bool
-    var id: String?
-    var name: String?
-    var email: String?
-    var dp: String?
-    
+    var accessToken: String?
+    var idToken: String?
+
     init(appDeviceId: String) {
         self.appDeviceId = appDeviceId
         self.isActive = true
     }
     
-    func setUser(id: String, name: String, email:String, dp: String, accessToken: String) {
-        self.id = id
-        self.name = name
-        self.email = email
-        self.dp = dp
+    func updateTokens( accessToken: String, idToken: String) {
+        self.accessToken = accessToken
+        self.idToken = idToken
     }
 }
-class DeviceDb{
-    @MainActor
-    func save (modelContext: ModelContext, deviceId: String) {
-        let deviceData = AppUserDevice(appDeviceId: deviceId)
-        modelContext.insert(deviceData)
-        try! modelContext.save()
+
+struct AuthVar {
+    private static var accessToken: String = ""
+    
+    static func setAccessToken(idToken: String, accessToken: String) {
+        AuthVar.accessToken = idToken + AppData.SEPARATOR + accessToken
+    }
+    
+    static func getAccessToken() -> String{
+        return AuthVar.accessToken
     }
 }

@@ -26,16 +26,16 @@ class UserData {
         }
     }
     
-    func auth(completion:@escaping ([String], Error?) -> ()) {
-        data.get(path: UserData.namespace + "auth") { data, error in
-            guard let data = data else{
-                completion([], error)
+    func setOnBoardingDone(completion:@escaping (String?, Error?) -> ()) {
+        data.post(path: UserData.namespace + "done_onboarding", body: [:]) { data, error in
+            guard let data = data else {
+                completion(nil, error)
                 return
             }
-            let posts = try! JSONDecoder().decode([String].self, from: data)
-            DispatchQueue.main.async {
-                completion(posts, error)
-            }
+            
+            var userData = try! JSONDecoder().decode(Dictionary<String, String>.self, from: data)
+            let dd = userData.removeValue(forKey: "data")!
+            completion(dd, nil)
         }
     }
 }

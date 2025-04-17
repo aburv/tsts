@@ -8,4 +8,14 @@
     <string name="text_search">search</string>
     <string name="text_clear">clear</string>
     <string name="text_search_here">Search here</string>
+
+    <string name="text_sign_in">Sign In</string>
+    <string name="text_sign_out">Sign Out</string>
+    <string name="text_skip">Skip</string>
+    <string name="text_retry">Try Again</string>
+    <string name="text_view_profile">View Profile</string>
+
+    <string name="google_icon">google_icon</string>
+    <string name="profile">profile</string>
+    <string name="next_step">next_step</string>
 </resources>

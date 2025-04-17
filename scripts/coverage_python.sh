@@ -40,6 +40,7 @@ fi
 echo "Generating gRPC python service"
 
 python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/broker.proto
+python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/authentication.proto
 
 echo "Start Testing"
 

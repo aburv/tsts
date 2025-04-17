@@ -21,6 +21,3 @@ export class IconComponent {
     return IconComponent.viewBox;
   }
 }
-
-
-

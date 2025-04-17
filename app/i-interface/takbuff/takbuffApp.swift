@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 @main
 struct takbuffApp: App {
@@ -15,13 +14,16 @@ struct takbuffApp: App {
     @Namespace private var animation
     @Namespace private var logo
     @Namespace private var name
+    @Namespace private var dp
+    
+    @State var user: User? = nil
     
     @State var screen: Screen = .SPLASH
-
+    
     var body: some Scene {
         WindowGroup {
             ZStack {
-                Color("banner")
+                Color((screen == .HOME || screen == .SPLASH) ? "banner" : "background")
                     .edgesIgnoringSafeArea(.all)
                 
                 if(screen == .HOME) {
@@ -37,8 +39,32 @@ struct takbuffApp: App {
                                 animation: animation,
                                 name: name,
                                 logo: logo,
+                                dp: dp,
+                                user: $user,
                                 screen: $screen,
                                 layout: properties
+                            )
+                        }
+                    case .USER:
+                        ResponsiveView { properties in
+                            UserScreen(
+                                animation: animation,
+                                logo: logo,
+                                dp: dp,
+                                user: $user,
+                                screen: $screen,
+                                dimen: properties.userDimen
+                            )
+                        }
+                    case .NEWUSER:
+                        ResponsiveView { properties in
+                            NewUserScreen(
+                                animation: animation,
+                                logo: logo,
+                                dp: dp,
+                                user: $user,
+                                screen: $screen,
+                                dimen: properties.newUserDimen
                             )
                         }
                     case .SPLASH:
@@ -48,11 +74,13 @@ struct takbuffApp: App {
                                 name: name,
                                 logo: logo,
                                 screen: $screen,
+                                user: $user,
                                 dimen: properties.splashDimen
                             )
                         }
                     }
-                } .padding([.horizontal], 1.0)
+                }
+                .padding([.horizontal], 1.0)
             }
         }
         .modelContainer(for: AppUserDevice.self)
@@ -69,12 +97,20 @@ struct ResponsiveView<Content:View>: View {
             let screenDimenType: ScreenDimenType = getDimens(width: width)
             let homeDimen = HomeDimensValues(screenDimenType: screenDimenType)
             let splashDimen = SplashDimensValues(screenDimenType: screenDimenType, height: height)
+            let newUserDimen = NewUserDimensValues(screenDimenType: screenDimenType)
+            let userDimen = UserDimensValues(screenDimenType: screenDimenType)
+            let dashboardDimen = DashboardDimensValues(screenDimenType: screenDimenType)
+            let searchDimen = SearchDimensValues(screenDimenType: screenDimenType)
             
             content(
                 LayoutProperties(
                     isLandscape: landScape,
                     homeDimen: homeDimen,
                     splashDimen: splashDimen,
+                    newUserDimen: newUserDimen,
+                    userDimen: userDimen,
+                    dashboardDimen: dashboardDimen,
+                    searchDimen:searchDimen,
                     height: height,
                     width: width
                 )
@@ -128,6 +164,10 @@ struct LayoutProperties {
     var isLandscape:Bool
     var homeDimen: HomeDimensValues
     var splashDimen: SplashDimensValues
+    var newUserDimen: NewUserDimensValues
+    var userDimen: UserDimensValues
+    var dashboardDimen: DashboardDimensValues
+    var searchDimen: SearchDimensValues
     var height:CGFloat
     var width:CGFloat
 }

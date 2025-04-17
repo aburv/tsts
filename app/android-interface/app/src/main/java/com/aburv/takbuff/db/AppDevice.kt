@@ -13,25 +13,21 @@ import androidx.room.RoomDatabase
 import com.aburv.takbuff.BuildConfig
 
 @Entity(tableName = "device")
-data class AppUserDevice(
-    @PrimaryKey val appDeviceId: String,
-    val isActive: Boolean,
-    val id: String?,
-    val email: String?,
-    val dp: String?,
-    val name: String?,
+data class AppDevice(
+    @PrimaryKey val isActive: Boolean,
+    val appDeviceId: String
 )
 
 @Dao
 interface DeviceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDevice(userDevice: AppUserDevice)
+    suspend fun insertDevice(userDevice: AppDevice)
 
     @Query("SELECT * FROM device WHERE isActive=true")
-    suspend fun getDevices(): List<AppUserDevice>
+    suspend fun getDevices(): List<AppDevice>
 }
 
-@Database(entities = [AppUserDevice::class], version = 1)
+@Database(entities = [AppDevice::class], version = 1)
 abstract class AppDeviceData : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
 }
@@ -42,9 +38,10 @@ class DeviceDB(context: Context) {
         context,
         AppDeviceData::class.java,
         BuildConfig.BASE_NAME
-    ).build()
+    )
+        .build()
 
-    suspend fun getDevices(): List<AppUserDevice> = connection.deviceDao().getDevices()
+    suspend fun getDevices(): List<AppDevice> = connection.deviceDao().getDevices()
 
-    suspend fun insertDevice(device: AppUserDevice) = connection.deviceDao().insertDevice(device)
+    suspend fun insertDevice(device: AppDevice) = connection.deviceDao().insertDevice(device)
 }
