@@ -1,0 +1,53 @@
+.content {
+  display: flex;
+  position: relative;
+  width: fit-content;
+  padding: 1px 10px;
+  margin: 0 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  align-items: center;
+  text-align: center;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.icon {
+  display: flex;
+  height: fit-content;
+  width: fit-content;
+  margin: 0 5px;
+  padding: 2px 2px 0px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.icon.curvy{
+  border-radius: 40%;
+}
+
+.primary {
+  background-color: var(--primary);
+  color: var(--bright);
+}
+
+.danger {
+  background-color: var(--danger);
+  color: var(--bright);
+}
+
+.small {
+  padding: 0 2px;
+  height: fit-content;
+}
+
+.secondary {
+  background-color: var(--bright);
+  border: 1px solid var(--primary);
+}
+
+.text {
+  padding: 2px;
+  font-size: 16px;
+}

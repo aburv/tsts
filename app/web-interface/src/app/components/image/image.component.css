@@ -1,0 +1,8 @@
+.user {
+    position: relative;
+    display: inline-block;
+}
+
+.user-img {
+    border-radius: 10px;
+}

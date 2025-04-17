@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Takbuff</string>
+    <string name="text_powered_by">Powered By</string>
+    <string name="company_name">Aburv</string>
+    <string name="text_app_logo">Takbuff Logo</string>
+    <string name="app_subtitle">An Open Source Application</string>
+    <string name="text_back">back</string>
+    <string name="text_search">search</string>
+    <string name="text_clear">clear</string>
+    <string name="text_search_here">Search here</string>
+
+    <string name="text_sign_in">Sign In</string>
+    <string name="text_sign_out">Sign Out</string>
+    <string name="text_skip">Skip</string>
+    <string name="text_retry">Try Again</string>
+    <string name="text_view_profile">View Profile</string>
+
+    <string name="google_icon">google_icon</string>
+    <string name="profile">profile</string>
+    <string name="next_step">next_step</string>
+</resources>

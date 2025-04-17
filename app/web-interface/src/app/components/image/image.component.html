@@ -1,0 +1,4 @@
+<div class="user">
+    <app-button type="secondary icon" [icon]="icon()" [iconSize]="size() - size()/8" *ngIf="!id()"></app-button>
+    <img *ngIf="id()" class="user-img" [attr.width]="size()" [attr.height]="size()" [src]="imageData" referrerpolicy="no-referrer" [attr.alt]="alt()"/>
+</div>

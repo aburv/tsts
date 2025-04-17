@@ -1,0 +1,28 @@
+.user>img {
+  background-color: var(--bg);
+  border-radius: 25px;
+  padding: 10px;
+}
+
+.user-info {
+    height: 200px;
+}
+
+.user:hover .user-info0 {
+    visibility: visible;
+}
+
+.center {
+    display: flex;
+    width: inherit;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.title {
+    width: 200p;
+    flex-wrap: wrap;
+    font-size: 20px;
+    font-weight: 700;
+}
