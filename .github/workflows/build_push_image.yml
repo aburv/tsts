@@ -1,0 +1,75 @@
+name: Build and Push Image
+on: 
+  workflow_call:
+    secrets:
+      ECR_REGISTRY:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+    inputs:
+      folder:
+        required: true
+        type: string
+      repo:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+    outputs:
+      failure_message:
+        description: "Failure message"
+        value: ${{ jobs.build_push.outputs.failure_message }}
+
+jobs:
+  build_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials 
+        id: aws
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to AWS ECR
+        id: ecr
+        uses: aws-actions/configure-ecr-login@v1
+
+      - name: Docker Build and push
+        id: docker
+        run: |
+          docker build -t ${{ secrets.ECR_REGISTRY }}/${{ inputs.repo }}:${{ inputs.tag }} ${{ inputs.folder }}
+          docker push ${{ secrets.ECR_REGISTRY }}/${{ inputs.repo }}:${{ inputs.tag }}
+
+      - name: Collect failure messages and set outputs
+        id: collect
+        if: always()
+        run: |
+          MESSAGE=""
+
+          if [ "${{ steps.aws.conclusion }}" != "success" ]; then
+            MESSAGE="${{ steps.aws.conclusion }}: Failed at aws configure
+          fi
+
+          if [ "${{ steps.ecr.conclusion }}" != "success" ]; then
+            MESSAGE="$MESSAGE, ${{ steps.ecr.conclusion }}: Failed at ecr login
+          fi
+
+          if [ "${{ steps.docker.conclusion }}" != "success" ]; then
+            MESSAGE="$MESSAGE, ${{ steps.docker.conclusion }}: Failed at build and push docker image
+          fi
+
+          echo "failure_message=$MESSAGE" >> $GITHUB_OUTPUT
+
+    outputs:
+      failure_message: ${{ steps.collect.outputs.failure_message }}
+          
