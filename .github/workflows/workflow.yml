@@ -115,6 +115,9 @@ jobs:
     environment:
       name: prod-approval
     runs-on: ubuntu-latest
+    steps:
+      - name: Awaiting approval
+        run: echo "This workflow is paused until production deployment is approved."
 
   build-site:
     needs: [set-tag, wait-for-approval]
