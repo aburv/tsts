@@ -93,8 +93,8 @@ jobs:
             --arg "build_data" "${{ needs.build-data.outputs.failure_message }}" \
             --arg "dev_deploy_interface" "${{ needs.dev-deploy-interface.outputs.failure_message }}" \
             --arg "dev_deploy_data" "${{ needs.dev-deploy-data.outputs.failure_message }}" \
-            '{tagging: $tagging, "build-interface":"$build_interface", "build-data":"$build_data", 
-            "dev-deploy-interface":"$dev_deploy_interface", "dev-deploy-data":"$dev_deploy_data"}'
+            '{tagging: $tagging, "build-interface":$build_interface, "build-data":$build_data, 
+            "dev-deploy-interface":$dev_deploy_interface, "dev-deploy-data":$dev_deploy_data}'
           )
           
           echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT
@@ -192,8 +192,8 @@ jobs:
             --arg deploy_site "${{ needs.dev-deploy-interface.outputs.failure_message }}" \
             --arg prod_deploy_interface "${{ needs.prod-deploy-interface.outputs.failure_message }}" \
             --arg prod_deploy_data "${{ needs.prod-deploy-data.outputs.failure_message }}" \
-            '{"build-site":"$build_site", "deploy-site":"$deploy_site",
-            "prod-deploy-interface":"$prod_deploy_interface", "prod-deploy-data":"$prod_deploy_data"}'
+            '{"build-site":$build_site, "deploy-site":$deploy_site,
+            "prod-deploy-interface":$prod_deploy_interface, "prod-deploy-data":$prod_deploy_data}'
           )
           
           echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT
