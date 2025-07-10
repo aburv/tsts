@@ -178,7 +178,7 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
 
   set-failures:
-    needs: [set-tag, build-interface, build-data, dev-deploy-interface, dev-deploy-data]
+    needs: [set-tag, build-site, deploy-site, prod-deploy-interface, prod-deploy-data]
     if: always()
     runs-on: ubuntu-latest
     outputs:
