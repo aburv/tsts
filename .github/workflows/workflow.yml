@@ -89,12 +89,12 @@ jobs:
         run: |
           FAILURE_JSON=$(jq -c -n \
             --arg tagging "${{ needs.set-tag.outputs.failure_message }}" \
-            --arg "build-interface" "${{ needs.build-interface.outputs.failure_message }}" \
-            --arg "build-data" "${{ needs.build-data.outputs.failure_message }}" \
-            --arg "dev-deploy-interface" "${{ needs.dev-deploy-interface.outputs.failure_message }}" \
-            --arg "dev-deploy-data" "${{ needs.dev-deploy-data.outputs.failure_message }}" \
-            '{tagging: $tagging, "build-interface":"$build-interface", "build-data":"$build-data", \ 
-            "dev-deploy-interface":"$dev-deploy-interface", "dev-deploy-data":"$dev-deploy-data"}'
+            --arg "build_interface" "${{ needs.build-interface.outputs.failure_message }}" \
+            --arg "build_data" "${{ needs.build-data.outputs.failure_message }}" \
+            --arg "dev_deploy_interface" "${{ needs.dev-deploy-interface.outputs.failure_message }}" \
+            --arg "dev_deploy_data" "${{ needs.dev-deploy-data.outputs.failure_message }}" \
+            '{tagging: $tagging, "build-interface":"$build_interface", "build-data":"$build_data", \ 
+            "dev-deploy-interface":"$dev_deploy_interface", "dev-deploy-data":"$dev_deploy_data"}'
           )
           
           echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT
@@ -188,12 +188,12 @@ jobs:
         id: set-failure
         run: |
           FAILURE_JSON=$(jq -c -n \
-            --arg "build-site" "${{ needs.build-interface.outputs.failure_message }}" \
-            --arg "deploy-site" "${{ needs.dev-deploy-interface.outputs.failure_message }}" \
-            --arg "prod-deploy-interface" "${{ needs.prod-deploy-interface.outputs.failure_message }}" \
-            --arg "prod-deploy-data" "${{ needs.prod-deploy-data.outputs.failure_message }}" \
-            '{tagging: $tagging, "build-site":"$build-site", "deploy-site":"$deploy-site", \ 
-            "prod-deploy-interface":"$prod-deploy-interface", "prod-deploy-data":"$prod-deploy-data"}'
+            --arg build_site "${{ needs.build-interface.outputs.failure_message }}" \
+            --arg deploy_site "${{ needs.dev-deploy-interface.outputs.failure_message }}" \
+            --arg prod_deploy_interface "${{ needs.prod-deploy-interface.outputs.failure_message }}" \
+            --arg prod_deploy_data "${{ needs.prod-deploy-data.outputs.failure_message }}" \
+            '{"build-site":"$build_site", "deploy-site":"$deploy_site", \ 
+            "prod-deploy-interface":"$prod_deploy_interface", "prod-deploy-data":"$prod_deploy_data"}'
           )
           
           echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT
