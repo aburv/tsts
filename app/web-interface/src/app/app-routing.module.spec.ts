@@ -26,11 +26,19 @@ describe('The App Routing', () => {
     })
   );
 
-  it('Should directs to  when invoking /0',
+  it('Should directs to  when invoking /home',
     fakeAsync(() => {
       router.navigate(['/home']);
       tick();
       expect(location.path()).toBe('/home');
+    })
+  );
+
+  it('Should directs to  when invoking /player',
+    fakeAsync(() => {
+      router.navigate(['/player']);
+      tick();
+      expect(location.path()).toBe('/player');
     })
   );
 });
