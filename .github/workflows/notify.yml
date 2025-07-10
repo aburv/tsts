@@ -46,11 +46,9 @@ jobs:
             TEXT="*FAILED:*\n$MSG"
           fi
 
-          curl -X POST -H 'Content-type: application/json' --data "{
-             \"attachments\":[{
-               \"color\": \"$COLOR\"
-               \"text\": \"$ICON $TEXT \nREPO: $GITHUB_REPOSITORY\nSHA: \`$SHA\` \n <https://github.com>/$GITHUB_REPOSITORY/commit/$SHA|View Commit>\"
-             }]
-           }" "$SLACK_URL"
-
-            
+          curl -X POST -H "Content-type: application/json" --data "{
+            \"attachments\": [{
+              \"color\": \"$COLOR\",
+              \"text\": \"$ICON $TEXT \nREPO: $GITHUB_REPOSITORY\nSHA: \`$SHA\` \n<https://github.com/$GITHUB_REPOSITORY/commit/$SHA|View Commit>\" 
+            }]
+          }"  "$SLACK_URL"
