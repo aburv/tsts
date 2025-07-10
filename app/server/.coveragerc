@@ -1,0 +1,7 @@
+[run]
+omit =
+    test/*
+    broker_pb2.py
+    broker_pb2_grpc.py
+    authentication_pb2.py
+    authentication_pb2_grpc.py

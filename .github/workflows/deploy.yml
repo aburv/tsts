@@ -1,0 +1,155 @@
+name: Deploy
+on: 
+  workflow_call:
+    secrets:
+      ECS_CLUSTER:
+        required: true
+      ECR_REGISTRY:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+    inputs:
+      service:
+        required: true
+        type: string
+      repo:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+    outputs:
+      failure_message:
+        description: "Failure message"
+        value: ${{ jobs.build_push.outputs.failure_message }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials 
+        id: aws
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Set CLUSTER name
+        id: cluster-name
+        run: | 
+          echo "CLUSTER_NAME=$ECS_CLUSTER-${{ inputs.environment }}" >> $GITHUB_ENV
+        env:
+          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+
+      - name: Set Service name
+        id: service-name
+        run: | 
+          echo "TASK_DEF_NAME=td-${{ inputs.service }}-$CLUSTER_NAME" >> $GITHUB_ENV
+          echo "SERVICE_NAME=service-${{ inputs.service }}-$CLUSTER_NAME" >> $GITHUB_ENV
+
+      - name: Get Task def
+        id: get-task-def
+        run: | 
+          aws ecs describe-task-definition --task-definition "$TASK_DEF_NAME" --query "taskDefinition" --output json > task-definition.json
+
+          TASK_DEF_ARN=$(jq -r '.taskDefinitionArn' task-definition.json)
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+
+      - name: Update Task def json
+        id: update-task-def
+        run: | 
+          jq 'del(
+            .taskDefinitionArn,
+            .revision,
+            .status,
+            .requiresAttributes,
+            .compatibilities,
+            .registeredAt,
+            .registeredBy,
+            .deregisteredBy
+          )' task-definition.json > task-definition-clean.json
+
+          declare -A SERVICES
+
+          SERVICES=(
+            [SERVICE]="$ECR_REGISTRY/${{ inputs.repo }}:${{ inputs.tag }}"
+          )
+
+          JQ_ARGS=""
+          JQ_FILTER=""
+          i=1
+
+          JQ_FILTER="${JQ_FILTER | }"
+
+          for name in "${!SERVICES[@]}"; do
+            img_index="IMG$i"
+            name_index="NAME$i"
+            JQ_ARGS=" --arg $img_index '${SERVICES[$name]}' --arg $name_index '$name'"
+            JQ_FILTER="(.containerDefinitions[] | select(.name == \$$name_index) | .image) = \$$img_index | "
+            ((i++))
+          done
+
+          eval jq $JQ_ARGS "'$JQ_FILTER'" task-definition-clean.json > new-tsk-def.json
+
+          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-task-def.json \
+            --query "taskdefinition.taskdefinitionArn" \
+            --output text \
+          )
+          echo "NEW_TASK_DEF_ARN=$NEW_TASK_DEF_ARN" >> $GITHUB_ENV
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+
+      - name: Update ECS service with new image
+        id: update-service
+        run: | 
+          aws ecs update-service \
+            --cluster $CLUSTER_NAME \
+            --service $SERVICE_NAME \
+            --task-definition $NEW_TASK_DEF_ARN \
+            --force-new-deployment
+          
+      - name: Collect failure messages and set outputs
+        id: collect
+        if: always()
+        run: |
+          MESSAGE=""
+
+          if [ "${{ steps.aws.conclusion }}" != "success" ]; then
+            MESSAGE="${{ steps.aws.conclusion }}: Failed at aws configure
+          fi
+
+          if [ "${{ steps.cluster-name.conclusion }}" != "success" ]; then
+            MESSAGE="${{ steps.cluster-name.conclusion }}: Failed at setting cluster name
+          fi
+
+          if [ "${{ steps.service-name.conclusion }}" != "success" ]; then
+            MESSAGE="${{ steps.service-name.conclusion }}: Failed at setting service name
+          fi
+
+          if [ "${{ steps.get-task-def.conclusion }}" != "success" ]; then
+            MESSAGE="${{ steps.get-task-def.conclusion }}: Failed at getting task definition by service
+          fi
+
+          if [ "${{ steps.update-task-def.conclusion }}" != "success" ]; then
+            MESSAGE="${{ steps.update-task-def.conclusion }}: Failed at updating task definition image version
+          fi
+
+          if [ "${{ steps.update-service.conclusion }}" != "success" ]; then
+            MESSAGE="${{ steps.update-service.conclusion }}: Failed at Updating the service
+          fi
+
+          echo "failure_message=$MESSAGE" >> $GITHUB_OUTPUT
+
+    outputs:
+      failure_message: ${{ steps.collect.outputs.failure_message }}
+          

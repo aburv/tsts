@@ -1,0 +1,58 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import './styles/themes/default.css';
+@import './styles/themes/dark.css';
+@import './styles/base.css';
+
+body {
+    display: block;
+    margin: 0px;
+}
+
+.layout {
+    display: flex;
+}
+
+.spacer {
+    flex: 1;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: var(--less-dark);
+    box-shadow: 0 0 1px var(--less-bright);
+}

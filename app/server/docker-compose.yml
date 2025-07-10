@@ -1,0 +1,61 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: data
+    restart: unless-stopped
+    env_file: server.env
+    ports:
+      - "80:5000"
+    links:
+      - "postgresDb:postgresDb"
+      - "redisCaching:redisCaching"
+      - "auth:auth"
+    depends_on:
+      - postgresDb
+      - redisCaching
+      - auth
+  init:
+    build:
+      context: .
+      dockerfile: ./init/Dockerfile
+    container_name: init
+    env_file: server.env
+    links:
+      - "postgresDb:postgresDb"
+    depends_on:
+      - postgresDb
+  postgresDb:
+    image: postgres:latest
+    container_name: postgresDb
+    ports:
+      - "5432:5432"
+    env_file: db.env
+    restart: unless-stopped
+  redisCaching:
+    image: redis:latest
+    container_name: redisCaching
+    env_file: redis.env
+    command: [
+      "redis-server",
+      "--requirepass", "${REDIS_PASSWORD}",
+      "--port", "6379"
+    ]
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+  auth:
+    image: auth:latest
+    container_name: auth
+    ports:
+      - "50051:50051"
+    links:
+      - "postgresDb:postgresDb"
+    env_file: auth.env
+    restart: unless-stopped
+
+volumes:
+  redis_data:

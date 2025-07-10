@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package broker;
+
+message Message {
+  string topic = 1;
+  string key = 2;
+  string content = 3;
+}
+
+message Ack {
+  bool success = 1;
+}
+
+service BrokerService {
+  rpc SendMessage (Message) returns (Ack);
+}

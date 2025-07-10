@@ -1,0 +1,162 @@
+.svg {
+    margin: 0.5rem;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+}
+
+.header {
+    position: fixed;
+    width: 100vw;
+    height: 100px;
+    top: 0;
+    transition: 0.2s;
+}
+
+.appLogo {
+    height: 64px;
+    width: 64px;
+    cursor: pointer;
+}
+
+.subtitle {
+    font-size: 45px;
+}
+
+.section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 300px);
+}
+
+.a {
+    text-decoration: none;
+    font-size: 18px;
+    color: var(--dark);
+    font-weight: 400;
+    transition: 0.3s ease-in;
+    border-bottom: 1px solid transparent;
+    display: inline-flex;
+    margin: 15px;
+    width: max-content;
+    cursor: pointer;
+}
+
+.a:hover {
+    border-bottom: 1px solid var(--dark);
+}
+
+.ul {
+    list-style-type: none;
+    padding: 0;
+    width: min-content;
+}
+
+.footerInner {
+    padding: 2rem; 
+
+    background: rgba(255, 255, 255, 0.60);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.3px);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    -webkit-backdrop-filter: blur(6.3px);
+}
+
+.footer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.fContainer {
+    max-width: 100vw;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+
+.bottomLine {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.footerTag {
+    position: absolute;
+}
+
+@media only screen and (max-width: 1200px) {
+    .subtitle {
+        font-size: 50px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .subtitle {
+        font-size: 40px;
+    }
+
+    .svg {
+        margin: 0.3rem;
+        width: 28px;
+        height: 28px;
+    }
+
+    .a {
+        margin: 10px;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .header {
+        padding: 0px 10px;
+    }
+
+    .svg {
+        margin: 0px;
+    }
+
+    .a {
+        margin: 5px;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .appLogo {
+        height: 64px;
+        width: 64px;
+    }
+
+    .bottomLine {
+        flex-direction: column-reverse;
+        align-items: start;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .appLogo {
+        height: 44px;
+        width: 44px;
+    }
+
+    .subtitle {
+        font-size: 25px;
+        line-height: 0px;
+    }
+
+    .svg {
+        width: 24px;
+        height: 24px;
+    }
+}

@@ -1,0 +1,5 @@
+<div class="content" [ngClass]="type()">
+    <app-icon [ngStyle]="{height: (iconSize() + 2).toString() + 'px' }" *ngIf="icon()" [name]="icon()!" [fill]="iconColor()" [size]="iconSize()"></app-icon>
+
+    <span *ngIf="text()" class="text">{{ text() }}</span>
+</div>

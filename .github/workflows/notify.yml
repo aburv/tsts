@@ -1,0 +1,56 @@
+name: Notify via slack
+
+on: 
+  workflow_call:
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+    inputs:
+      sha:
+        required: true
+        type: string
+      failures_json:
+        required: true
+        type: string
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse failures
+        id: parse
+        run: |
+          FAILURES_JSON='${{ inputs.failures_json }}'
+          MSG=$(echo "$FAILURES_JSON" | jq -r 'to_entries[] | select(.value != "") | "• \(.key): \(.value)"')
+
+          echo "MSG<<EOF" >> $GITHUB_ENV
+          echo "$MSG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Send Slack notification 
+        id: send
+        env: 
+          SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SHA: ${{ inputs.sha }}
+          MSG: ${{ env.MSG }}
+        run: |
+          TRIMMED_MSG=$(echo "$MSG" | xargs)
+
+          if [ -n "$TRIMMED_MSG" ]; then
+            COLOR="danger"
+            ICON="❌"
+            TEXT="*FAILED:*\n$MSG"
+          else
+            COLOR="good"
+            ICON="✅"
+            TEXT="*FAILED:*\n$MSG"
+          fi
+
+          curl -X POST -H 'Content-type: application/json' --data "{
+             \"attachments\":[{
+               \"color\": \"$COLOR\"
+               \"text\": \"$ICON $TEXT \nREPO: $GITHUB_REPOSITORY\nSHA: \`$SHA\` \n <https://github.com>/$GITHUB_REPOSITORY/commit/$SHA|View Commit>\"
+             }]
+           }" "$SLACK_URL"
+
+            

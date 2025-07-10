@@ -1,0 +1,10 @@
+:root[theme=dark] {
+  --mild-bg: #333333;
+  --bg: #222222;
+  --primary: #E6E6E6;
+  --danger: #F00;
+  --less-dark: #D5D5D5;
+  --dark: #EEE;
+  --less-bright: #525252;
+  --bright: #000;
+}
