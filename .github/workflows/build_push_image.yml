@@ -57,15 +57,15 @@ jobs:
           MESSAGE=""
 
           if [ "${{ steps.aws.conclusion }}" != "success" ]; then
-            MESSAGE="${{ steps.aws.conclusion }}: Failed at aws configure
+            MESSAGE="${{ steps.aws.conclusion }}: Failed at aws configure"
           fi
 
           if [ "${{ steps.ecr.conclusion }}" != "success" ]; then
-            MESSAGE="$MESSAGE, ${{ steps.ecr.conclusion }}: Failed at ecr login
+            MESSAGE="$MESSAGE, ${{ steps.ecr.conclusion }}: Failed at ecr login"
           fi
 
           if [ "${{ steps.docker.conclusion }}" != "success" ]; then
-            MESSAGE="$MESSAGE, ${{ steps.docker.conclusion }}: Failed at build and push docker image
+            MESSAGE="$MESSAGE, ${{ steps.docker.conclusion }}: Failed at build and push docker image"
           fi
 
           echo "failure_message=$MESSAGE" >> $GITHUB_OUTPUT
