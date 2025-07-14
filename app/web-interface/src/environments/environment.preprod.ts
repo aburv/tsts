@@ -1,6 +1,5 @@
 export const environment = {
   production: true,
-  domain: (window as any)['env']['API_DOMAIN'],
   key: (window as any)['env']['API_KEY'],
   siteDomain: "about.takbuff.com",
   authKey: (window as any)['env']['AUTH_KEY'],

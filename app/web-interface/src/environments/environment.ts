@@ -4,7 +4,6 @@
 
 export const environment = {
   production: false,
-  domain: 'localhost',
   siteDomain: 'localhost',
   key: 'key',
   authKey: 'aukk',

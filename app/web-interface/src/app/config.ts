@@ -5,17 +5,12 @@ export class Config {
     static getEnv(): any {
         return environment;
     }
-
-    static getApiProtocol(): string {
-        return this.getEnv().production ? 'https' : 'http';
-    }
-
     static getDomain(): string {
-        return this.getApiProtocol() + '://' + this.getEnv().domain + '/api/';
+        return '/api/';
     }
 
     static getSiteDomain(): string {
-        return this.getApiProtocol() + '://' + this.getEnv().siteDomain;
+        return this.getEnv().siteDomain;
     }
 
     static getHeaders(): any {
