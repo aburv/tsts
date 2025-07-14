@@ -125,27 +125,27 @@ jobs:
           MESSAGE=""
 
           if [ "${{ steps.aws.conclusion }}" != "success" ]; then
-            MESSAGE="${{ steps.aws.conclusion }}: Failed at aws configure
+            MESSAGE="${{ steps.aws.conclusion }}: Failed at aws configure"
           fi
 
           if [ "${{ steps.cluster-name.conclusion }}" != "success" ]; then
-            MESSAGE="${{ steps.cluster-name.conclusion }}: Failed at setting cluster name
+            MESSAGE="${{ steps.cluster-name.conclusion }}: Failed at setting cluster name"
           fi
 
           if [ "${{ steps.service-name.conclusion }}" != "success" ]; then
-            MESSAGE="${{ steps.service-name.conclusion }}: Failed at setting service name
+            MESSAGE="${{ steps.service-name.conclusion }}: Failed at setting service name"
           fi
 
           if [ "${{ steps.get-task-def.conclusion }}" != "success" ]; then
-            MESSAGE="${{ steps.get-task-def.conclusion }}: Failed at getting task definition by service
+            MESSAGE="${{ steps.get-task-def.conclusion }}: Failed at getting task definition by service"
           fi
 
           if [ "${{ steps.update-task-def.conclusion }}" != "success" ]; then
-            MESSAGE="${{ steps.update-task-def.conclusion }}: Failed at updating task definition image version
+            MESSAGE="${{ steps.update-task-def.conclusion }}: Failed at updating task definition image version"
           fi
 
           if [ "${{ steps.update-service.conclusion }}" != "success" ]; then
-            MESSAGE="${{ steps.update-service.conclusion }}: Failed at Updating the service
+            MESSAGE="${{ steps.update-service.conclusion }}: Failed at Updating the service"
           fi
 
           echo "failure_message=$MESSAGE" >> $GITHUB_OUTPUT
