@@ -26,11 +26,9 @@
 		4776B84C2B3355EF000C6B06 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84A2B3355EF000C6B06 /* HomeScreen.swift */; };
 		4776B84F2B3362E3000C6B06 /* Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776B84E2B3362E3000C6B06 /* Loader.swift */; };
 		478E890B2DAFEA4C00BE947D /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478E890A2DAFEA4600BE947D /* LocationService.swift */; };
-		479854FD2DB00B5F00B7B010 /* info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 479854FC2DB00B5400B7B010 /* info.plist */; };
 		479854FF2DB0128D00B7B010 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479854FE2DB0128A00B7B010 /* Icon.swift */; };
 		479855012DB0129800B7B010 /* NewUserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479855002DB0129200B7B010 /* NewUserScreen.swift */; };
 		479855032DB0129F00B7B010 /* UserScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479855022DB0129B00B7B010 /* UserScreen.swift */; };
-		479855052DB012CA00B7B010 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 479855042DB012B800B7B010 /* Debug.xcconfig */; };
 		4798550A2DB0130900B7B010 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479855092DB0130700B7B010 /* User.swift */; };
 		4798550C2DB0131200B7B010 /* GAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4798550B2DB0130C00B7B010 /* GAuthService.swift */; };
 		4798550F2DB0187500B7B010 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 4798550E2DB0187500B7B010 /* GoogleSignIn */; };
@@ -82,7 +80,7 @@
 		4776B84A2B3355EF000C6B06 /* HomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		4776B84E2B3362E3000C6B06 /* Loader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loader.swift; sourceTree = "<group>"; };
 		478E890A2DAFEA4600BE947D /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
-		479854FC2DB00B5400B7B010 /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
+		479854FC2DB00B5400B7B010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		479854FE2DB0128A00B7B010 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
 		479855002DB0129200B7B010 /* NewUserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewUserScreen.swift; sourceTree = "<group>"; };
 		479855022DB0129B00B7B010 /* UserScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScreen.swift; sourceTree = "<group>"; };
@@ -151,7 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				479855042DB012B800B7B010 /* Debug.xcconfig */,
-				479854FC2DB00B5400B7B010 /* info.plist */,
+				479854FC2DB00B5400B7B010 /* Info.plist */,
 				478E89092DAFEA2400BE947D /* services */,
 				475E2B412D97DAF200AF5026 /* models */,
 				47F4B2592CA564A0007FD5D6 /* data */,
@@ -322,7 +320,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					4741C5922A9625DF00D73EA0 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -365,8 +363,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				479855052DB012CA00B7B010 /* Debug.xcconfig in Resources */,
-				479854FD2DB00B5F00B7B010 /* info.plist in Resources */,
 				4741C59E2A9625E000D73EA0 /* Preview Assets.xcassets in Resources */,
 				4741C59B2A9625E000D73EA0 /* Assets.xcassets in Resources */,
 			);
@@ -489,6 +485,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -549,6 +546,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -634,7 +632,6 @@
 		4741C5BB2A9625E000D73EA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -653,7 +650,6 @@
 		4741C5BC2A9625E000D73EA0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -672,7 +668,6 @@
 		4741C5BE2A9625E000D73EA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -689,7 +684,6 @@
 		4741C5BF2A9625E000D73EA0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
