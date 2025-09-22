@@ -6,12 +6,11 @@ plugins {
 
 android {
     namespace = "com.aburv.takbuff"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.aburv.takbuff"
         minSdk = 34
-        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -92,40 +91,40 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
 
-    implementation("androidx.room:room-runtime:2.7.0")
-    testImplementation("androidx.test:core:1.6.1")
-    kapt("androidx.room:room-compiler:2.7.0")
-    implementation("androidx.room:room-ktx:2.7.0")
+    implementation("androidx.room:room-runtime:2.8.0")
+    testImplementation("androidx.test:core:1.7.0")
+    kapt("androidx.room:room-compiler:2.8.0")
+    implementation("androidx.room:room-ktx:2.8.0")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 
     implementation("androidx.credentials:credentials:1.5.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation("com.google.android.gms:play-services-identity:18.1.0")
 
-    implementation("androidx.test.ext:junit-ktx:1.2.1")
-    implementation("androidx.test.espresso:espresso-idling-resource:3.6.1")
+    implementation("androidx.test.ext:junit-ktx:1.3.0")
+    implementation("androidx.test.espresso:espresso-idling-resource:3.7.0")
 
     testImplementation("junit:junit:4.13.2")
 
-    testImplementation("org.mockito:mockito-core:4.8.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
-    testImplementation("org.mockito:mockito-inline:4.8.0")
+    testImplementation("org.mockito:mockito-core:5.20.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.0.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
 
-    testImplementation("org.robolectric:robolectric:4.9")
-    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("org.robolectric:robolectric:4.16")
+    testImplementation("androidx.test:core:1.7.0")
 
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.7.0")
 }
 
 java {
