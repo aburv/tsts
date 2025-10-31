@@ -1,0 +1,37 @@
+name: Deploy to S3 and Invalidate CloudFront
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "site/**" # Only run when files in /site/ change
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.SITE_ACCESS_ID }}
+          aws-secret-access-key: ${{ secrets.SITE_SECRET_KEY }}
+          aws-region: ${{ secrets.SITE_S3_REGION }}
+
+      - name: Sync files to S3
+        run: |
+          aws s3 sync site/ s3://$S3_BUCKET_NAME/ --delete
+        env:
+          S3_BUCKET_NAME: ${{ secrets.SITE_S3_BUCKET }}
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+            --paths "/*"
+        env:
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.SITE_CLOUD_FRONT_DISTRIBUTION }}

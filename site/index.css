@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: fit-content;
+    /* for scroll */
+    font-family: 'Nunito', 'Nunito Fallback';
+    background-color: #EEE;
+    overscroll-behavior: none;
+    overflow-y: hidden;
+    /* initially locked for animation */
+}
+
+.layout {
+    display: flex;
+}
+
+.spacer {
+    flex: 1;
+}
+
+#container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: visible;
+}
+
+#ball {
+    width: 100px;
+    height: 100px;
+    will-change: transform;
+    user-select: none;
+    pointer-events: none;
+    position: fixed;
+}
+
+#intro-wrapper {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    z-index: 999;
+    white-space: nowrap;
+}
+
+#intro-text {
+    position: relative;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #111;
+    user-select: none;
+    pointer-events: none;
+    overflow: hidden;
+    text-align: center;
+    height: 4rem;
+    width: 30rem;
+}
+
+#text-current,
+#text-next {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    color: #111;
+    user-select: none;
+    pointer-events: none;
+    line-height: 2rem;
+    transition: none;
+}
+
+#text-next {
+    top: 100%;
+    opacity: 0;
+}
+
+.sub-text {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+#side-image {
+    position: fixed;
+    left: 25%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: fit-content;
+    height: fit-content;
+    border-radius: 40px;
+    object-fit: cover;
+    opacity: 0;
+    visibility: hidden;
+    user-select: none;
+    /* pointer-events: none; */
+    z-index: 998;
+    will-change: opacity;
+    /* transition: opacity; */
+    transition: opacity 0.5s ease;
+}
+
+.lastContainer {
+    position: relative;
+    background-color: #FFF;
+    height: 100dvh;
+}
+
+/* Footer Styles */
+.footer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.fContainer {
+    /* position: absolute; */
+    max-width: 100vw;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+    /* bottom: 0px; */
+}
+
+.footerInner {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.60);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.3px);
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    -webkit-backdrop-filter: blur(6.3px);
+}
+
+.bottomLine {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.footerTag {
+    position: absolute;
+}
+
+.ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    font-size: 15px;
+    color: #111;
+    font-weight: 400;
+    transition: 0.3s ease-in;
+    border-bottom: 1px solid transparent;
+    display: inline-flex;
+    margin: 5px;
+    /* width: max-content; */
+    cursor: pointer;
+}
+
+a:hover {
+    border-bottom: 1px solid #111;
+}
+
+.svg {
+    width: 30px;
+    height: 30px;
+}
+
+.dLayout {
+    width: 460px;
+    height: 225px;
+    animation: image-slide 4s cubic-bezier(.5, .5, 0, 1);
+    animation-fill-mode: forwards;
+    position: relative;
+    z-index: 100;
+}
+
+/* .devices {
+    width: 370px;
+    height: 160px;
+} */
+
+.deviceLayout {
+    position: relative;
+    transition: 1s;
+    cursor: pointer;
+}
+
+.deviceLayout.mobile {
+    top: 100px;
+}
+
+.deviceLayout.monitor {
+    left: 55px;
+}
+
+.deviceLayout.tab {
+    left: 365px;
+    top: 80px;
+}
+
+.device {
+    position: absolute;
+    z-index: 2;
+    user-select: none;
+}
+
+.device.mobile {
+    height: 100px;
+}
+
+.device.monitor {
+    height: 200px;
+}
+
+.device.tab {
+    height: 125px;
+}
+
+.screen {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #707070;
+    border-radius: 5px;
+}
+
+.screen.mobile {
+    width: 50px;
+    height: 95px;
+    top: 2px;
+    left: 2px;
+}
+
+.screen.monitor {
+    width: 305px;
+    height: 170px;
+    top: 3px;
+    left: 3px;
+}
+
+.screen.tab {
+    width: 85px;
+    height: 107px;
+    top: 10px;
+    left: 5px;
+}
+
+.logo {
+    user-select: none;
+}
+
+.logo.mobile {
+    height: 25px;
+}
+
+.logo.monitor {
+    height: 60px;
+}
+
+.logo.tab {
+    height: 30px;
+}
+
+.deviceLayout.mobile:hover {
+    top: 100px;
+    left: -5px;
+}
+
+.deviceLayout.mobile:hover .logo.mobile {
+    height: 35px;
+}
+
+.deviceLayout.mobile:hover .device.mobile {
+    height: 120px;
+    z-index: 4;
+}
+
+.deviceLayout.mobile:hover .screen.mobile {
+    width: 60px;
+    height: 115px;
+    z-index: 3;
+}
+
+.deviceLayout.monitor:hover {
+    top: -5px;
+    left: 45px;
+}
+
+.deviceLayout.monitor:hover .logo.monitor {
+    height: 80px;
+}
+
+.deviceLayout.monitor:hover .device.monitor {
+    height: 220px;
+    z-index: 4;
+}
+
+.deviceLayout.monitor:hover .screen.monitor {
+    width: 335px;
+    height: 190px;
+    z-index: 3;
+}
+
+.deviceLayout.tab:hover {
+    left: 360px;
+    top: 80px;
+}
+
+.deviceLayout.tab:hover .logo.tab {
+    height: 40px;
+}
+
+.deviceLayout.tab:hover .device.tab {
+    height: 135px;
+    z-index: 4;
+}
+
+.deviceLayout.tab:hover .screen.tab {
+    width: 90px;
+    height: 117px;
+    z-index: 3;
+}
+
+.platforms {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    margin: 20px;
+}
+
+.psvg {
+    margin: 0.5rem;
+    width: 35px;
+    height: 35px;
+    padding: 5px;
+    cursor: pointer;
+    transition: width 0.3s ease, height 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.enlarge {
+    width: 50px !important;
+    height: 50px !important;
+    border-bottom: 1px solid #111;
+}
+
+.footer-column {
+    width: 200px;
+}
+
+@media only screen and (max-width: 1000px) {
+    .footer-column {
+        width: 150px;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .footer-column {
+        width: 120px;
+    }
+}
+
+@media only screen and (max-width: 550px) {}
+
+@media only screen and (max-width: 450px) {}

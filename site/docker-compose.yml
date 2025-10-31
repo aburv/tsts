@@ -1,9 +1,0 @@
-services:
-  site:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "80:3000"  # Internal port for the Next.js app
-    expose:
-      - "3000"  # Expose this port for Nginx

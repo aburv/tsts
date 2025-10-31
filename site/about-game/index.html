@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sepaktakraw | Takbuff</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+
+<body>
+    <img id="ball" src="../assets/logo_takbuff_84.png" alt="ball" draggable="false" />
+
+    <div id="container">
+        <p>About Sepak takraw content goes here</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="container">
+        <footer class="footer">
+            <div class="fContainer">
+                <div class="footerInner">
+                    <div class="layout" style="position: relative;">
+                        <div>
+                            <img alt="Company Logo" src="../assets/logo_company.svg" width="50" height="50"
+                                style="position: absolute; bottom: 0;" />
+                        </div>
+                        <div class="spacer"></div>
+
+                        <div class="footer-column">
+                            <ul class="ul" id="list"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list1"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list2"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list3"></ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="font-size: 15px;">
+                            <p>Powered by Aburv | © <span id="year"></span> Takbuff</p>
+                        </div>
+                    </div>
+                    <div class="spacer"></div>
+                    <div id="scrollTopBtn" style="cursor: pointer; position: absolute; right: 0; bottom: 0;">
+                        <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
+                            <path
+                                d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1 10h3l-4-4-4 4h3v4h2v-4z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="index.js"></script>
+</body>
+
+</html>
