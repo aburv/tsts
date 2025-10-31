@@ -31,7 +31,8 @@ const list1 = [
     }
 ];
 const list2 = [
-    { title: "Blog", url: "/blog" },
+    { title: "Newsletter", url: "/newsletters" },
+    { title: "Blog", url: "/blogs" },
     { title: "FAQ", url: "/faq" },
     { title: "Support", url: "/support" },
     { title: "Contact", url: "/contact" },
