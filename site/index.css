@@ -179,7 +179,7 @@ a:hover {
 .dLayout {
     width: 460px;
     height: 225px;
-    animation: image-slide 4s cubic-bezier(.5, .5, 0, 1);
+    animation: image-slide-x 4s cubic-bezier(.5, .5, 0, 1);
     animation-fill-mode: forwards;
     position: relative;
     z-index: 100;
@@ -356,11 +356,64 @@ a:hover {
     border-bottom: 1px solid #111;
 }
 
+.footer-columns {
+    position: relative;
+    margin: 5px;
+}
+
 .footer-column {
     width: 200px;
 }
 
+.company-logo {
+    position: absolute;
+    bottom: 0;
+    width: 50px;
+    height: 50px;
+}
+
+.footer-text {
+    font-size: 14px;
+    color: #111;
+}
+
+@keyframes image-slide-x {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(50px);
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    #side-image {
+        left: 10%;
+    }
+}
+
 @media only screen and (max-width: 1000px) {
+    #side-image {
+        left: auto;
+        top: 40%
+    }
+
+    .dLayout {
+        animation: image-slide-y 4s cubic-bezier(.5, .5, 0, 1);
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes image-slide-y {
+        from {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(-20px);
+        }
+    }
+
     .footer-column {
         width: 150px;
     }
@@ -372,6 +425,168 @@ a:hover {
     }
 }
 
-@media only screen and (max-width: 550px) {}
+@media only screen and (max-width: 550px) {
+    #side-image {
+        top: 40%
+    }
+
+    .dLayout {
+        width: 345px;
+        height: 150px;
+    }
+
+    .deviceLayout.mobile {
+        top: 75px;
+    }
+
+    .deviceLayout.monitor {
+        left: 40px;
+    }
+
+    .deviceLayout.tab {
+        left: 275px;
+        top: 55px;
+    }
+
+    .device.mobile {
+        height: 70px;
+    }
+
+    .device.monitor {
+        height: 150px;
+    }
+
+    .device.tab {
+        height: 95px;
+    }
+
+    .screen.mobile {
+        width: 35px;
+        height: 67px;
+        border-radius: 5px;
+    }
+
+    .screen.monitor {
+        width: 228px;
+        height: 127px;
+        border-radius: 2px;
+    }
+
+    .screen.tab {
+        width: 64px;
+        height: 83px;
+        top: 5px;
+        left: 3px;
+    }
+
+    .logo.mobile {
+        height: 15px;
+    }
+
+    .logo.monitor {
+        height: 45px;
+    }
+
+    .logo.tab {
+        height: 25px;
+    }
+
+    .deviceLayout.mobile:hover {
+        top: 60px;
+        left: -10px;
+    }
+
+    .deviceLayout.mobile:hover .logo.mobile {
+        height: 25px;
+    }
+
+    .deviceLayout.mobile:hover .device.mobile {
+        height: 90px;
+    }
+
+    .deviceLayout.mobile:hover .screen.mobile {
+        width: 45px;
+        height: 87px;
+        border-radius: 5px;
+    }
+
+    .deviceLayout.monitor:hover {
+        top: -10px;
+        left: 30px;
+    }
+
+    .deviceLayout.monitor:hover .logo.monitor {
+        height: 60px;
+    }
+
+    .deviceLayout.monitor:hover .device.monitor {
+        height: 170px;
+    }
+
+    .deviceLayout.monitor:hover .screen.monitor {
+        width: 258px;
+        height: 142px;
+    }
+
+    .deviceLayout.tab:hover {
+        left: 275px;
+        top: 50px;
+    }
+
+    .deviceLayout.tab:hover .logo.tab {
+        height: 35px;
+    }
+
+    .deviceLayout.tab:hover .device.tab {
+        height: 105px;
+    }
+
+    .deviceLayout.tab:hover .screen.tab {
+        width: 73px;
+        height: 93px;
+    }
+
+    .fContainer {
+        padding: 0 0.2rem;
+    }
+
+    .footerInner {
+        padding: 0.3rem 0.3rem 0.1rem 0.3rem;
+    }
+
+    .footer-column {
+        width: 70px;
+    }
+
+    .footer-column ul li a {
+        font-size: 10px;
+        margin: 0px;
+    }
+
+    .platforms {
+        margin: 5px;
+    }
+
+    .company-logo {
+        width: 30px;
+        height: 30px;
+    }
+
+    .footer-text {
+        font-size: 12px;
+    }
+
+    .psvg {
+        margin: 0.3rem;
+        width: 25px;
+        height: 25px;
+        padding: 2px;
+    }
+
+    .enlarge {
+        width: 30px !important;
+        height: 30px !important;
+    }
+}
 
 @media only screen and (max-width: 450px) {}
