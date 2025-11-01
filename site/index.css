@@ -67,6 +67,7 @@ body {
 #text-next {
     position: absolute;
     width: 100%;
+    height: fit-content;
     left: 0;
     top: 0;
     color: #111;
@@ -568,12 +569,13 @@ a:hover {
     }
 
     .company-logo {
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
     }
 
     .footer-text {
-        font-size: 12px;
+        margin-left: 20px;
+        font-size: 10px;
     }
 
     .psvg {
