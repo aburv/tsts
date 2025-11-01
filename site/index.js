@@ -8,6 +8,8 @@ window.addEventListener('beforeunload', () => {
 });
 
 // Animation constants
+
+const SCREEN_WITH_CHANGE = 1000
 const BALL_ROTATION_DEGREES = 720;
 const BALL_ROTATION_DURATION = 2;
 const BALL_SCALE = 0.6;
@@ -74,6 +76,8 @@ tl.to(introWrapper, {
     ease: "power1.inOut"
 });
 
+if (window.innerWidth > SCREEN_WITH_CHANGE) {
+    // Move right for wide screens
 tl.to(introWrapper, {
     x: TEXT_SLIDE_DISTANCE,
     duration: TEXT_SLIDE_DURATION,
@@ -86,6 +90,21 @@ tl.to(introWrapper, {
         sideImage.style.opacity = this.progress();
     }
 });
+} else {
+    // Move down for narrow screens
+    tl.to(introWrapper, {
+        y: TEXT_SLIDE_DISTANCE / 2,
+        duration: TEXT_SLIDE_DURATION,
+        ease: "power2.inOut",
+        onStart: () => {
+            sideImage.style.visibility = "hidden";
+        },
+        onUpdate: function () {
+            sideImage.style.visibility = "visible";
+            sideImage.style.opacity = this.progress();
+        }
+    });
+}
 
 // Setup scroll controlled animations for Scene 2
 function setupScrollAnimations() {
@@ -173,9 +192,11 @@ window.addEventListener('scroll', () => {
     const startScroll = zoneTop;
     const endScroll = zoneTop + zoneHeight - window.innerHeight;
 
+    const topOffset = window.innerWidth > SCREEN_WITH_CHANGE ? '50%' : '40%' ; // Adjust as needed
+
     if (scrollY >= startScroll && scrollY <= endScroll) {
         sideImage.style.position = 'fixed';
-        sideImage.style.top = '50%';
+        sideImage.style.top = topOffset;
         sideImage.style.transform = 'translateY(-50%)';
 
         introWrapper.style.position = 'fixed';
@@ -196,7 +217,7 @@ window.addEventListener('scroll', () => {
         platform.style.top = (zoneHeight - 100) + 'px';
     } else {
         sideImage.style.position = 'fixed';
-        sideImage.style.top = '50%';
+        sideImage.style.top = topOffset;
         sideImage.style.transform = 'translateY(-50%)';
 
         introWrapper.style.position = 'fixed';
