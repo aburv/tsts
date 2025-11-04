@@ -18,7 +18,7 @@ describe('ImageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ImageComponent],
+      imports: [ImageComponent],
       providers: [
         {
           provide: ImageService,
@@ -89,7 +89,7 @@ describe('ImageComponent', () => {
 
   it('View: Should set content on no id', () => {
     componentRef.setInput("id", "");
-    componentRef.setInput("icon", "iconname");
+    componentRef.setInput("icon", { name: 'iconname' });
     componentRef.setInput("size", "50");
     componentRef.setInput("alt", "alt");
 
@@ -105,9 +105,9 @@ describe('ImageComponent', () => {
 
     expect(imageElement).toBeNull();
 
-    expect(buttonElement.attributes['type']).toBe('secondary icon');
-    expect(buttonElement.nativeElement.icon).toBe('iconname');
-    expect(buttonElement.nativeElement.iconSize).toBe(43.75);
+    expect(buttonElement.componentInstance.type()).toBe('secondary icon');
+    expect(buttonElement.componentInstance.icon()).toEqual({ name: 'iconname' });
+    expect(buttonElement.componentInstance.iconSize()).toBe(43.75);
 
     expect(component.fetch).not.toHaveBeenCalled();
   });

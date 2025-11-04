@@ -16,6 +16,7 @@ declare const google: any;
 
 @Component({
   selector: 'app-user-button',
+  standalone: true,
   imports: [
     CommonModule,
     DialogComponent,
@@ -103,7 +104,7 @@ export class UserButtonComponent implements OnInit {
   }
 
   getLocation() {
-    navigator.geolocation.getCurrentPosition(this.setLocation);
+    navigator.geolocation.getCurrentPosition(this.setLocation.bind(this));
   }
 
   setLocation(position: GeolocationPosition): void {

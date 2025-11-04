@@ -7,7 +7,8 @@ import { Icon } from '../icon/icon.component';
 
 @Component({
   selector: 'app-image',
-    imports: [
+  standalone: true,
+  imports: [
     CommonModule,
     ButtonComponent,
   ],

@@ -11,7 +11,7 @@ describe('TogglerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TogglerComponent],
+      imports: [TogglerComponent],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
@@ -46,7 +46,7 @@ describe('TogglerComponent', () => {
     const items = fixture.debugElement.queryAll(By.css('.item'));
     for (let i = 0; i < items.length; i++) {
       const itemElement = items[i].nativeElement;
-      expect(itemElement.textContent).toBe(options[i]);
+      expect(itemElement.textContent.trim()).toBe(options[i]);
       if (options[i] === selected) {
         expect(items[i].classes['selected']).toBe(true);
       }

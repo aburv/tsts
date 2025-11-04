@@ -4,10 +4,12 @@ import { UserDataService } from 'src/app/_services/UserData.service';
 import { AuthUserService } from 'src/app/_services/auth-user.service';
 import { DeviceService } from 'src/app/_services/device.service';
 import { of } from 'rxjs';
-import { GAuthUser } from 'src/app/_models/user';
+import { AppUser, GAuthUser } from '../../_models/user';
+import { Icon } from '../icon/icon.component';
 import { Config } from 'src/app/config';
 import { By } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('UserButtonComponent', () => {
 
@@ -23,14 +25,29 @@ describe('UserButtonComponent', () => {
     'autoSignIn'
   ]);
 
-  const deviceService = jasmine.createSpyObj('DeviceService', [
-    'getDeviceId'
-  ]);
-  deviceService.getDeviceId.and.returnValue('deviceId');
+  let deviceService: jasmine.SpyObj<DeviceService>;
+
+  beforeAll(() => {
+    deviceService = jasmine.createSpyObj('DeviceService', ['getDeviceId', 'getValues']);
+  });
 
   beforeEach(async () => {
+    deviceService.getDeviceId.and.returnValue('test-device-id');
+    deviceService.getValues.and.returnValue({ id: 'test-device-id' });
+
+    const googleSpy = {
+      initialize: jasmine.createSpy('initialize'),
+      renderButton: jasmine.createSpy('renderButton'),
+      prompt: jasmine.createSpy('prompt'),
+    };
+    (window as any).google = {
+      accounts: {
+        id: googleSpy
+      }
+    };
+
     await TestBed.configureTestingModule({
-      declarations: [UserButtonComponent],
+      imports: [UserButtonComponent, HttpClientTestingModule],
       providers: [
         {
           provide: AuthUserService,
@@ -50,11 +67,18 @@ describe('UserButtonComponent', () => {
       .compileComponents();
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     userDataService.autoSignIn.calls.reset();
     authUserService.getLoggedUser.calls.reset();
     userDataService.signIn.calls.reset();
     userDataService.getUser.calls.reset();
+    deviceService.getDeviceId.calls.reset();
+    deviceService.getValues.calls.reset();
+    
+    userDataService.autoSignIn.and.returnValue(of(false));
+    authUserService.getLoggedUser.and.returnValue(of());
+    deviceService.getDeviceId.and.returnValue('test-device-id');
+    deviceService.getValues.and.returnValue({ id: 'test-device-id' });
   });
 
   it('Should create', () => {
@@ -122,42 +146,18 @@ describe('UserButtonComponent', () => {
     const component = fixture.componentInstance;
 
     const container = fixture.debugElement.query(By.css('#google-signin-button')).nativeElement as HTMLElement;
-
     spyOn(Config, 'getGCID').and.returnValue('GClientId');
-
-    const initializeSpy = jasmine.createSpy('initialize') as jasmine.Spy;
-    (window as any).google = {
-      accounts: {
-        id: {
-          initialize: initializeSpy,
-          renderButton: jasmine.createSpy('renderButton'),
-          prompt: jasmine.createSpy('prompt'),
-          disableAutoSelect: () => { },
-          storeCredential: () => { },
-          cancel: () => { },
-          revoke: () => { },
-          initializeIntermediate: () => {},
-          intermediate: () => {}
-        },
-        oauth2: {
-          initCodeClient: jasmine.createSpy('initCodeClient'),
-          initTokenClient: jasmine.createSpy('initTokenClient'),
-          hasGrantedAllScopes: jasmine.createSpy('hasGrantedAllScopes'),
-          hasGrantedAnyScope: jasmine.createSpy('hasGrantedAnyScope'),
-          revoke: jasmine.createSpy('revoke')
-        }
-      },
-    };
 
     component.initializeGoogleSignIn();
 
-    expect(google.accounts.id.initialize).toHaveBeenCalledWith({
+    const initialize = (window as any).google.accounts.id.initialize;
+    expect(initialize).toHaveBeenCalledWith({
       client_id: 'GClientId',
       callback: jasmine.any(Function)
     });
 
-    const callback = initializeSpy.calls.argsFor(0)[0].callback;
     const mockResponse = { credential: 'mock-token' };
+    const callback = initialize.calls.argsFor(0)[0].callback;
     callback(mockResponse);
 
     expect(authUserService.handleGoogleResponse).toHaveBeenCalledWith(mockResponse);
@@ -255,7 +255,7 @@ describe('UserButtonComponent', () => {
           name: "name",
           picUrl: 'photoUrl'
         },
-        login: { deviceId: 'deviceId', location: null }
+        login: { deviceId: 'test-device-id', location: null }
       },
     );
 
@@ -288,19 +288,18 @@ describe('UserButtonComponent', () => {
     const component = fixture.componentInstance;
 
     component.user = null;
-
     component.isDialogOn = false;
 
     fixture.detectChanges();
 
-    const googleElement = fixture.debugElement.query(By.css('div'));
-    const imageElement = fixture.debugElement.query(By.css('app-image'));
+    const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
+    const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
+    const imageElements = fixture.debugElement.queryAll(By.css('app-image'));
 
-    expect(fixture.debugElement.children.length).toBe(1);
-
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
-
-    expect(imageElement).toBeNull();
+    expect(googleButton).not.toBeNull();
+    expect(googleButton.nativeElement.id).toBe('google-signin-button');
+    expect(dialogElement).toBeNull();
+    expect(imageElements.length).toBe(0);
   });
 
   it('View: Should set the content on user with no dialog', () => {
@@ -325,8 +324,8 @@ describe('UserButtonComponent', () => {
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
+    expect(imageElement.componentInstance.id()).toBe('dp');
 
     expect(dialogElement).toBeNull();
   });
@@ -353,8 +352,8 @@ describe('UserButtonComponent', () => {
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
+    expect(imageElement.componentInstance.id()).toBe('dp');
 
     expect(dialogElement).toBeTruthy();
   });
@@ -381,8 +380,8 @@ describe('UserButtonComponent', () => {
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
+    expect(imageElement.componentInstance.id()).toBe('dp');
 
     expect(dialogElement).toBeTruthy();
   });
@@ -409,8 +408,8 @@ describe('UserButtonComponent', () => {
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
+    expect(imageElement.componentInstance.id()).toBe('dp');
 
     expect(component.isDialogOn).toBeFalse();
     expect(dialogElement).toBeNull();

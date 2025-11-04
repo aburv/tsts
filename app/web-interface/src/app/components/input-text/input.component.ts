@@ -35,6 +35,8 @@ const regexes: { [x: string]: RegExp } = {
   selector: 'app-input',
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.css'],
+  standalone: true,
+  imports: []
 })
 export class InputComponent {
   placeholder = input.required<string>();
