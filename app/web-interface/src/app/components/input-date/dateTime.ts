@@ -9,7 +9,7 @@ export class DateTime {
     value = signal<Date | null>(null);
     type: DateStringType
 
-    constructor(value: string | null, type: DateStringType = DateStringType.DATE) {
+    constructor(value: string | null = null, type: DateStringType = DateStringType.DATE) {
         if (value !== null) {
             this.value.set(new Date(value));
         }

@@ -1,24 +1,36 @@
 import { Component, computed, ElementRef, Signal, signal, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterOutlet } from '@angular/router';
 import { Observable, Observer, fromEvent, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
-import { Router } from '@angular/router';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
 import { DeviceService } from './_services/device.service';
 import { SearchService } from './_services/search.service';
 import { Config } from './config';
 
+import { Icon, IconComponent } from './components/icon/icon.component';
+
+import { UserButtonComponent } from './components/user-button/user-button.component';
+
 @Component({
   selector: 'app-root',
+  imports: [
+    RouterOutlet, 
+    CommonModule,
+    IconComponent,
+    UserButtonComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   @ViewChild('searchInput') searchInput!: ElementRef;
 
+  readonly Icon = Icon
   isInInit = true;
   isLoading = computed(() => {
     return LoaderService.status();

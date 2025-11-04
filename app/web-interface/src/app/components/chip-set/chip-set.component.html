@@ -1,4 +1,11 @@
 <div class="content">
-    <span class="item" [ngClass]="{'selected' : selected().includes(option.id)}" *ngFor="let option of options()"
-        (click)="childEmitter.emit(option.id)">{{option.text}}</span>
+  @for (option of options(); track option.id) {
+    <span
+      class="item"
+      [class.selected]="selected().includes(option.id)"
+      (click)="childEmitter.emit(option.id)"
+    >
+      {{ option.text }}
+    </span>
+  }
 </div>

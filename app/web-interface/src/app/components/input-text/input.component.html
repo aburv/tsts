@@ -1,6 +1,9 @@
-<div class="content" [style]="{'border': '1px solid ' + getBorderColor()}" (click)="isFocus=true">
-    <label>
-        <input [ngClass]="type()" value="{{value()}}" placeholder="{{placeholder()}}" (input)="onInput($event)" (focus)="isFocus=true" (focusout)="isFocus=false" required/>
-        <span>{{title()}} <span *ngIf="validator() !== undefined">*</span></span>
-    </label>
+<div class="content" [style.border]="'1px solid ' + getBorderColor()" (click)="isFocus = true">
+  <label>
+    <input [class]="type()" [value]="value()" [placeholder]="placeholder()" (input)="onInput($event)"
+      (focus)="isFocus = true" (focusout)="isFocus = false" required />
+    <span>
+      {{ title() }}@if (validator() !== undefined) { * }
+    </span>
+  </label>
 </div>

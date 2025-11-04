@@ -1,18 +1,31 @@
 import { Component, OnInit } from '@angular/core';
-import { Config } from '../../config';
+import { CommonModule } from '@angular/common';
+
 import { AuthUserService } from '../../_services/auth-user.service';
 import { UserDataService } from '../../_services/UserData.service';
 import { AppUser, GAuthUser } from '../../_models/user';
 import { DeviceService } from '../../_services/device.service';
 
+import { Config } from '../../config';
+
+import { DialogComponent } from '../dialog/dialog.component';
+import { ImageComponent } from '../image/image.component';
+import { Icon } from '../icon/icon.component';
+
 declare const google: any;
 
 @Component({
   selector: 'app-user-button',
+  imports: [
+    CommonModule,
+    DialogComponent,
+    ImageComponent
+  ],
   templateUrl: './user-button.component.html',
   styleUrls: ['./user-button.component.css']
 })
 export class UserButtonComponent implements OnInit {
+  readonly Icon = Icon
 
   user: AppUser | null = null;
 
