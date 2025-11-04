@@ -1,9 +1,11 @@
-name: Worflow Pipeline
+name: Prod ecosystem
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
+    paths:
+      - "app/**"
 
 jobs:
   set-tag:
@@ -21,18 +23,6 @@ jobs:
         run: |
           echo "failure_message=Tag" >> $GITHUB_OUTPUT
   
-  build-interface:
-    needs: set-tag
-    uses: ./.github/workflows/build_push_image.yml
-    with:
-      tag: ${{ needs.set-tag.outputs.tag }}
-      repo: ${{ vars.INTERFACE_REPO }}
-      folder: ./app/web-interface
-    secrets:
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
   
   build-data:
     needs: set-tag
@@ -47,22 +37,18 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
   
-  dev-deploy-interface:
-    needs: [set-tag, build-interface]
-    uses: ./.github/workflows/deploy.yml
+  interface:
+    needs: [set-tag]
+    uses: ./.github/workflows/build-deploy-interface.yml
     with:
-      tag: ${{ needs.set-tag.outputs.tag }}
-      service: interface
-      environment: development
-      repo: ${{ vars.INTERFACE_REPO }}
+      s3_bucket: ${{ secrets.DEV_APP_S3_BUCKET }}
+      region: ${{ secrets.DEV_APP_AWS_REGION }}
+      cloudfront_distribution_id: ${{ secrets.DEV_APP_CLOUDFRONT_DISTRIBUTION_ID }}
     secrets:
-      ECS_CLUSTER: ${{ secrets.CLUSTER_NAME }}
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
   
-  dev-deploy-data:
+  deploy-data:
     needs: [set-tag, build-data]
     uses: ./.github/workflows/deploy.yml
     with:
@@ -77,8 +63,8 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
 
-  dev-set-failures:
-    needs: [set-tag, build-interface, build-data, dev-deploy-interface, dev-deploy-data]
+  set-failures:
+    needs: [set-tag, build-data, deploy-data]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -99,111 +85,12 @@ jobs:
           
           echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT
 
-  dev-notify:
-    needs: [set-tag, dev-set-failures]
-    if: always()
-    uses: ./.github/workflows/notify.yml
-    with:
-      sha: ${{ needs.set-tag.outputs.tag }}
-      failures_json: ${{ needs.dev-set-failures.outputs.failures }}
-    secrets:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_URL }}
-
-  wait-for-approval:
-    needs: [set-tag, dev-deploy-data, dev-deploy-interface]
-    if: github.event_name == 'workflow_dispatch'
-    environment:
-      name: prod-approval
-    runs-on: ubuntu-latest
-    steps:
-      - name: Awaiting approval
-        run: echo "This workflow is paused until production deployment is approved."
-
-  build-site:
-    needs: [set-tag, wait-for-approval]
-    uses: ./.github/workflows/build_push_image.yml
-    with:
-      tag: ${{ needs.set-tag.outputs.tag }}
-      repo: ${{ vars.SITE_REPO }}
-      folder: ./site
-    secrets:
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-
-  deploy-site:
-    needs: [set-tag, build-site]
-    uses: ./.github/workflows/deploy.yml
-    with:
-      tag: ${{ needs.set-tag.outputs.tag }}
-      service: site
-      environment: production
-      repo: ${{ vars.SITE_REPO }}
-    secrets:
-      ECS_CLUSTER: ${{ secrets.CLUSTER_NAME }}
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-
-  prod-deploy-interface:
-    needs: [set-tag, wait-for-approval]
-    uses: ./.github/workflows/deploy.yml
-    with:
-      tag: ${{ needs.set-tag.outputs.tag }}
-      service: interface
-      environment: production
-      repo: ${{ vars.INTERFACE_REPO }}
-    secrets:
-      ECS_CLUSTER: ${{ secrets.CLUSTER_NAME }}
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-  
-  prod-deploy-data:
-    needs: [set-tag, wait-for-approval]
-    uses: ./.github/workflows/deploy.yml
-    with:
-      tag: ${{ needs.set-tag.outputs.tag }}
-      service: data
-      environment: production
-      repo: ${{ vars.DATA_REPO }}
-    secrets:
-      ECS_CLUSTER: ${{ secrets.CLUSTER_NAME }}
-      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-
-  set-failures:
-    needs: [set-tag, build-site, deploy-site, prod-deploy-interface, prod-deploy-data]
-    if: always()
-    runs-on: ubuntu-latest
-    outputs:
-      failures: ${{ steps.set-failure.outputs.failures_json }}
-    steps:
-      - name: Set failures
-        id: set-failure
-        run: |
-          FAILURE_JSON=$(jq -c -n \
-            --arg build_site "${{ needs.build-interface.outputs.failure_message }}" \
-            --arg deploy_site "${{ needs.dev-deploy-interface.outputs.failure_message }}" \
-            --arg prod_deploy_interface "${{ needs.prod-deploy-interface.outputs.failure_message }}" \
-            --arg prod_deploy_data "${{ needs.prod-deploy-data.outputs.failure_message }}" \
-            '{"build-site":$build_site, "deploy-site":$deploy_site,
-            "prod-deploy-interface":$prod_deploy_interface, "prod-deploy-data":$prod_deploy_data}'
-          )
-          
-          echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT
-
   notify:
     needs: [set-tag, set-failures]
     if: always()
     uses: ./.github/workflows/notify.yml
     with:
       sha: ${{ needs.set-tag.outputs.tag }}
-      failures_json: ${{ needs.set-failures.outputs.failures }}
+      failures_json: ${{ needs.dev-set-failures.outputs.failures }}
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_URL }}

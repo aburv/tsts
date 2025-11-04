@@ -1,0 +1,19 @@
+name: Deploy dev interface
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'app/interface/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/build-deploy-interface.yml
+    with:
+      s3_bucket: ${{ secrets.DEV_APP_S3_BUCKET }}
+      region: ${{ secrets.DEV_APP_AWS_REGION }}
+      cloudfront_distribution_id: ${{ secrets.DEV_APP_CLOUDFRONT_DISTRIBUTION_ID }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

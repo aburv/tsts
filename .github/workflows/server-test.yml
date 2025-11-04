@@ -1,9 +1,9 @@
 name: Server - Lint, Test
 
-on: 
+on:
   pull_request:
     paths:
-      app/server/**
+      - "app/server/**"
     
 jobs:
   Lint-and-Test:

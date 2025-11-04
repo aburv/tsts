@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "site/**" # Only run when files in /site/ change
+      - "site/**"
 
 jobs:
   deploy:
