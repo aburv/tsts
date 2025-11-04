@@ -1,11 +1,11 @@
-name: Prod ecosystem
+name: Deploy dev server
 
 on:
   push:
     branches:
-      - main
+      - master
     paths:
-      - "app/**"
+      - 'app/server/**'
 
 jobs:
   set-tag:
@@ -28,7 +28,7 @@ jobs:
     uses: ./.github/workflows/build_push_image.yml
     with:
       tag: ${{ needs.set-tag.outputs.tag }}
-      repo: ${{ vars.DATA_REPO }}
+      repo: ${{ vars.DEV_DATA_REPO }}
       folder: ./app/server
     secrets:
       ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
@@ -36,35 +36,23 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
   
-  deploy-interface:
-    needs: [set-tag]
-    uses: ./.github/workflows/build-deploy-interface.yml
-    with:
-      BUILD_ENV: prod
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.SITE_ACCESS_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.SITE_SECRET_KEY }}
-      S3_BUCKET: ${{ secrets.APP_S3_BUCKET }}
-      REGION: ${{ secrets.APP_AWS_REGION }}
-      CLOUDFRONT_DISTRIBUTION: ${{ secrets.APP_CLOUD_FRONT_DISTRIBUTION }}
-  
   deploy-data:
     needs: [set-tag, build-data]
     uses: ./.github/workflows/deploy.yml
     with:
       tag: ${{ needs.set-tag.outputs.tag }}
       service: data
-      environment: production
-      repo: ${{ vars.DATA_REPO }}
+      environment: development
+      repo: ${{ vars.DEV_DATA_REPO }}
     secrets:
-      ECS_CLUSTER: ${{ secrets.CLUSTER_NAME }}
+      ECS_CLUSTER: ${{ secrets.DEV_CLUSTER_NAME }}
       ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
 
   set-failures:
-    needs: [set-tag, build-data, deploy-data, deploy-interface]
+    needs: [set-tag, build-data, deploy-data]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -76,10 +64,8 @@ jobs:
           FAILURE_JSON=$(jq -c -n \
             --arg tagging "${{ needs.set-tag.outputs.failure_message }}" \
             --arg "build_data" "${{ needs.build-data.outputs.failure_message }}" \
-            --arg "deploy_interface" "${{ needs.deploy-interface.outputs.failure_message }}" \
             --arg "deploy_data" "${{ needs.deploy-data.outputs.failure_message }}" \
-            '{tagging: $tagging, "build-data":$build_data, 
-            "deploy-interface":$deploy_interface, "deploy-data":$deploy_data}'
+            '{tagging: $tagging, "build-data":$build_data, "deploy-data":$deploy_data}'
           )
           
           echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT

@@ -10,6 +10,8 @@ on:
 jobs:
   deploy:
     uses: ./.github/workflows/build-deploy-interface.yml
+    with:
+      BUILD_ENV: preprod
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.SITE_ACCESS_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.SITE_SECRET_KEY }}
