@@ -41,12 +41,12 @@ jobs:
     needs: [set-tag]
     uses: ./.github/workflows/build-deploy-interface.yml
     with:
-      s3_bucket: ${{ secrets.DEV_APP_S3_BUCKET }}
-      region: ${{ secrets.DEV_APP_AWS_REGION }}
-      cloudfront_distribution_id: ${{ secrets.DEV_APP_CLOUDFRONT_DISTRIBUTION_ID }}
+      s3_bucket: ${{ secrets.APP_S3_BUCKET }}
+      region: ${{ secrets.APP_AWS_REGION }}
+      cloudfront_distribution_id: ${{ secrets.APP_CLOUDFRONT_DISTRIBUTION_ID }}
     secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.SITE_ACCESS_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SITE_SECRET_KEY }}
   
   deploy-data:
     needs: [set-tag, build-data]
