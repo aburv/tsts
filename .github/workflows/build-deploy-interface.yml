@@ -14,6 +14,10 @@ on:
       CLOUDFRONT_DISTRIBUTION:
         required: true
 
+defaults:
+  run:
+    working-directory: app/web-interface
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest

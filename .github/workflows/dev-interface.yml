@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'app/interface/**'
+      - 'app/web-interface/**'
 
 jobs:
   deploy:
