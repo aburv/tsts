@@ -54,11 +54,11 @@ export class AppComponent {
   links = [
     {
       title: 'Terms & Conditions',
-      link: '/terms-conditions'
+      link: '/terms'
     },
     {
       title: 'Help',
-      link: '/faq'
+      link: '/support'
     },
     {
       title: 'Blog',
@@ -66,7 +66,7 @@ export class AppComponent {
     },
     {
       title: 'Privacy Policies',
-      link: '/privacy-policies'
+      link: '/privacy'
     },
     {
       title: 'FAQ',
