@@ -23,11 +23,12 @@ jobs:
         run: |
           echo "failure_message=Tag" >> $GITHUB_OUTPUT
     
-  lint:
+  lint-and-test:
+    needs: lint-and-test
     uses: ./.github/workflows/server-lint-test.yml
   
   build-data:
-    needs: set-tag
+    needs: [set-tag, lint-and-test]
     uses: ./.github/workflows/build_push_image.yml
     with:
       tag: ${{ needs.set-tag.outputs.tag }}
