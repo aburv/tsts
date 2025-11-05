@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    # paths:
-    #   - 'app/web-interface/**'
+    paths:
+      - 'app/web-interface/**'
 
 jobs:
   lint-and-test:
