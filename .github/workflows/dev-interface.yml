@@ -9,13 +9,13 @@ on:
 
 jobs:
   lint:
-    uses: ./.github/workflows/jobs/lint.yml
+    uses: ./.github/workflows/lint.yml
 
   test:
-    uses: ./.github/workflows/jobs/test.yml
+    uses: ./.github/workflows/test.yml
 
   deploy:
-    uses: ./.github/workflows/jobs/build-deploy-interface.yml
+    uses: ./.github/workflows/build-deploy-interface.yml
     with:
       BUILD_ENV: preprod
     secrets:

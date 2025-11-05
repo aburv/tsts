@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint:
-    uses: ./.github/workflows/jobs/web-app-lint.yml
+    uses: ./.github/workflows/web-app-lint.yml
 
   test:
-    uses: ./.github/workflows/jobs/web-app-test.yml
+    uses: ./.github/workflows/web-app-test.yml
