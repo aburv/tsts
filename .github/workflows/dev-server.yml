@@ -22,6 +22,9 @@ jobs:
         id: set-failure
         run: |
           echo "failure_message=Tag" >> $GITHUB_OUTPUT
+    
+  lint:
+    uses: ./.github/workflows/jobs/server-lint-test.yml
   
   build-data:
     needs: set-tag
