@@ -8,11 +8,11 @@ on:
     #   - 'app/web-interface/**'
 
 jobs:
-  # lint-and-test:
-  #   uses: ./.github/workflows/web-app-lint-test.yml
+  lint-and-test:
+    uses: ./.github/workflows/web-app-lint-test.yml
 
   deploy:
-    # needs: lint-and-test
+    needs: lint-and-test
     uses: ./.github/workflows/build-deploy-interface.yml
     with:
       BUILD_ENV: preprod
