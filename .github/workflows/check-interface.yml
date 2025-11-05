@@ -6,8 +6,5 @@ on:
       - "app/web-interface/**"
 
 jobs:
-  lint:
-    uses: ./.github/workflows/web-app-lint.yml
-
-  test:
-    uses: ./.github/workflows/web-app-test.yml
+  lint-and-test:
+    uses: ./.github/workflows/web-app-lint-test.yml
