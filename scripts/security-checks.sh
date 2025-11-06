@@ -4,11 +4,11 @@ set -e
 ALPINE_VERSION=3.18
 ISSUES_REPORT_FILE=server_hawkeye_report.json
 
+sudo apt-get update
+sudo apt-get install -y jq curl
+
 docker create -v /target --name target-code alpine:${ALPINE_VERSION} /bin/true
 docker cp ./ target-code:/target
-
-apk update
-apk add curl
 
 docker run --volumes-from target-code --name hawkeye hawkeyesec/scanner-cli:latest scan -f high /target --json ${ISSUES_REPORT_FILE}
 hawkeye_return=$?
