@@ -1,0 +1,32 @@
+name: Security Scan
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '**/*'
+  pull_request:
+    paths:
+      - '**/*'
+
+jobs:
+  hawkeye-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Run Hawkeye Security Scan
+        run: scripts/security-checks.sh
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report
+          path: /tmp/artifacts/server_hawkeye_report.json
