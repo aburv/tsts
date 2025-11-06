@@ -48,13 +48,28 @@ export class UserButtonComponent implements OnInit {
       }
     });
 
-    this.serviceData.autoSignIn().subscribe((hasUser) => {
+    this.serviceData.autoSignIn().subscribe(async (hasUser) => {
       if (hasUser) {
         this.setCurrentUser();
       }
       else {
+        await this.loadGoogleClient();
+
         this.initializeGoogleSignIn();
       }
+    });
+  }
+
+  loadGoogleClient(): Promise<any> {
+    return new Promise((resolve) => {
+      const checkGoogle = () => {
+        if (window['google'] && google.accounts) {
+          resolve(google);
+        } else {
+          setTimeout(checkGoogle, 50);
+        }
+      };
+      checkGoogle();
     });
   }
 
