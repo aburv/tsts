@@ -55,7 +55,6 @@ jobs:
               -e "s|\${SEPARATOR}|${{ secrets.SEPARATOR }}|g" \
               src/assets/env.template.js > src/assets/env.js
 
-      # 👇 Build Angular app based on passed environment
       - name: Build Angular app
         run: npm run build -- --configuration=${{ inputs.BUILD_ENV }}
 
@@ -82,24 +81,3 @@ jobs:
             --paths "/*"
         env:
           CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
-
-      # - name: Sync build output to S3
-      #   uses: aws-actions/s3-sync@v2
-      #   with:
-      #     source: dist/
-      #     destination: ${{ inputs.s3_bucket }}
-      #     region: ${{ inputs.region }}
-      #     delete: true
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      # - name: Invalidate CloudFront cache
-      #   uses: aws-actions/aws-cloudfront-invalidate@v3
-      #   with:
-      #     distribution-id: ${{ inputs.CLOUDFRONT_DISTRIBUTION }}
-      #     paths: "/*"
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_REGION: ${{ inputs.region }}
