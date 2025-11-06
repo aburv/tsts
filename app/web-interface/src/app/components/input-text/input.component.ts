@@ -1,11 +1,11 @@
-import { Component, input, output, HostListener, ElementRef, computed } from '@angular/core';
+import { Component, input, output, HostListener, ElementRef, computed, inject } from '@angular/core';
 
 export enum InputSize {
   XXS = 'xx-small',
   XS = 'x-small',
   S = 'small',
   M = 'medium',
-  XM= 'x-medium',
+  XM = 'x-medium',
   L = 'large'
 }
 
@@ -39,6 +39,8 @@ const regexes: { [x: string]: RegExp } = {
   imports: []
 })
 export class InputComponent {
+  private eRef = inject(ElementRef);
+
   placeholder = input.required<string>();
   title = input.required<string>();
   value = input.required<string>();
@@ -60,8 +62,6 @@ export class InputComponent {
       this.isFocus = false;
     }
   }
-
-  constructor(private eRef: ElementRef) { }
 
   onInput(event: any): void {
     const value = event.target.value;

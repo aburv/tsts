@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Config } from '../config';
 import { Observable, of, tap } from 'rxjs';
@@ -12,11 +12,9 @@ export interface ImageCache {
   providedIn: 'root',
 })
 export class ImageService {
-  private static _cachedImages: ImageCache = {};
+  private http = inject(HttpClient);
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  private static _cachedImages: ImageCache = {};
 
   getFromCache(url: string): ArrayBuffer | undefined {
     return ImageService._cachedImages[url]

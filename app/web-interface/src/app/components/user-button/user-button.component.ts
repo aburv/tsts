@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthUserService } from '../../_services/auth-user.service';
@@ -26,6 +26,10 @@ declare const google: any;
   styleUrls: ['./user-button.component.css']
 })
 export class UserButtonComponent implements OnInit {
+  private authUser = inject(AuthUserService);
+  private serviceData = inject(UserDataService);
+  private deviceService = inject(DeviceService);
+
   readonly Icon = Icon
 
   user: AppUser | null = null;
@@ -36,12 +40,6 @@ export class UserButtonComponent implements OnInit {
   } | null = null;
 
   isDialogOn = false;
-
-  constructor(
-    private authUser: AuthUserService,
-    private serviceData: UserDataService,
-    private deviceService: DeviceService,
-  ) { }
 
   ngOnInit(): void {
     this.authUser.getLoggedUser().subscribe((user: GAuthUser | null) => {
