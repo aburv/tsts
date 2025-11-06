@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, Signal, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, Signal, signal, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { Observable, Observer, fromEvent, merge } from 'rxjs';
@@ -19,7 +19,7 @@ import { UserButtonComponent } from './components/user-button/user-button.compon
 @Component({
   selector: 'app-root',
   imports: [
-    RouterOutlet, 
+    RouterOutlet,
     CommonModule,
     IconComponent,
     UserButtonComponent,
@@ -28,6 +28,14 @@ import { UserButtonComponent } from './components/user-button/user-button.compon
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  private router = inject(Router);
+  private themeService = inject(ThemeService);
+  private loaderService = inject(LoaderService);
+  private userService = inject(UserService);
+  private deviceService = inject(DeviceService);
+  private searchService = inject(SearchService);
+  private pingService = inject(PingService);
+
   @ViewChild('searchInput') searchInput!: ElementRef;
 
   readonly Icon = Icon
@@ -54,11 +62,11 @@ export class AppComponent {
   links = [
     {
       title: 'Terms & Conditions',
-      link: '/terms-conditions'
+      link: '/terms'
     },
     {
       title: 'Help',
-      link: '/faq'
+      link: '/support'
     },
     {
       title: 'Blog',
@@ -66,7 +74,7 @@ export class AppComponent {
     },
     {
       title: 'Privacy Policies',
-      link: '/privacy-policies'
+      link: '/privacy'
     },
     {
       title: 'FAQ',
@@ -82,15 +90,10 @@ export class AppComponent {
     },
   ]
 
-  constructor(
-    private router: Router,
-    private themeService: ThemeService,
-    private loaderService: LoaderService,
-    private userService: UserService,
-    private deviceService: DeviceService,
-    private searchService: SearchService,
-    private pingService: PingService
-  ) {
+  constructor() {
+    const userService = this.userService;
+    const deviceService = this.deviceService;
+
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
     this.themeService.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {

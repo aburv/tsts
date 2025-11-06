@@ -10,10 +10,10 @@ import { Observable } from "rxjs";
 export class AuthUserService {
   private static user = new EventEmitter<GAuthUser>();
 
-  getLoggedUser(): Observable<GAuthUser>{
+  getLoggedUser(): Observable<GAuthUser> {
     return AuthUserService.user;
   }
-  
+
   handleGoogleResponse(response: any) {
     const user: GAuthUser = AuthUtils.decodeJwt(response.credential)
     AuthUserService.user.emit(user);

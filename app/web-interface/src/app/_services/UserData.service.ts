@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
 import { LocalDataService } from './localStore.service';
 import { AuthService } from './auth.service';
@@ -11,10 +11,9 @@ import { AuthUtils } from '../auth-util';
   providedIn: 'root',
 })
 export class UserDataService extends LocalDataService {
+  private service = inject(AuthService);
 
-  constructor(
-    private service: AuthService,
-  ) {
+  constructor() {
     super(Config.getEnv().authKey);
   }
 

@@ -4,6 +4,11 @@
       class="item" 
       [class.selected]="selected() === option" 
       (click)="childEmitter.emit(option)"
+      (keydown.enter)="childEmitter.emit(option)"
+      (keydown.space)="childEmitter.emit(option)"
+      tabindex="0"
+      role="button"
+      [attr.aria-pressed]="selected() === option"
     >
       {{ option }}
     </span>

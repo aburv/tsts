@@ -1,4 +1,4 @@
-import { Component, effect, input } from '@angular/core';
+import { Component, effect, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ImageService } from 'src/app/_services/image.service';
@@ -7,7 +7,8 @@ import { Icon } from '../icon/icon.component';
 
 @Component({
   selector: 'app-image',
-    imports: [
+  standalone: true,
+  imports: [
     CommonModule,
     ButtonComponent,
   ],
@@ -15,6 +16,8 @@ import { Icon } from '../icon/icon.component';
   styleUrl: './image.component.css'
 })
 export class ImageComponent {
+  private image = inject(ImageService);
+
   readonly ButtonType = ButtonType
 
   id = input.required<string>();
@@ -24,7 +27,7 @@ export class ImageComponent {
 
   imageData: string | null = null;
 
-  constructor(private image: ImageService) {
+  constructor() {
     effect(() => {
       const id = this.id();
       const size = this.size();

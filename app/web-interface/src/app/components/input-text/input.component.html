@@ -1,4 +1,10 @@
-<div class="content" [style.border]="'1px solid ' + getBorderColor()" (click)="isFocus = true">
+<div class="content" 
+     [style.border]="'1px solid ' + getBorderColor()" 
+     (click)="isFocus = true"
+     (keydown.enter)="isFocus = true"
+     (keydown.space)="isFocus = true"
+     tabindex="-1"
+     role="presentation">
   <label>
     <input [class]="type()" [value]="value()" [placeholder]="placeholder()" (input)="onInput($event)"
       (focus)="isFocus = true" (focusout)="isFocus = false" required />

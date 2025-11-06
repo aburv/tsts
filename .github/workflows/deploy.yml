@@ -12,6 +12,10 @@ on:
         required: true
       AWS_REGION:
         required: true
+      API_KEY:
+        required: true
+      SEPARATOR:
+        required: true
     inputs:
       service:
         required: true
@@ -87,6 +91,8 @@ jobs:
           JQ_ARGS=""
           JQ_FILTER=""
           i=1
+
+          // Add logic to add API_KEY and SEPARATOR to env variables
 
           JQ_FILTER="${JQ_FILTER | }"
 
