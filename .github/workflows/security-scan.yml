@@ -23,7 +23,9 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Run Hawkeye Security Scan
-        run: scripts/security-checks.sh
+        run: |
+          chmod +x scripts/security-checks.sh
+          scripts/security-checks.sh
 
       - name: Upload security report
         uses: actions/upload-artifact@v4
