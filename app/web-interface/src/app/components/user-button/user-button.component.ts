@@ -54,7 +54,6 @@ export class UserButtonComponent implements OnInit {
       }
       else {
         await this.loadGoogleClient();
-
         this.initializeGoogleSignIn();
       }
     });

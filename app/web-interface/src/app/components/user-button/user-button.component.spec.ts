@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { UserButtonComponent } from './user-button.component';
 import { UserDataService } from 'src/app/_services/UserData.service';
 import { AuthUserService } from 'src/app/_services/auth-user.service';
 import { DeviceService } from 'src/app/_services/device.service';
 import { of } from 'rxjs';
-import { AppUser, GAuthUser } from '../../_models/user';
+import { GAuthUser } from '../../_models/user';
 import { Icon } from '../icon/icon.component';
 import { Config } from 'src/app/config';
 import { By } from '@angular/platform-browser';
@@ -119,12 +119,13 @@ describe('UserButtonComponent', () => {
     setCurrentUserSpy.calls.reset();
   });
 
-  it('Should start listening to loggedIn User and init google signOn if there is no user on ngInit', () => {
+  it('Should start listening to loggedIn User and init google signOn if there is no user on ngInit', fakeAsync(() => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
 
     const userLoginSpy = spyOn(component, 'userLogin');
     const initializeGoogleSignInSpy = spyOn(component, 'initializeGoogleSignIn');
+    const loadGoogleClientSpy = spyOn(component, 'loadGoogleClient').and.returnValue(Promise.resolve());
 
     authUserService.getLoggedUser.and.returnValue(of(null));
 
@@ -132,14 +133,15 @@ describe('UserButtonComponent', () => {
 
     component.ngOnInit();
 
-    expect(userDataService.autoSignIn).toHaveBeenCalledOnceWith();
+    tick();
 
     expect(authUserService.getLoggedUser).toHaveBeenCalledOnceWith();
+    expect(userDataService.autoSignIn).toHaveBeenCalledOnceWith();
+    expect(loadGoogleClientSpy).toHaveBeenCalledOnceWith();
     expect(initializeGoogleSignInSpy).toHaveBeenCalledOnceWith();
 
-    userLoginSpy.calls.reset();
-    initializeGoogleSignInSpy.calls.reset();
-  });
+    expect(userLoginSpy).not.toHaveBeenCalled();
+  }));
 
   it('Should initialize Google Sign-In, render button, and prompt One Tap', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
