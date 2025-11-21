@@ -7,7 +7,7 @@
 
 .screen {
   width: 99vw;
-  height: 99vh;
+  height: 100dvh;
 }
 
 .layout {
@@ -101,7 +101,7 @@
 }
 
 .main-layout {
-  height: calc(100vh - 100px);
+  height: calc(100dvh - 100px);
   width: 700px;
   padding: 0px 5px;
   overflow-x: hidden;
@@ -155,7 +155,7 @@
   position: absolute;
   z-index: 2;
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   width: 101vw;
   justify-content: center;
   align-items: center;
@@ -220,7 +220,7 @@
 @media only screen and (max-width: 1000px) {
   .main-layout {
     width: 700px;
-    height: calc(100vh - 125px);
+    height: calc(100dvh - 130px);
   }
 
   .side-bar-layout,
@@ -261,7 +261,7 @@
 @media only screen and (max-width: 550px) {
   .main-layout {
     width: 95vw;
-    height: calc(100vh - 150px);
+    height: calc(100dvh - 150px);
   }
 
   .footer>.break {
@@ -301,6 +301,6 @@
 
 @media only screen and (max-width: 450px) {
   .main-layout {
-    height: calc(100vh - 210px);
+    height: calc(100dvh - 210px);
   }
 }

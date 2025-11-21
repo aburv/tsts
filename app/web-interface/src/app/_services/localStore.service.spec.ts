@@ -32,7 +32,7 @@ describe('Local Data Services', () => {
 
         services.setValues('data');
 
-        expect(setSpy).toHaveBeenCalledOnceWith('key', 'ImRhdGEi');
+        expect(setSpy).toHaveBeenCalledOnceWith('key', 'JTIyZGF0YSUyMg==');
     });
 
     it('Should call removeItem get on clearData call', () => {

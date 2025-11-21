@@ -1,15 +1,24 @@
 import { Component, effect, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 import { ImageService } from 'src/app/_services/image.service';
+import { ButtonComponent, ButtonType } from '../button/button.component';
+import { Icon } from '../icon/icon.component';
 
 @Component({
   selector: 'app-image',
+    imports: [
+    CommonModule,
+    ButtonComponent,
+  ],
   templateUrl: './image.component.html',
   styleUrl: './image.component.css'
 })
 export class ImageComponent {
+  readonly ButtonType = ButtonType
 
   id = input.required<string>();
-  icon = input.required<string>();
+  icon = input.required<Icon>();
   size = input.required<number>();
   alt = input.required<string>();
 
@@ -32,13 +41,10 @@ export class ImageComponent {
       imgRes = "80"
     }
     this.image.get(id, imgRes).subscribe(data => {
-      // Convert binary data to a blob
       const blob = new Blob([data], { type: 'image/jpeg' });
 
-      // Use FileReader to read the blob as a Data URL
       const reader = new FileReader();
       reader.onload = () => {
-        // Update the imageUrl signal with the base64 data URL
         this.imageData = reader.result as string;
       };
       reader.readAsDataURL(blob);

@@ -1,12 +1,21 @@
 <div class="content">
-    <div class="datepicker">
-        <app-icon name="calendar"></app-icon>
-        <input #date class="d-input" [attr.type]="value()!.type" [attr.min]="minValue()!" [attr.max]="maxValue()!"
-            [value]="inputValue()!" (change)="notify($event)" />
-    </div>
-    <div style="display: block">
-        <span class="title" *ngIf="value()!.value()">{{title()!}}</span>
-        <div class="holder" *ngIf="value()!.value()">{{valueText()!}}</div>
-        <div class="holder" *ngIf="!value()!.value()">{{title()!}}</div>
-    </div>
+  <div class="datepicker">
+    <app-icon [name]="Icon.CALENDAR"></app-icon>
+    <input #date
+           class="d-input"
+           [attr.type]="value()!.type"
+           [attr.min]="minValue()!"
+           [attr.max]="maxValue()!"
+           [value]="inputValue()!"
+           (change)="notify($event)" />
+  </div>
+  <div style="display: block">
+    @if (value()!.value()) {
+      <span class="title">{{ title()! }}</span>
+      <div class="holder">{{ valueText()! }}</div>
+    }
+    @if (!value()!.value()) {
+      <div class="holder">{{ title()! }}</div>
+    }
+  </div>
 </div>

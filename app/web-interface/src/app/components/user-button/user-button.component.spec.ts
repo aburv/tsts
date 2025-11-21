@@ -123,11 +123,10 @@ describe('UserButtonComponent', () => {
 
     const container = fixture.debugElement.query(By.css('#google-signin-button')).nativeElement as HTMLElement;
 
-    const getId = spyOn(Config, 'getGCID');
-    getId.and.returnValue("GClientId");
+    spyOn(Config, 'getGCID').and.returnValue('GClientId');
 
     const initializeSpy = jasmine.createSpy('initialize') as jasmine.Spy;
-    window.google = {
+    (window as any).google = {
       accounts: {
         id: {
           initialize: initializeSpy,
@@ -136,7 +135,9 @@ describe('UserButtonComponent', () => {
           disableAutoSelect: () => { },
           storeCredential: () => { },
           cancel: () => { },
-          revoke: () => { }
+          revoke: () => { },
+          initializeIntermediate: () => {},
+          intermediate: () => {}
         },
         oauth2: {
           initCodeClient: jasmine.createSpy('initCodeClient'),
@@ -170,7 +171,6 @@ describe('UserButtonComponent', () => {
 
     expect(google.accounts.id.prompt).toHaveBeenCalled();
 
-    getId.calls.reset();
   });
 
   it('Should set on setLocation', () => {
@@ -186,8 +186,10 @@ describe('UserButtonComponent', () => {
         altitudeAccuracy: 0,
         heading: 0,
         speed: 0,
+        toJSON: () => ({})
       },
       timestamp: Date.now(),
+      toJSON: () => ({})
     };
 
     expect(component.location).toBe(null);
@@ -213,13 +215,15 @@ describe('UserButtonComponent', () => {
         altitudeAccuracy: 0,
         heading: 0,
         speed: 0,
+        toJSON: () => ({})
       },
       timestamp: Date.now(),
+      toJSON: () => ({})
     };
 
     spyOn(component, 'setLocation');
-    spyOn(navigator.geolocation, 'getCurrentPosition').and.callFake(function (_locationSuccess, _locationError) {
-      arguments[0](mockPosition);
+    spyOn(navigator.geolocation, 'getCurrentPosition').and.callFake((success: any) => {
+      success(mockPosition);
     });
 
     component.getLocation();

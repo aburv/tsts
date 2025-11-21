@@ -1,6 +1,5 @@
-<div class="dialog-frame">
+<div class="dialog-frame" (click)="onBackgroundClick($event)">
   <div class="content">
-    <ng-container *ngTemplateOutlet="content">
-    </ng-container>
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
   </div>
 </div>

@@ -1,20 +1,34 @@
-import { Buffer } from 'buffer';
-
 export class LocalDataService {
-  protected key
+  protected key: string;
+
   constructor(key: string) {
-    this.key = key
-  } 
+    this.key = key;
+  }
+
   getValues(): any {
-    const data = window.localStorage.getItem(this.key);
-    return data !== null ? JSON.parse(Buffer.from((data), 'base64').toString('ascii')) : null;
+    const data = localStorage.getItem(this.key);
+    if (!data) return null;
+
+    try {
+      const jsonString = decodeURIComponent(atob(data));
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.error(`Error decoding localStorage value for key "${this.key}":`, error);
+      return null;
+    }
   }
 
   setValues(value: any): void {
-    window.localStorage.setItem(this.key, Buffer.from(JSON.stringify(value)).toString('base64'));
+    try {
+      const jsonString = JSON.stringify(value);
+      const encoded = btoa(encodeURIComponent(jsonString));
+      localStorage.setItem(this.key, encoded);
+    } catch (error) {
+      console.error(`Error encoding localStorage value for key "${this.key}":`, error);
+    }
   }
 
   clearData(): void {
-    window.localStorage.removeItem(this.key);
+    localStorage.removeItem(this.key);
   }
 }

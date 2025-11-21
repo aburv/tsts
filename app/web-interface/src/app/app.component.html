@@ -1,96 +1,138 @@
 <div class="screen layout">
-    <div class="splash-layout" *ngIf="isInInit">
-        <div>
-            <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
-            <div style="text-align: center; font-size: 30px;">Takbuff</div>
-        </div>
-    </div>
-
-    <div class="content" *ngIf="!isInInit">
-        <div class="header-layout">
-            <div class="title" (click)="navigateToDashboard()">
-                <img src="../assets/logo_app_164.png" alt="logo" />
-                <b style="color: #EEE;">Takbuff</b>
-            </div>
-
-            <div class="spacer"></div>
-
-            <div class="search" [ngClass]="{'is-searching': isSearching}">
-                <app-icon name="search" [size]=30 [ngStyle]="{'cursor': !isSearching ? 'pointer': 'default'}"
-                    (click)="turnToSearching()"></app-icon>
-                <input #searchInput type="text" [ngClass]="{'disp-input': isSearching}" placeholder="Search here"
-                    [value]="searchText()" (keyup)="onChange($event)" />
-                <app-icon name="cross" [size]=20 style="cursor: pointer;" *ngIf="isSearching"
-                    (click)="onSearchClose()"></app-icon>
-            </div>
-
-            <app-user-button></app-user-button>
-        </div>
-
-        <div class="layout">
-            <div class="side-bar-layout">
-
-            </div>
-
-            <div class="main-layout" *ngIf="!isSearching">
-                <router-outlet></router-outlet>
-            </div>
-
-            <div class="main-layout" *ngIf="isSearching">
-                <div class="search-result-item" *ngFor="let result of searchResult">
-
-                </div>
-            </div>
-
-            <div>
-                <div class="side-bar-layout">
-
-                </div>
-                <div class="links side">
-                    <div *ngFor="let link of links; let i = index">
-                        <a target="_blank" class="link" [href]="siteDomain + link['link']">
-                            {{ link['title'] }}
-                        </a>
-                        <span *ngIf="i === 0 || i === 1 || i === 3 || i === 4" class="separator">|</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="app-support-layout">
-        <app-icon name="android" [size]=30></app-icon>
-        <br />
-        <app-icon name="ios" [size]=30></app-icon>
-    </div>
-
-    <div class="footer-layout">
-        <div class="footer">
-            <div class="links bottom">
-                <div *ngFor="let link of links; let lastItem = last;">
-                    <a target="_blank" class="link" [href]="siteDomain + link['link']">
-                        {{ link['title'] }}
-                    </a>
-                    <span *ngIf="!lastItem" class="separator">|</span>
-                </div>
-            </div>
-            <div>
-                <span>Powered by <b>Aburv</b> | <b>Takbuff</b> © {{ thisyear }}</span>
-                <br class="break" />
-                <span style="font-size: 12px;"> An Open Source Application</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="loader-layout" *ngIf="isLoading()">
+  @if (isInInit) {
+    <div class="splash-layout">
+      <div>
         <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
+        <div style="text-align: center; font-size: 30px;">Takbuff</div>
+      </div>
     </div>
+  }
 
-    <div class="toast" *ngIf="isServerDown()">
-        Please try again later
-    </div>
+  @if (!isInInit) {
+    <div class="content">
+      <div class="header-layout">
+        <div class="title" (click)="navigateToDashboard()">
+          <img src="../assets/logo_app_164.png" alt="logo" />
+          <b style="color: #EEE;">Takbuff</b>
+        </div>
 
-    <div class="toast" *ngIf="isInternetDown()">
-        No Internet connection
+        <div class="spacer"></div>
+
+        <div class="search" [ngClass]="{ 'is-searching': isSearching }">
+          <app-icon
+            [name]="Icon.SEARCH"
+            [size]="30"
+            [ngStyle]="{ 'cursor': !isSearching ? 'pointer' : 'default' }"
+            (click)="turnToSearching()"
+          ></app-icon>
+
+          <input
+            #searchInput
+            type="text"
+            [ngClass]="{ 'disp-input': isSearching }"
+            placeholder="Search here"
+            [value]="searchText()"
+            (keyup)="onChange($event)"
+          />
+
+          @if (isSearching) {
+            <app-icon
+              [name]="Icon.CROSS"
+              [size]="20"
+              style="cursor: pointer;"
+              (click)="onSearchClose()"
+            ></app-icon>
+          }
+        </div>
+
+        <app-user-button></app-user-button>
+      </div>
+
+      <div class="layout">
+        <div class="side-bar-layout"></div>
+
+        @if (!isSearching) {
+          <div class="main-layout">
+            <router-outlet></router-outlet>
+          </div>
+        }
+
+        @if (isSearching) {
+          <div class="main-layout">
+            @for (result of searchResult; track result) {
+              <div class="search-result-item">
+                <!-- Search result content goes here -->
+              </div>
+            }
+          </div>
+        }
+
+        <div>
+          <div class="side-bar-layout"></div>
+          <div class="links side">
+            @for (link of links; track link) {
+              <a
+                target="_blank"
+                class="link"
+                [href]="siteDomain + link.link"
+              >
+                {{ link.title }}
+              </a>
+              @if ($index === 0 || $index === 1 || $index === 3 || $index === 4) {
+                <span class="separator">|</span>
+              }
+            }
+          </div>
+        </div>
+      </div>
     </div>
+  }
+
+  <div class="app-support-layout">
+    <app-icon [name]="Icon.ANDROID" [size]="30"></app-icon>
+    <br />
+    <app-icon [name]="Icon.IOS" [size]="30"></app-icon>
+  </div>
+
+  <div class="footer-layout">
+    <div class="footer">
+      <div class="links bottom">
+        @for (link of links; track link) {
+          <a
+            target="_blank"
+            class="link"
+            [href]="siteDomain + link.link"
+          >
+            {{ link.title }}
+          </a>
+          @if (!$last) {
+            <span class="separator">|</span>
+          }
+        }
+      </div>
+      <div>
+        <span>Powered by <b>Aburv</b> | <b>Takbuff</b> © {{ thisyear }}</span>
+        <br class="break" />
+        <span style="font-size: 12px;"> An Open Source Application</span>
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loader-layout">
+      <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
+    </div>
+  }
+
+  @if (isServerDown()) {
+    <div class="toast">
+      Please try again later
+    </div>
+  }
+
+  @if (isInternetDown()) {
+    <div class="toast">
+      No Internet connection
+    </div>
+  }
 </div>
