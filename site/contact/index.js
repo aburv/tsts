@@ -1,4 +1,60 @@
 
+const form = document.querySelector("#contactForm");
+const button = document.querySelector("#sendBtn");
+const statusMsg = document.querySelector("#statusMsg");
+const buttonText = document.querySelector(".btn-text");
+
+try {
+    const url = "/api/contact";
+}
+catch {
+    button.disabled = true;
+    form.childNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            node.disabled = true;
+        }
+    });
+    statusMsg.textContent = "⚠️ Contact form is not configured.";
+}
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+        name: form.name.value,
+        email: form.email.value,
+        message: form.message.value
+    };
+
+    // Start loader
+    button.classList.add("loading");
+    button.disabled = true;
+    statusMsg.textContent = "";
+    buttonText.textContent = "";
+
+    try {
+        const res = await fetch("/api/contact", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (result.success) {
+            statusMsg.textContent = "✅ Message sent successfully!";
+            form.reset();
+        } else {
+            statusMsg.textContent = "❌ Failed to send message.";
+        }
+    } catch {
+        statusMsg.textContent = "⚠️ Network error. Try again later.";
+    } finally {
+        button.classList.remove("loading");
+        button.disabled = false;
+    }
+});
+
 const toggleBtn = document.getElementById('theme-toggle');
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
