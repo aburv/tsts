@@ -5,13 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Blogs | Takbuff</title>
+    <link rel="icon" type="image/x-icon" href="../assets/logo_takbuff_24.png">
     <link rel="stylesheet" href="../blogs/index.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
 <body>
-    <img id="ball" src="../assets/logo_takbuff_84.png" alt="ball" draggable="false" />
+    <button id="theme-toggle">🌙</button>
+    
+    <a href="/">
+        <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
+    </a>
 
     <div id="container">
         <p>Developer Blogs goes here</p>
@@ -19,12 +24,14 @@
 
     <!-- Footer -->
     <div class="container">
-       <footer class="footer">
+        <footer class="footer">
             <div class="fContainer">
                 <div class="footerInner">
                     <div class="layout footer-columns">
                         <div>
-                            <img alt="Company Logo" src="./assets/logo_company.svg" class="company-logo" />
+                            <a href="https://www.aburv.com" target="_blank" rel="noopener noreferrer">
+                                <img alt="Company Logo" src="../assets/logo_company.svg" class="company-logo" />
+                            </a>
                         </div>
                         <div class="spacer"></div>
 
@@ -42,7 +49,8 @@
                         </div>
                     </div>
 
-                    <div class="footer-text">Powered by Aburv | © <span id="year"></span> Takbuff</div>
+                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank"
+                            rel="noopener noreferrer">Aburv</a> | © <span id="year"></span> Takbuff</div>
                     <div class="spacer"></div>
                     <div id="scrollTopBtn" style="cursor: pointer; position: absolute; right: 0; bottom: 0;">
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
