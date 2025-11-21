@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
+:root {
+    --bg: #EEE;
+    --footer-bg: #f5f5f5;
+    --toggle-bg: rgba(15, 15, 15, 0.35);
+    --accent: #0097a7;
+    --text: #1b1b1b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 html,
 body {
     margin: 0;
@@ -7,7 +21,8 @@ body {
     height: fit-content;
     /* for scroll */
     font-family: 'Nunito', 'Nunito Fallback';
-    background-color: #EEE;
+    background-color: var(--bg);
+    color: var(--text);
     overscroll-behavior: none;
     overflow-y: hidden;
     /* initially locked for animation */
@@ -19,6 +34,22 @@ body {
 
 .spacer {
     flex: 1;
+}
+
+body.light {
+    --bg: #EEE;
+    --footer-bg: #f5f5f5;
+    --toggle-bg: rgba(15, 15, 15, 0.35);
+    --accent: #0097a7;
+    --text: #1b1b1b;
+}
+
+body.dark {
+    --bg: #151515;
+    --footer-bg: #0b0c10;
+    --toggle-bg: rgba(150, 94, 94, 0.543);
+    --accent: #00fff5;
+    --text: #c5c6c7;
 }
 
 #container {
@@ -39,6 +70,26 @@ body {
     position: fixed;
 }
 
+#theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1000;
+    color: var(--accent);
+    transition: transform 0.3s;
+}
+
+#theme-toggle:hover {
+    background: var(--toggle-bg);
+    transform: scale(1.2);
+}
+
 #intro-wrapper {
     position: fixed;
     left: 50%;
@@ -54,7 +105,7 @@ body {
     position: relative;
     font-size: 2.5rem;
     font-weight: bold;
-    color: #111;
+    color: var(--text);
     user-select: none;
     pointer-events: none;
     overflow: hidden;
@@ -70,7 +121,7 @@ body {
     height: fit-content;
     left: 0;
     top: 0;
-    color: #111;
+    color: var(--text);
     user-select: none;
     pointer-events: none;
     line-height: 2rem;
@@ -108,7 +159,7 @@ body {
 
 .lastContainer {
     position: relative;
-    background-color: #FFF;
+    background-color: var(--bg);
     height: 100dvh;
 }
 
@@ -130,11 +181,11 @@ body {
 
 .footerInner {
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.60);
+    background: var(--footer-bg);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(6.3px);
-    border: 1px solid rgba(255, 255, 255, 0.32);
+    border: 1px solid var(--footer-bg);
     -webkit-backdrop-filter: blur(6.3px);
 }
 
@@ -158,7 +209,7 @@ body {
 a {
     text-decoration: none;
     font-size: 15px;
-    color: #111;
+    color: var(--text);
     font-weight: 400;
     transition: 0.3s ease-in;
     border-bottom: 1px solid transparent;
@@ -169,12 +220,16 @@ a {
 }
 
 a:hover {
-    border-bottom: 1px solid #111;
+    border-bottom: 1px solid var(--text);
 }
 
 .svg {
     width: 30px;
     height: 30px;
+}
+
+.svg path {
+    fill: currentColor;
 }
 
 .dLayout {
@@ -351,6 +406,10 @@ a:hover {
     border-bottom: 1px solid transparent;
 }
 
+.psvg path {
+    fill: currentColor;
+}
+
 .enlarge {
     width: 50px !important;
     height: 50px !important;
@@ -371,11 +430,14 @@ a:hover {
     bottom: 0;
     width: 50px;
     height: 50px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1px 3px 3px 1px;
 }
 
 .footer-text {
     font-size: 14px;
-    color: #111;
+    color: var(--text);
 }
 
 @keyframes image-slide-x {
