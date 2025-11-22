@@ -1,4 +1,4 @@
-<div class="screen layout">
+<div class="screen">
   @if (isInInit) {
     <div class="splash-layout">
       <div>
@@ -11,7 +11,13 @@
   @if (!isInInit) {
     <div class="content">
       <div class="header-layout">
-        <div class="title" (click)="navigateToDashboard()">
+        <div class="title" 
+             (click)="navigateToDashboard()" 
+             (keydown.enter)="navigateToDashboard()"
+             (keydown.space)="navigateToDashboard()"
+             tabindex="0"
+             role="button"
+             aria-label="Go to dashboard">
           <img src="../assets/logo_app_164.png" alt="logo" />
           <b style="color: #EEE;">Takbuff</b>
         </div>
@@ -48,7 +54,7 @@
         <app-user-button></app-user-button>
       </div>
 
-      <div class="layout">
+      <div class="layout" style="height: 90%;">
         <div class="side-bar-layout"></div>
 
         @if (!isSearching) {

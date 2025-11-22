@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthUserService } from '../../_services/auth-user.service';
@@ -16,6 +16,7 @@ declare const google: any;
 
 @Component({
   selector: 'app-user-button',
+  standalone: true,
   imports: [
     CommonModule,
     DialogComponent,
@@ -25,6 +26,10 @@ declare const google: any;
   styleUrls: ['./user-button.component.css']
 })
 export class UserButtonComponent implements OnInit {
+  private authUser = inject(AuthUserService);
+  private serviceData = inject(UserDataService);
+  private deviceService = inject(DeviceService);
+
   readonly Icon = Icon
 
   user: AppUser | null = null;
@@ -36,12 +41,6 @@ export class UserButtonComponent implements OnInit {
 
   isDialogOn = false;
 
-  constructor(
-    private authUser: AuthUserService,
-    private serviceData: UserDataService,
-    private deviceService: DeviceService,
-  ) { }
-
   ngOnInit(): void {
     this.authUser.getLoggedUser().subscribe((user: GAuthUser | null) => {
       if (user !== null) {
@@ -49,13 +48,27 @@ export class UserButtonComponent implements OnInit {
       }
     });
 
-    this.serviceData.autoSignIn().subscribe((hasUser) => {
+    this.serviceData.autoSignIn().subscribe(async (hasUser) => {
       if (hasUser) {
         this.setCurrentUser();
       }
       else {
+        await this.loadGoogleClient();
         this.initializeGoogleSignIn();
       }
+    });
+  }
+
+  loadGoogleClient(): Promise<any> {
+    return new Promise((resolve) => {
+      const checkGoogle = () => {
+        if (window['google'] && google.accounts) {
+          resolve(google);
+        } else {
+          setTimeout(checkGoogle, 50);
+        }
+      };
+      checkGoogle();
     });
   }
 
@@ -103,7 +116,7 @@ export class UserButtonComponent implements OnInit {
   }
 
   getLocation() {
-    navigator.geolocation.getCurrentPosition(this.setLocation);
+    navigator.geolocation.getCurrentPosition(this.setLocation.bind(this));
   }
 
   setLocation(position: GeolocationPosition): void {

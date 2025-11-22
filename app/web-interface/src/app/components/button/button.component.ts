@@ -17,6 +17,7 @@ export enum ButtonType {
 
 @Component({
   selector: 'app-button',
+  standalone: true,
   imports: [
     IconComponent
   ],

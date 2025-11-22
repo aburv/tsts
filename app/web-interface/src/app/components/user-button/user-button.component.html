@@ -5,14 +5,24 @@
     [size]="45" 
     [id]="user!.dp" 
     [icon]="Icon.PERSON" 
-    (click)="isDialogOn = true" 
+    (click)="isDialogOn = true"
+    (keydown.enter)="isDialogOn = true"
+    (keydown.space)="isDialogOn = true"
+    tabindex="0"
+    role="button"
+    [attr.aria-label]="'Open profile dialog for ' + user!.name"
     alt="{{ user!.name }}-display-picture">
   </app-image>
 }
 
 <ng-template #dialogContent>
   @if (user !== null) {
-    <div style="position: relative; width: 300px; height: 300px" (click)="isDialogOn = false">
+    <div class="image-holder" 
+         (click)="isDialogOn = false"
+         (keydown.escape)="isDialogOn = false"
+         tabindex="0"
+         role="button"
+         aria-label="Close profile dialog">
       <div class="center" style="flex-direction: column;">
         <div class="center" style="margin-bottom: 25px;">
           <app-image 

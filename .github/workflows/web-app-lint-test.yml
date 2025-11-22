@@ -1,21 +1,19 @@
-name: Web App - Lint, Test
+name: Test Web Interface
 
 on:
-  pull_request:
-    paths:
-      - "app/web-interface/**"
+  workflow_call:
 
 defaults:
   run:
     working-directory: app/web-interface
 
 jobs:
-  Lint-and-Test:
+  lint-and-test:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.12.0]
 
     steps:
       - name: Checkout code
@@ -24,29 +22,25 @@ jobs:
       - name: Install Chrome
         run: |
           sudo apt-get update -y
-          sudo apt-get install xvfb
-          sudo apt-get install -y libxss1 libappindicator3-1 libindicator7
-          sudo apt-get install -y chromium-browser
-      
+          sudo apt-get install -y xvfb libxss1 libappindicator3-1 libindicator7 chromium-browser
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      
-      - name: Install Dependencies
-        run: npm i
 
-      - name: Run lint
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Lint
         run: npm run lint
 
       - name: Run Tests
-        run: |
-          npm run test -- --browsers ChromeHeadless
-      
-      - name: List files in angular coverage folder
-        run: |
-          ls -l coverage/web-interface
-    
+        run: npm run test
+
+      - name: List coverage files
+        run: ls -l coverage/web-interface
+
       - name: Upload test report 
         uses: actions/upload-artifact@v4
         with:

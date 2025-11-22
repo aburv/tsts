@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
-  private options =['Light', 'Dark']
+  private options = ['Light', 'Dark']
 
   initTheme(isDark: boolean): void {
     if (isDark) {
