@@ -6,8 +6,12 @@
 }
 
 .screen {
+  display: flex;
   width: 99vw;
   height: 100dvh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .layout {
@@ -18,9 +22,11 @@
 .splash-layout {
   display: flex;
   align-items: center;
+  height: 98%;
 }
 
 .content {
+  flex: 1;
   animation: fadeIn ease 1s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
@@ -101,7 +107,6 @@
 }
 
 .main-layout {
-  height: calc(100dvh - 100px);
   width: 700px;
   padding: 0px 5px;
   overflow-x: hidden;
@@ -182,8 +187,6 @@
 
 .footer-layout {
   width: 100vw;
-  position: absolute;
-  bottom: 0;
 }
 
 .footer {
@@ -220,7 +223,6 @@
 @media only screen and (max-width: 1000px) {
   .main-layout {
     width: 700px;
-    height: calc(100dvh - 130px);
   }
 
   .side-bar-layout,
@@ -261,7 +263,6 @@
 @media only screen and (max-width: 550px) {
   .main-layout {
     width: 95vw;
-    height: calc(100dvh - 150px);
   }
 
   .footer>.break {
@@ -299,8 +300,4 @@
   }
 }
 
-@media only screen and (max-width: 450px) {
-  .main-layout {
-    height: calc(100dvh - 210px);
-  }
-}
+@media only screen and (max-width: 450px) {}
