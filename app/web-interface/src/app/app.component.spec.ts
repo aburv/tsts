@@ -21,9 +21,11 @@ describe('AppComponent', () => {
   userService.getUserData.and.returnValue(of({ data: {} }));
 
   const deviceService = jasmine.createSpyObj('DeviceService', [
-    'sendDeviceDetails'
+    'sendDeviceDetails',
+    'getDeviceId'
   ]);
   deviceService.sendDeviceDetails.and.returnValue()
+  deviceService.getDeviceId.and.returnValue('test-device-id');
 
   const searchService = jasmine.createSpyObj('SearchService', [
     'get'
@@ -72,6 +74,7 @@ describe('AppComponent', () => {
 
     userService.getUserData.calls.reset();
     deviceService.sendDeviceDetails.calls.reset();
+    deviceService.getDeviceId.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
     searchService.get.calls.reset();
@@ -137,6 +140,40 @@ describe('AppComponent', () => {
     tick();
     fixture.detectChanges();
     expect(app.isLoading()).toBe(false);
+  }));
+
+  it('Should handle fromEvent offline/online mapping when fromEvent is mocked', fakeAsync(() => {
+    const added: Array<{ event: string; handler: EventListenerOrEventListenerObject }> = [];
+    const addSpy = spyOn(window as any, 'addEventListener').and.callFake((event: string, handler: any) => {
+      added.push({ event, handler });
+      try {
+        handler({ type: event } as Event);
+      } catch (e) {
+        console.log(e)
+      }
+    });
+
+    Object.defineProperty(navigator, 'onLine', { value: true, configurable: true });
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    tick();
+    fixture.detectChanges();
+
+    expect(app.isInternetDown()).toBe(false);
+
+    addSpy.and.callThrough();
+  }));
+
+  it('Should handle media query change and call theme init', fakeAsync(() => {
+    TestBed.createComponent(AppComponent);
+
+    expect(media.addEventListener).toHaveBeenCalledWith('change', jasmine.any(Function));
+    const listener = media.addEventListener.calls.mostRecent().args[1];
+    listener({ matches: false } as MediaQueryListEvent);
+
+    expect(themeService.initTheme).toHaveBeenCalledWith(false);
   }));
 
   it('Should handle user data loading failure gracefully', fakeAsync(() => {
@@ -496,4 +533,12 @@ describe('AppComponent', () => {
     const toast = root.query(By.css('.toast'));
     expect(toast).toBeFalsy();
   }));
+
+  afterEach(() => {
+    try {
+      TestBed.resetTestingModule();
+    } catch (e) {
+      console.log(e)
+    }
+  });
 });

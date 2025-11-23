@@ -30,7 +30,7 @@ export class UserButtonComponent implements OnInit {
   private serviceData = inject(UserDataService);
   private deviceService = inject(DeviceService);
 
-  readonly Icon = Icon
+  readonly Icon = Icon;
 
   user: AppUser | null = null;
 
@@ -110,9 +110,9 @@ export class UserButtonComponent implements OnInit {
     };
     this.serviceData.signIn(data).subscribe((res: boolean) => {
       if (res) {
-        this.setCurrentUser()
+        this.setCurrentUser();
       }
-    })
+    });
   }
 
   getLocation() {
@@ -128,6 +128,9 @@ export class UserButtonComponent implements OnInit {
 
   setCurrentUser(): void {
     this.user = this.serviceData.getUser();
-    document.getElementById('google-signin-button')!.style.visibility = 'hidden';
+    const googleBtn = document.getElementById('google-signin-button');
+    if (googleBtn) {
+      googleBtn.style.visibility = 'hidden';
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick, flushMicrotasks } from '@angular/core/testing';
 import { UserButtonComponent } from './user-button.component';
 import { UserDataService } from 'src/app/_services/UserData.service';
 import { AuthUserService } from 'src/app/_services/auth-user.service';
@@ -30,6 +30,26 @@ describe('UserButtonComponent', () => {
   beforeAll(() => {
     deviceService = jasmine.createSpyObj('DeviceService', ['getDeviceId', 'getValues']);
   });
+
+  it('Should loadGoogleClient resolves when google appears after delay', fakeAsync(() => {
+    const fixture = TestBed.createComponent(UserButtonComponent);
+    const comp = fixture.componentInstance;
+
+    delete (window as any)['google'];
+
+    let resolved: any = null;
+    comp.loadGoogleClient().then((g: any) => resolved = g);
+
+    tick(50);
+    expect((window as any)['google']).toBeUndefined();
+
+    (window as any)['google'] = { accounts: { id: { initialize: jasmine.createSpy(), renderButton: jasmine.createSpy(), prompt: jasmine.createSpy() } } };
+
+    tick(50);
+    flushMicrotasks();
+
+    expect(resolved).toBe((window as any)['google']);
+  }));
 
   beforeEach(async () => {
     deviceService.getDeviceId.and.returnValue('test-device-id');

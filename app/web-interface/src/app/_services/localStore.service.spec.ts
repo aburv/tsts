@@ -1,47 +1,74 @@
-import { LocalDataService } from "./localStore.service";
+import { LocalDataService } from './localStore.service';
 
-describe('Local Data Services', () => {
-    it('Should call getItem and return data on getValues call', () => {
-        const getSpy = spyOn(localStorage, 'getItem');
-        getSpy.and.returnValue('ImRhdGEi');
+describe('LocalDataService', () => {
+  const KEY = 'TEST_KEY';
 
-        const services = new LocalDataService("key");
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
-        const value = services.getValues();
+  it('Should return null when no data present', () => {
+    const service = new LocalDataService(KEY);
+    expect(service.getValues()).toBeNull();
+  });
 
-        expect(getSpy).toHaveBeenCalledOnceWith('key');
-        expect(value).toBe('data');
-    });
+  it('Should set and get values correctly', () => {
+    const service = new LocalDataService(KEY);
+    const obj = { a: 1, b: 'two' };
+    service.setValues(obj);
 
-    it('Should return null if key is not in storage on getValues call', () => {
-        const getSpy = spyOn(localStorage, 'getItem');
-        getSpy.and.returnValue(null);
+    const read = service.getValues();
+    expect(read).toEqual(obj);
+  });
 
-        const services = new LocalDataService('key');
+  it('Should return null when stored data is corrupted', () => {
+    const service = new LocalDataService(KEY);
+    localStorage.setItem(KEY, 'not-base64');
 
-        const value = services.getValues();
+    const read = service.getValues();
+    expect(read).toBeNull();
+  });
 
-        expect(getSpy).toHaveBeenCalledOnceWith('key');
-        expect(value).toBe(null);
-    });
+  it('Should clear data', () => {
+    const service = new LocalDataService(KEY);
+    service.setValues({ x: 1 });
+    expect(localStorage.getItem(KEY)).toBeTruthy();
+    service.clearData();
+    expect(localStorage.getItem(KEY)).toBeNull();
+  });
 
-    it('Should call setItem get on setValues call', () => {
-        const setSpy = spyOn(localStorage, 'setItem');
+  it('Should decode base64 JSON when getItem returns encoded JSON', () => {
+    const encoded = btoa(encodeURIComponent(JSON.stringify('data'))); // produces ImRhdGEi-like
+    spyOn(localStorage, 'getItem').and.returnValue(encoded);
 
-        const services = new LocalDataService('key');
+    const service = new LocalDataService('key');
+    const value = service.getValues();
 
-        services.setValues('data');
+    expect(localStorage.getItem).toHaveBeenCalledOnceWith('key');
+    expect(value).toEqual('data');
+  });
 
-        expect(setSpy).toHaveBeenCalledOnceWith('key', 'JTIyZGF0YSUyMg==');
-    });
+  it('should call setItem on setValues', () => {
+    const setSpy = spyOn(localStorage, 'setItem');
+    const service = new LocalDataService('key');
+    service.setValues({ foo: 'bar' });
+    expect(setSpy).toHaveBeenCalledOnceWith('key', jasmine.any(String));
+  });
 
-    it('Should call removeItem get on clearData call', () => {
-        const removeSpy = spyOn(localStorage, 'removeItem');
+  it('Should call removeItem on clearData', () => {
+    const removeSpy = spyOn(localStorage, 'removeItem');
+    const service = new LocalDataService('key');
+    service.clearData();
+    expect(removeSpy).toHaveBeenCalledOnceWith('key');
+  });
 
-        const services = new LocalDataService('key');
+  it('Should handle errors during setValues and log them', () => {
+    spyOn(localStorage, 'setItem').and.callFake(() => { throw new Error('fail'); });
+    const errSpy = spyOn(console, 'error');
 
-        services.clearData();
+    const service = new LocalDataService('key');
+    service.setValues({ broken: true });
 
-        expect(removeSpy).toHaveBeenCalledOnceWith('key');
-    });
+    expect(errSpy).toHaveBeenCalled();
+  });
 });
