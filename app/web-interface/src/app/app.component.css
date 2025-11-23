@@ -27,6 +27,9 @@
 
 .content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   animation: fadeIn ease 1s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
@@ -34,6 +37,7 @@
 
 .header-layout {
   display: flex;
+  flex: 0 1 auto;
   padding: 5px 20px;
   margin-bottom: 10px;
   align-items: center;
@@ -106,7 +110,15 @@
   height: 50px;
 }
 
+.content-layout{
+  flex: 1;
+  display: flex;  
+  min-height: 0;
+}
+
 .main-layout {
+  flex: 1;
+  height: 100%;
   width: 700px;
   padding: 0px 5px;
   overflow-x: hidden;
@@ -121,7 +133,7 @@
 .side-bar-layout {
   min-height: 200px;
   height: fit-content;
-  width: 200px;
+  flex: 0 0 200px;
   margin: 10px;
   padding: 10px;
   background-color: var(--mild-bg);
@@ -186,6 +198,7 @@
 }
 
 .footer-layout {
+  flex: 0 1 auto;
   width: 100vw;
 }
 
