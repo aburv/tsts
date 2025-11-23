@@ -386,7 +386,7 @@ describe('AppComponent', () => {
     expect(userButton).toBeTruthy();
 
     const layout = content.children[1];
-    expect(layout.classes['layout']).toBe(true);
+    expect(layout.classes['content-layout']).toBe(true);
     expect(layout.children.length).toBe(3);
 
     expect(layout.children[0].classes['side-bar-layout']).toBe(true);
