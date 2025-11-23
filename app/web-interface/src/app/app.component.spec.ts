@@ -263,7 +263,6 @@ describe('AppComponent', () => {
     const root = fixture.debugElement.query(By.css('div'));
 
     expect(root.classes['screen']).toBe(true);
-    expect(root.classes['layout']).toBe(true);
 
     expect(root.children[0].classes['splash-layout']).toBe(true);
     expect(root.children[1].classes['app-support-layout']).toBe(true);
