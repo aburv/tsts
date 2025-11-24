@@ -133,7 +133,7 @@
 .side-bar-layout {
   min-height: 200px;
   height: fit-content;
-  flex: 0 0 200px;
+  width: 200px;
   margin: 10px;
   padding: 10px;
   background-color: var(--mild-bg);
