@@ -45,4 +45,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: coverage/web-interface/index.html
+          path: app/web-interface/coverage/web-interface/index.html
