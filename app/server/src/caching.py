@@ -32,7 +32,8 @@ def get_if_cached(api_key: str, timeout=60):
             try:
                 result: ValidResponse | bytes = func(*args, **kwargs)
                 if isinstance(result, bytes):
-                    Caching.CACHE.set(key, result, timeout=timeout)
+                    if result != b'':
+                        Caching.CACHE.set(key, result, timeout=timeout)
                     return Response(result, mimetype='image/png')
                 Caching.CACHE.set(key, result.get_data(), timeout=timeout)
                 return result.get_response_json()
@@ -75,4 +76,3 @@ class RedisConfig:
         return f'redis://{params.get("user")}:{params.get("pass")}@{params.get("host")}:{params.get("port")}/0'
 
     CACHE_REDIS_URL = get_cache_url()
-

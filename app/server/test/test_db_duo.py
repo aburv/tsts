@@ -112,7 +112,7 @@ class DbDuoTest(unittest.TestCase):
         db.run_ddl_file("file_name")
 
         mock_open.assert_called_once_with('file_name', 'r')
-        mock_execute.assert_called_once_with(mock_open().read())
+        mock_execute.assert_called_once_with(mock_open().__enter__().read())
         db.con.commit.assert_called_once_with()
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)

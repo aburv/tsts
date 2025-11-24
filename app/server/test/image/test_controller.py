@@ -267,7 +267,7 @@ class ImageControllerTest(unittest.TestCase):
                                         )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/size:size')
-        mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/size:size', b'', timeout=60)
+        assert not mock_cache_set.called
         mock_service_init.assert_called_once_with()
         mock_get.assert_called_once_with('image_id', 'size')
         self.assertEqual(expected_response_data, actual_response.data)
@@ -406,7 +406,7 @@ class ImageControllerTest(unittest.TestCase):
                                         )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/user_id:user_id')
-        mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/user_id:user_id', b'', timeout=60)
+        assert not mock_cache_set.called
         mock_secret_config.assert_called_once_with()
         mock_get_tokens.assert_called_once_with('token')
         mock_auth_service.assert_called_once_with()
