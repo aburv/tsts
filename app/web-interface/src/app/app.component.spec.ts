@@ -62,6 +62,7 @@ describe('AppComponent', () => {
         { provide: LoaderService, useValue: loaderService },
         { provide: PingService, useValue: pingService },
       ],
+      teardown: { destroyAfterEach: false },
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 

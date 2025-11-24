@@ -82,6 +82,7 @@ describe('UserButtonComponent', () => {
           useValue: deviceService
         },
       ],
+      teardown: { destroyAfterEach: false },
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
