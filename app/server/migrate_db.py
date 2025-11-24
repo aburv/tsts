@@ -166,10 +166,10 @@ class Migrate:
 
 
 if __name__ == '__main__':
-    IS_DONE = False  # pragma: no cover
-    while not IS_DONE:  # pragma: no cover
+    is_done = False  # pragma: no cover
+    while not is_done:  # pragma: no cover
         try:  # pragma: no cover
             Migrate().run()  # pragma: no cover
-            IS_DONE = True  # pragma: no cover
+            is_done = True  # pragma: no cover
         except DBConnectionException as _:  # pragma: no cover
             pass  # pragma: no cover

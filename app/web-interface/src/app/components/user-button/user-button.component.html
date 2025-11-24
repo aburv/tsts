@@ -1,16 +1,44 @@
 <div id="google-signin-button"></div>
 
-<app-image *ngIf="user !== null" [size]="45" [id]="user!.dp" icon="person" (click)="isDialogOn = true" alt="{{user!.name}}-display-picture"></app-image>
+@if (user !== null) {
+  <app-image 
+    [size]="45" 
+    [id]="user!.dp" 
+    [icon]="Icon.PERSON" 
+    (click)="isDialogOn = true"
+    (keydown.enter)="isDialogOn = true"
+    (keydown.space)="isDialogOn = true"
+    tabindex="0"
+    role="button"
+    [attr.aria-label]="'Open profile dialog for ' + user!.name"
+    alt="{{ user!.name }}-display-picture">
+  </app-image>
+}
 
 <ng-template #dialogContent>
-    <div style="position: relative; width: 300px; height: 300px" *ngIf="user !== null" (click)="isDialogOn=false">
-        <div class="center" style="flex-direction: column;">
-            <div class="center" style="margin-bottom: 25px;">
-                <app-image [size]="150" [id]="user!.dp" icon="person" alt="{{user!.name}}-display-picture"></app-image>
-            </div>
-            <div class="center title"> {{user!.name}} </div>
-            <div class="center sub"> {{user!.email}} </div>
+  @if (user !== null) {
+    <div class="image-holder" 
+         (click)="isDialogOn = false"
+         (keydown.escape)="isDialogOn = false"
+         tabindex="0"
+         role="button"
+         aria-label="Close profile dialog">
+      <div class="center" style="flex-direction: column;">
+        <div class="center" style="margin-bottom: 25px;">
+          <app-image 
+            [size]="150" 
+            [id]="user!.dp" 
+            [icon]="Icon.PERSON" 
+            [alt]="'{{ user!.name }}-display-picture'">
+          </app-image>
         </div>
+        <div class="center title"> {{ user!.name }} </div>
+        <div class="center sub"> {{ user!.email }} </div>
+      </div>
     </div>
+  }
 </ng-template>
-<app-dialog [content]="dialogContent" *ngIf="user!==null && isDialogOn"></app-dialog>
+
+@if (user !== null && isDialogOn) {
+  <app-dialog [content]="dialogContent"></app-dialog>
+}

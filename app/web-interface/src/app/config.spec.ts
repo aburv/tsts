@@ -1,46 +1,41 @@
-import { Config } from "./config";
+import { Config } from './config';
+import { LocalDataService } from './_services/localStore.service';
+import { environment } from '../environments/environment';
 
 describe('Config', () => {
+    afterEach(() => {
+        try { (LocalDataService.prototype.getValues as any).and?.callThrough?.(); } catch { return }
+    });
 
     it('Should return domain url', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ domain: "localhost" })
-        spyOn(Config, 'getApiProtocol').and.returnValue('http')
-
-        expect(Config.getDomain()).toBe('http://localhost/api/');
+        expect(Config.getDomain()).toBe('/api/');
     });
-
-    it('Should return http api protocol url', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ production: false })
-
-        expect(Config.getApiProtocol()).toBe('http');
-    });
-
-    it('hould return https api protocol', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ production: true })
-
-        expect(Config.getApiProtocol()).toBe('https');
-    });
-
 
     it('Should return site domain', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ siteDomain: "localhost" })
-        spyOn(Config, 'getApiProtocol').and.returnValue('http')
+        spyOn(Config, 'getEnv').and.returnValue({ siteDomain: 'http://localhost' } as any);
 
         expect(Config.getSiteDomain()).toBe('http://localhost');
     });
 
     it('Should return headers with no access token', () => {
-        const expected = { headers: { 'x-api-key': 'key', 'content-type': 'application/json', 'x-access-key': '' } }
-        
-        const actual =  Config.getHeaders()
+        const expected = { headers: { 'x-api-key': 'key', 'content-type': 'application/json', 'x-access-key': '' } };
+
+        const actual = Config.getHeaders();
 
         expect(actual).toEqual(expected);
+    });
+
+    it('getHeaders returns x-access-key with tokens when data present', () => {
+        spyOn(LocalDataService.prototype, 'getValues').and.returnValue({ idToken: 'ID', accessToken: 'ACC' });
+
+        const headers = Config.getHeaders();
+
+        expect(headers.headers['x-access-key']).toBe('ID' + environment.separator + 'ACC');
     });
 
     it('Should return env', () => {
         expect(Config.getEnv()).toEqual({
             production: false,
-            domain: 'localhost',
             siteDomain: 'localhost',
             key: 'key',
             authKey: 'aukk',
@@ -50,7 +45,7 @@ describe('Config', () => {
     });
 
     it('Should return GCID', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ googleServiceAccount: 'googleServiceAccount' })
+        spyOn(Config, 'getEnv').and.returnValue({ googleServiceAccount: 'googleServiceAccount' } as any);
 
         expect(Config.getGCID()).toEqual('googleServiceAccount');
     });

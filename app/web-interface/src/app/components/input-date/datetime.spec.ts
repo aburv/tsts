@@ -158,4 +158,11 @@ describe('DateTime', () => {
 
         expect(actual).toBe("");
     });
+
+    it('Should use default constructor parameters when no args provided', () => {
+        const dateTime = new DateTime();
+
+        expect(dateTime.type).toBe('date');
+        expect(dateTime.value()).toBeNull();
+    });
 });

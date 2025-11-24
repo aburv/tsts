@@ -44,7 +44,8 @@ class PostgresDbDuo:
         Run DDL command from file
         """
         try:
-            self.client.execute(open(file_path, "r").read())
+            with open(file_path, "r") as f:
+                self.client.execute(f.read())
             self.con.commit()
         except Exception as e:
             raise DBExecutionException('Run DDL file', f'{file_path} on {e}') from e

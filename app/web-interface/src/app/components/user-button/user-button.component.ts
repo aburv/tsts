@@ -1,18 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { Config } from '../../config';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 import { AuthUserService } from '../../_services/auth-user.service';
 import { UserDataService } from '../../_services/UserData.service';
 import { AppUser, GAuthUser } from '../../_models/user';
 import { DeviceService } from '../../_services/device.service';
 
+import { Config } from '../../config';
+
+import { DialogComponent } from '../dialog/dialog.component';
+import { ImageComponent } from '../image/image.component';
+import { Icon } from '../icon/icon.component';
+
 declare const google: any;
 
 @Component({
   selector: 'app-user-button',
+  standalone: true,
+  imports: [
+    CommonModule,
+    DialogComponent,
+    ImageComponent
+  ],
   templateUrl: './user-button.component.html',
   styleUrls: ['./user-button.component.css']
 })
 export class UserButtonComponent implements OnInit {
+  private authUser = inject(AuthUserService);
+  private serviceData = inject(UserDataService);
+  private deviceService = inject(DeviceService);
+
+  readonly Icon = Icon;
 
   user: AppUser | null = null;
 
@@ -23,12 +41,6 @@ export class UserButtonComponent implements OnInit {
 
   isDialogOn = false;
 
-  constructor(
-    private authUser: AuthUserService,
-    private serviceData: UserDataService,
-    private deviceService: DeviceService,
-  ) { }
-
   ngOnInit(): void {
     this.authUser.getLoggedUser().subscribe((user: GAuthUser | null) => {
       if (user !== null) {
@@ -36,13 +48,27 @@ export class UserButtonComponent implements OnInit {
       }
     });
 
-    this.serviceData.autoSignIn().subscribe((hasUser) => {
+    this.serviceData.autoSignIn().subscribe(async (hasUser) => {
       if (hasUser) {
         this.setCurrentUser();
       }
       else {
+        await this.loadGoogleClient();
         this.initializeGoogleSignIn();
       }
+    });
+  }
+
+  loadGoogleClient(): Promise<any> {
+    return new Promise((resolve) => {
+      const checkGoogle = () => {
+        if (window['google'] && google.accounts) {
+          resolve(google);
+        } else {
+          setTimeout(checkGoogle, 50);
+        }
+      };
+      checkGoogle();
     });
   }
 
@@ -84,13 +110,13 @@ export class UserButtonComponent implements OnInit {
     };
     this.serviceData.signIn(data).subscribe((res: boolean) => {
       if (res) {
-        this.setCurrentUser()
+        this.setCurrentUser();
       }
-    })
+    });
   }
 
   getLocation() {
-    navigator.geolocation.getCurrentPosition(this.setLocation);
+    navigator.geolocation.getCurrentPosition(this.setLocation.bind(this));
   }
 
   setLocation(position: GeolocationPosition): void {
@@ -102,6 +128,9 @@ export class UserButtonComponent implements OnInit {
 
   setCurrentUser(): void {
     this.user = this.serviceData.getUser();
-    document.getElementById('google-signin-button')!.style.visibility = 'hidden';
+    const googleBtn = document.getElementById('google-signin-button');
+    if (googleBtn) {
+      googleBtn.style.visibility = 'hidden';
+    }
   }
 }

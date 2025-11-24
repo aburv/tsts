@@ -1,13 +1,28 @@
 import { of } from "rxjs";
 import { UserDataService } from "./UserData.service";
 import { AuthUtils } from "../auth-util";
+import { TestBed } from "@angular/core/testing";
+import { AuthService } from "./auth.service";
 
 describe('User Data Services', () => {
+    let service: UserDataService;
+    let authSpy: jasmine.SpyObj<AuthService>;
+
+    beforeEach(() => {
+        authSpy = jasmine.createSpyObj('AuthService', ['refreshToken', 'signIn']);
+
+        TestBed.configureTestingModule({
+            providers: [
+                UserDataService,
+                { provide: AuthService, useValue: authSpy },
+            ],
+        });
+
+        service = TestBed.inject(UserDataService);
+    });
+
+
     it('Should return true, fetch and set updated user idToken into local storage on autoSignIn call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['refreshToken']);
-
-        const service = new UserDataService(userSpy);
-
         const refreshUserTokenSpy = spyOn(service, 'refreshUserToken');
         refreshUserTokenSpy.and.returnValue(of(true))
         const getValueSpy = spyOn(service, 'getValues');
@@ -30,10 +45,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return true on idToken not expired on autoSignIn call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue({ token: "" })
 
@@ -50,10 +61,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return false on no user on autoSignIn call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue(null)
 
@@ -65,10 +72,7 @@ describe('User Data Services', () => {
     });
 
     it('Should return true, fetch and set updated user idToken into local storage on refreshUserToken call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['refreshToken']);
-        userSpy.refreshToken.and.returnValue(of({ data: { idToken: "idToken", accessToken: "accessToken" } }));
-
-        const service = new UserDataService(userSpy);
+        authSpy.refreshToken.and.returnValue(of({ data: { idToken: "idToken", accessToken: "accessToken" } }));
 
         const setTokenSpy = spyOn(service, 'setUserTokens');
         setTokenSpy.and.returnValue(true);
@@ -79,17 +83,14 @@ describe('User Data Services', () => {
             expect(res).toBe(true);
         });
 
-        expect(userSpy.refreshToken).toHaveBeenCalledOnceWith();
+        expect(authSpy.refreshToken).toHaveBeenCalledOnceWith();
         expect(service.setUserTokens).toHaveBeenCalledOnceWith({ idToken: "idToken", accessToken: "accessToken" });
 
         setTokenSpy.calls.reset();
-        userSpy.refreshToken
+        authSpy.refreshToken.calls.reset();
     });
 
     it('Should call get on local storage on getValues call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue('value');
 
@@ -102,9 +103,6 @@ describe('User Data Services', () => {
     });
 
     it('Should call clear on local storage on clear call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-        const service = new UserDataService(userSpy);
-
         const clearValueSpy = spyOn(service, 'clearData');
 
         service.clear();
@@ -114,9 +112,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return unvalues if storage have no token on getUser call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue(null);
 
@@ -129,9 +124,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return values if storage has user on getUser call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue({ idToken: "token" });
         const decodeJwtSpy = spyOn(AuthUtils, 'decodeJwt');
@@ -149,9 +141,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return true and set user token when user on setUserTokens call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue({ dp: "aa", name: "name", email: "email" });
         const setValueSpy = spyOn(service, 'setValues');
@@ -173,9 +162,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return false set user token when no token on setUserTokens call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['']);
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue({ dp: "aa", name: "name", email: "email" });
         const setValueSpy = spyOn(service, 'setValues');
@@ -192,10 +178,7 @@ describe('User Data Services', () => {
     });
 
     it('Should set user token on signIn call', () => {
-        const userSpy = jasmine.createSpyObj('AuthService', ['signIn']);
-        userSpy.signIn.and.returnValue(of({ data: { idToken: "token", accessToken: "accessToken" } }));
-
-        const service = new UserDataService(userSpy);
+        authSpy.signIn.and.returnValue(of({ data: { idToken: "token", accessToken: "accessToken" } }));
 
         const setTokenSpy = spyOn(service, 'setUserTokens');
         setTokenSpy.and.returnValue(true);
@@ -212,9 +195,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return user access token when user on getAccessToken call', () => {
-        const userSpy = jasmine.createSpyObj('UserService', ['']);
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue({ 'accessToken': "token" });
 
@@ -226,9 +206,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return empty string when no user on getAccessToken call', () => {
-        const userSpy = jasmine.createSpyObj('UserService', ['']);
-        const service = new UserDataService(userSpy);
-
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue(null);
 
@@ -240,9 +217,6 @@ describe('User Data Services', () => {
     });
 
     it('Should return true on isTokenExpired call', () => {
-        const userSpy = jasmine.createSpyObj('UserService', ['']);
-        const service = new UserDataService(userSpy);
-
         const decodeJwtSpy = spyOn(AuthUtils, "decodeJwt");
         decodeJwtSpy.and.returnValue({ exp: 10000000000 });
         const getAccessTokenSpy = spyOn(service, "getAccessToken");

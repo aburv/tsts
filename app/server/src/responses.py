@@ -57,7 +57,14 @@ class APIException(Exception):
     """
     logger = LoggerAPI()
 
-    def __init__(self, msg, content: str, error_type: str, status_code: int, is_error: bool = True) -> None:
+    def __init__(
+            self,
+            msg: str,
+            content: str,
+            error_type: str,
+            status_code: int,
+            is_error: bool = True
+    ) -> None:
         super().__init__(msg)
         if is_error:
             APIException.logger.error_entry(f"{status_code} {error_type} {msg} : {content}")

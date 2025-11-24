@@ -25,7 +25,6 @@ import com.aburv.takbuff.data.Response
 import com.aburv.takbuff.data.UserData
 import com.aburv.takbuff.databinding.ActivityNewUserBinding
 import com.aburv.takbuff.db.AppUser
-import com.aburv.takbuff.userFragments.CheckPlayerFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
@@ -45,8 +44,6 @@ class NewUserActivity : AppCompatActivity() {
     private var dp: ImageView? = null
     private var email: TextView? = null
     private var name: TextView? = null
-
-    private var viewPlayer: ConstraintLayout? = null
 
     private var currentStep = 0
 
@@ -228,14 +225,6 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun isFinalStep() = currentStep == FINAL_STEP
-
-    private fun loadFragment(fragment: Fragment) {
-        Log.i(TAG, "Load fragment $fragment")
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.steps, fragment)
-            .commit()
-    }
 
     private fun setUserLayout() {
         Log.i(TAG, "Set Profile data")
