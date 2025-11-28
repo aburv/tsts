@@ -1,22 +1,23 @@
-<div id="google-signin-button"></div>
-
-@if (user !== null) {
+@if (user()) {
   <app-image 
     [size]="45" 
-    [id]="user!.dp" 
+    [id]="user()!.dp" 
     [icon]="Icon.PERSON" 
     (click)="isDialogOn = true"
     (keydown.enter)="isDialogOn = true"
     (keydown.space)="isDialogOn = true"
     tabindex="0"
     role="button"
-    [attr.aria-label]="'Open profile dialog for ' + user!.name"
-    alt="{{ user!.name }}-display-picture">
+    [attr.aria-label]="'Open profile dialog for ' + user()!.name"
+    alt="{{ user()!.name }}-display-picture">
   </app-image>
 }
+@else {
+  <div id="google-signin-button"></div>
+} 
 
 <ng-template #dialogContent>
-  @if (user !== null) {
+  @if (user()) {
     <div class="image-holder" 
          (click)="isDialogOn = false"
          (keydown.escape)="isDialogOn = false"
@@ -27,18 +28,18 @@
         <div class="center" style="margin-bottom: 25px;">
           <app-image 
             [size]="150" 
-            [id]="user!.dp" 
+            [id]="user()!.dp" 
             [icon]="Icon.PERSON" 
-            [alt]="'{{ user!.name }}-display-picture'">
+            [alt]="'{{ user()!.name }}-display-picture'">
           </app-image>
         </div>
-        <div class="center title"> {{ user!.name }} </div>
-        <div class="center sub"> {{ user!.email }} </div>
+        <div class="center title"> {{ user()!.name }} </div>
+        <div class="center sub"> {{ user()!.email }} </div>
       </div>
     </div>
   }
 </ng-template>
 
-@if (user !== null && isDialogOn) {
+@if (user() && isDialogOn) {
   <app-dialog [content]="dialogContent"></app-dialog>
 }

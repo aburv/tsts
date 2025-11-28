@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthUserService } from '../../_services/auth-user.service';
@@ -32,7 +32,7 @@ export class UserButtonComponent implements OnInit {
 
   readonly Icon = Icon;
 
-  user: AppUser | null = null;
+  user = signal<AppUser | null>(null);
 
   location: {
     "lat": number,
@@ -42,9 +42,9 @@ export class UserButtonComponent implements OnInit {
   isDialogOn = false;
 
   ngOnInit(): void {
-    this.authUser.getLoggedUser().subscribe((user: GAuthUser | null) => {
-      if (user !== null) {
-        this.userLogin(user);
+    this.authUser.getLoggedUser().subscribe((gUser: GAuthUser | null) => {
+      if (gUser !== null) {
+        this.userLogin(gUser);
       }
     });
 
@@ -91,17 +91,17 @@ export class UserButtonComponent implements OnInit {
     google.accounts.id.prompt();
   }
 
-  userLogin(user: GAuthUser): void {
+  userLogin(gUser: GAuthUser): void {
     this.getLocation();
     const data = {
       user: {
         uId: {
-          gId: user.sub,
-          value: user.email,
+          gId: gUser.sub,
+          value: gUser.email,
           type: "M"
         },
-        name: user.name,
-        picUrl: user.picture,
+        name: gUser.name,
+        picUrl: gUser.picture,
       },
       login: {
         deviceId: this.deviceService.getDeviceId(),
@@ -127,10 +127,6 @@ export class UserButtonComponent implements OnInit {
   }
 
   setCurrentUser(): void {
-    this.user = this.serviceData.getUser();
-    const googleBtn = document.getElementById('google-signin-button');
-    if (googleBtn) {
-      googleBtn.style.visibility = 'hidden';
-    }
+    this.user.set(this.serviceData.getUser());
   }
 }
