@@ -35,7 +35,7 @@ def add_image(user_id: str | None) -> Response:
 
 @IMAGE_BLUEPRINT.route("/<r_id>/<size>", methods=["GET"])
 @validate(is_required=False)
-@get_if_cached(api_key="image")
+@get_if_cached(api_key="image", needs_user=False)
 def get_image(r_id, size) -> bytes:
     """
     :return:

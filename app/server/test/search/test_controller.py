@@ -193,8 +193,8 @@ class SearchControllerTest(unittest.TestCase):
                 headers={'x-api-key': 'test_key'},
             )
 
-        mock_cache_get.assert_called_once_with('myapp:search/text:tt/user_id:None')
-        mock_cache_set.assert_called_once_with('myapp:search/text:tt/user_id:None', {}, timeout=60)
+        mock_cache_get.assert_called_once_with('myapp:search/text:tt')
+        mock_cache_set.assert_called_once_with('myapp:search/text:tt', {}, timeout=60)
         mock_secret_config.assert_called_once_with()
         assert not mock_get_tokens.called
         assert not mock_auth_service.called
