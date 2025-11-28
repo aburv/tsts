@@ -32,7 +32,7 @@ export class ImageComponent {
       const id = this.id();
       const size = this.size();
 
-      if (id !== "") {
+      if (id && id !== "") {
         this.fetch(id, size);
       }
     })
