@@ -16,7 +16,7 @@ export class PingService {
 
   ping(): void {
     const url = getPingUrl();
-    this.http.post(url, Config.getHeaders()).subscribe({
+    this.http.post(url, {}, Config.getHeaders()).subscribe({
       next: () => {
         PingService.isServerDown.set(false);
       },
