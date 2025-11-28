@@ -9,7 +9,7 @@ class SearchServices:
     """
 
     @staticmethod
-    def search(text: str, u_id: str) -> list:
+    def search(text: str, u_id: str) -> list:  # pylint: disable=unused-argument
         """
         :return:
         :rtype:

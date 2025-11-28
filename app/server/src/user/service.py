@@ -46,7 +46,7 @@ class UserServices:
             return records[0]
         return None
 
-    def get_user_data(self, u_id: str) -> dict:
+    def get_user_data(self, u_id: str) -> dict:  # pylint: disable=unused-argument
         """
         :return:
         :rtype:

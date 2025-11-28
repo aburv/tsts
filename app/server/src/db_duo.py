@@ -44,7 +44,7 @@ class PostgresDbDuo:
         Run DDL command from file
         """
         try:
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 self.client.execute(f.read())
             self.con.commit()
         except Exception as e:
