@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from src.db_duo import PostgresDbDuo
-from src.user.data import UserData
+from src.user.data import UserData, UserFilterType
 from src.user.service import UserServices
 from src.user_id.service import UserIdServices
 from src.user_role.service import UserRoleServices
@@ -94,7 +94,7 @@ class UserServiceTest(unittest.TestCase):
 
         actual = service.get_user_by_id("user_id")
 
-        mock_user_data.on_select.assert_called_once_with({'id': 'user_id', 'is_active': True}, 'id')
+        mock_user_data.on_select.assert_called_once_with({'id': 'user_id', 'is_active': True}, UserFilterType.ID)
         mock_db.get_records.assert_called_once_with()
 
         self.assertEqual(actual, {"data": "user"})
@@ -112,7 +112,7 @@ class UserServiceTest(unittest.TestCase):
 
         actual = service.get_user_by_id("user_id")
 
-        mock_user_data.on_select.assert_called_once_with({'id': 'user_id', 'is_active': True}, 'id')
+        mock_user_data.on_select.assert_called_once_with({'id': 'user_id', 'is_active': True}, UserFilterType.ID)
         mock_db.get_records.assert_called_once_with()
 
         self.assertEqual(actual, None)

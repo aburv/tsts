@@ -184,7 +184,7 @@ class DataModelTest(unittest.TestCase):
         model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
 
         expected = [{'field_1': 'value_1', 'field_2': 'value_2'}, {'field_1': 'value_3', 'field_2': 'value_4'}]
-        actual = model.frame_records((('value_1', 'value_2'), ('value_3', 'value_4'),))
+        actual = model.frame_records([('value_1', 'value_2'), ('value_3', 'value_4')])
 
         mock_filter_fields.assert_called_once_with()
         self.assertEqual(expected, actual)

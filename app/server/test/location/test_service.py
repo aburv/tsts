@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from src.db_duo import PostgresDbDuo
-from src.location.data import LocationData
+from src.location.data import LocationData, LocationFilterType
 from src.location.service import LocationServices
 from src.responses import RecordNotFoundException
 
@@ -63,7 +63,7 @@ class LocationServiceTest(unittest.TestCase):
         actual = service.get_location_by_id("location_id")
 
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, 'id')
+        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, LocationFilterType.ID)
 
         self.assertEqual(actual, {"data": "location_data"})
 
@@ -87,7 +87,7 @@ class LocationServiceTest(unittest.TestCase):
 
         mock_exception.assert_called_once_with('Location', 'location_id')
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, "id")
+        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, LocationFilterType.ID)
 
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
     @mock.patch.object(LocationData, '__init__', return_value=None)
@@ -103,7 +103,7 @@ class LocationServiceTest(unittest.TestCase):
 
         actual = service.get_location_id_by_long_lat("long", "lat")
 
-        mock_data.on_select.assert_called_once_with({'long': 'long', 'lat': 'lat'}, 'point')
+        mock_data.on_select.assert_called_once_with({'long': 'long', 'lat': 'lat'}, LocationFilterType.POINT)
         mock_db.get_record_field_value.assert_called_once_with()
 
         self.assertEqual(actual, "location_id")
