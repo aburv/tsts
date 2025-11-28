@@ -50,6 +50,38 @@ describe('DataService', () => {
         })
     });
 
+    it('Should not call ping the server on 404 RecordNotFoundException on get call', () => {
+        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
+
+        httpSpy.get.and.returnValue(throwError(() => {
+            return {
+                status: 404,
+                statusText: 'Not Found',
+                error: {
+                    error: {
+                        type: 'RecordNotFoundException'
+                    }
+                }
+            }
+        }));
+
+        const actual = service.get('url/path');
+
+        expect(httpSpy.get).toHaveBeenCalledOnceWith(
+            'https://localhost/api/url/path',
+            {
+                headers: { header: 'header' }
+            }
+        );
+
+        actual.subscribe(res => {
+            expect(res).toBe('');
+        })
+
+        expect(pingSpy.ping).not.toHaveBeenCalledOnceWith();
+    });
+
     it('Should call ping the server on 404 on get call', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
