@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoaderService } from 'src/app/_services/loader.service';
 import { PlayerService } from 'src/app/_services/player.service';
 import { UserDataService } from 'src/app/_services/UserData.service';
-import { timeout } from 'rxjs';
 
 type Player = {
   name: string,
@@ -56,7 +55,8 @@ export class PlayerComponent implements OnInit{
       this.generateTab();
 
       if (this.isMyPlayerProfile()) {
-
+        this.loadingService.loadingOn();
+        this.loadingService.loadingOff();
       }
     });
   }
