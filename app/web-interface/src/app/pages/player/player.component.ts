@@ -25,7 +25,12 @@ type Player = {
     CommonModule
   ]
 })
-export class PlayerComponent {
+export class PlayerComponent implements OnInit{
+  router = inject(Router);
+  route = inject(ActivatedRoute);
+  loadingService = inject(LoaderService);
+  service = inject(PlayerService);
+  userService = inject(UserDataService);
 
   id = "";
 
@@ -34,13 +39,7 @@ export class PlayerComponent {
   tabContent: Array<string> = ["Overview"];
   selectedTabIndex = signal(0)
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private loadingService: LoaderService,
-    private service: PlayerService,
-    private userService: UserDataService
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.route.params.subscribe((param) => {
