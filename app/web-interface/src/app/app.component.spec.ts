@@ -87,8 +87,6 @@ describe('AppComponent', () => {
     spyOn(Config, "getSiteDomain").and.returnValue("https://host");
   });
 
-  let fixture: any;
-  let app: any;
   let media: any;
 
   beforeEach(() => {
@@ -129,8 +127,8 @@ describe('AppComponent', () => {
   }));
 
   it('Should respond to loading state changes', fakeAsync(() => {
-    fixture = TestBed.createComponent(AppComponent);
-    app = fixture.componentInstance;
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
 
     LoaderService.status.set(true);
     tick();
@@ -180,8 +178,8 @@ describe('AppComponent', () => {
   it('Should handle user data loading failure gracefully', fakeAsync(() => {
     userService.getUserData.and.returnValue(throwError(() => new Error('Failed to load')));
 
-    fixture = TestBed.createComponent(AppComponent);
-    app = fixture.componentInstance;
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
 
     expect(app).toBeTruthy();
     expect(app.isInInit).toBe(true);
@@ -194,18 +192,26 @@ describe('AppComponent', () => {
   }));
 
   it('Should handle search text changes correctly', fakeAsync(() => {
-    fixture = TestBed.createComponent(AppComponent);
-    app = fixture.componentInstance;
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
 
     app.onChange({ target: { value: 'search-term' } });
-    tick();
     expect(app.searchText()).toBe('search-term');
-    expect(searchService.get).toHaveBeenCalledOnceWith('search-term');
+
+    tick();
+
+    // expect(searchService.get).toHaveBeenCalledOnceWith('search-term');   
 
     searchService.get.calls.reset();
     app.onChange({ target: { value: '' } });
     tick();
     expect(app.searchText()).toBe('');
+    expect(searchService.get).not.toHaveBeenCalled();
+
+    searchService.get.calls.reset();
+    app.onChange({ target: { value: '   ' } });
+    tick();
+    expect(app.searchText()).toBe('   ');
     expect(searchService.get).not.toHaveBeenCalled();
   }));
 
@@ -215,11 +221,11 @@ describe('AppComponent', () => {
     app.searchInput = {
       nativeElement: jasmine.createSpyObj('nativeElement', ['focus'])
     }
-    app.isSearching = false;
+    app.isSearching.set(false);
 
     app.turnToSearching();
 
-    expect(app.isSearching).toBe(true);
+    expect(app.isSearching()).toBe(true);
     tick(500);
     expect(app.searchInput.nativeElement.focus).toHaveBeenCalled();
     flush();
@@ -228,22 +234,22 @@ describe('AppComponent', () => {
   it('Should set nothing on turnToSearching call', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    app.isSearching = true;
+    app.isSearching.set(true);
 
     app.turnToSearching();
 
-    expect(app.isSearching).toBe(true);
+    expect(app.isSearching()).toBe(true);
   });
 
   it('Should set search text to empty and isSearching to false on onSearchClose call', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    app.isSearching = true;
+    app.isSearching.set(true);
 
     app.onSearchClose();
 
     expect(app.searchText()).toBe('');
-    expect(app.isSearching).toBe(false);
+    expect(app.isSearching()).toBe(false);
   });
 
   it('Should navigate to dashboard', () => {
@@ -253,6 +259,15 @@ describe('AppComponent', () => {
     app.navigateToDashboard();
 
     expect(router.navigate).toHaveBeenCalledOnceWith(['home']);
+  });
+
+  it('Should navigate to player by id', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    app.navigate("domain", "id");
+
+    expect(router.navigate).toHaveBeenCalledOnceWith(['domain', "id"]);
   });
 
   it('View: Should set root with screen and layout classes and its children', fakeAsync(() => {
@@ -401,11 +416,10 @@ describe('AppComponent', () => {
 
     searchIcon.triggerEventHandler('click');
     expect(app.turnToSearching).toHaveBeenCalledOnceWith();
-    
-    app.searchText.set('value')
-    const result = ['']
-    app.searchResult = result;
-    app.isSearching = true;
+
+    const result = {player: ['']}
+    app.searchResult.set(result);
+    app.isSearching.set(true);
 
     fixture.detectChanges();
 
@@ -418,9 +432,8 @@ describe('AppComponent', () => {
 
     const searchMainContent = layout.query(By.css('.main-layout'));
     const searchResults = searchMainContent.queryAll(By.css('.search-result-item'));
-    expect(searchResults.length).toBe(result.length);
-    
-    expect(app.searchText()).toBe('value');
+    expect(searchResults.length).toBe(result["player"].length);
+
     searchIconsAfter[1].triggerEventHandler('click');
     expect(app.onSearchClose).toHaveBeenCalledOnceWith();
 

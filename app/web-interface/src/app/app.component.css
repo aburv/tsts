@@ -101,8 +101,14 @@
 }
 
 .search-result-item {
+  display: flex;
+  flex-direction: column;
   padding: 20px;
-  border-bottom: 2px solid var(--less-bright);
+}
+
+.player {
+  width: fit-content;
+  align-items: center;
 }
 
 .profile>img {

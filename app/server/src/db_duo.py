@@ -2,6 +2,7 @@
  PostgresDB class
 """
 import uuid
+from typing import Tuple
 
 import psycopg2
 
@@ -113,8 +114,11 @@ class PostgresDbDuo:
             values = query_param.values()
             query += " WHERE "
             query_list = []
-            for (field, _) in query_param.items():
-                query_list.append(field + "= %s")
+            for (field, value) in query_param.items():
+                if isinstance(value, list):
+                    query_list.append(field + "= ANY(%s)")
+                else:
+                    query_list.append(field + "= %s")
             query += " AND ".join(query_list)
         if group_by_field is not None:
             query += f" GROUP BY {group_by_field}"
@@ -194,7 +198,7 @@ class PostgresDbDuo:
                 f'{table_name} : {self._data.get_audit_payload()} on {r_id}: {e}'
             ) from e
 
-    def get_update_statement(self) -> (str, tuple):
+    def get_update_statement(self) -> Tuple[str, tuple]:
         """
         Update Statement
         """

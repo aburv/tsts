@@ -140,6 +140,35 @@ describe('User Data Services', () => {
         decodeJwtSpy.calls.reset();
     });
 
+    it('Should return values if storage has user on getPlayerId call', () => {
+        const getValueSpy = spyOn(service, 'getValues');
+        getValueSpy.and.returnValue({ idToken: "token" });
+        const decodeJwtSpy = spyOn(AuthUtils, 'decodeJwt');
+        decodeJwtSpy.and.returnValue({ user: { playerId: "playerId" } });
+
+        const data = service.getMyPlayerId();
+
+        expect(service.getValues).toHaveBeenCalledOnceWith();
+        expect(decodeJwtSpy).toHaveBeenCalledOnceWith("token");
+        getValueSpy.calls.reset();
+
+        expect(data).toEqual("playerId");
+
+        decodeJwtSpy.calls.reset();
+    });
+
+    it('Should return unvalues if storage have no token on getMyPlayerId call', () => {
+        const getValueSpy = spyOn(service, 'getValues');
+        getValueSpy.and.returnValue(null);
+
+        const data = service.getMyPlayerId();
+
+        expect(service.getValues).toHaveBeenCalledOnceWith();
+        getValueSpy.calls.reset();
+
+        expect(data).toEqual("");
+    });
+
     it('Should return true and set user token when user on setUserTokens call', () => {
         const getValueSpy = spyOn(service, 'getValues');
         getValueSpy.and.returnValue({ dp: "aa", name: "name", email: "email" });

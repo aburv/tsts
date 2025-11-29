@@ -2,7 +2,8 @@ import unittest
 from unittest import mock
 from unittest.mock import call, mock_open
 
-from src.migrate_db import Migrate, get_version_from_name, get_ddl_files, MigrateData
+from src.migrate_db import Migrate, get_version_from_name, get_ddl_files, get_json_from_file, MigrateData, OptionData, \
+    FormData
 from src.config import Relation, Config
 from src.data import DataModel, OrderType
 from src.db_duo import PostgresDbDuo
@@ -84,11 +85,19 @@ class MigrateTest(unittest.TestCase):
         mock_path.assert_called_once_with()
         mock_os_walk.assert_called_once_with("resources")
 
+    @mock.patch("builtins.open", new_callable=mock_open, read_data='{"name": "John", "age": 30}')
+    def test_should_return_data_from_json_file_on_get_json_from_file(self, mock_file_open):
+        self.assertEqual({'name': 'John', 'age': 30}, get_json_from_file("path/file.json"))
+
+        mock_file_open.assert_called_once_with('path/file.json', encoding='utf-8')
+
     def test_should_return_version_number_on_get_version_from_name(self):
         self.assertEqual("1.00", get_version_from_name("V1.00__desc"))
 
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     @mock.patch.object(MigrateData, '__init__', return_value=None)
+    @mock.patch.object(OptionData, '__init__', return_value=None)
+    @mock.patch.object(FormData, '__init__', return_value=None)
     @mock.patch.object(DataModel, '__init__', return_value=None)
     @mock.patch.object(Config, 'get_db_parameters')
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
@@ -96,6 +105,8 @@ class MigrateTest(unittest.TestCase):
                                           mock_db,
                                           mock_parameter,
                                           mock_model,
+                                          mock_form,
+                                          mock_option,
                                           mock_data,
                                           mock_log
                                           ):
@@ -108,6 +119,12 @@ class MigrateTest(unittest.TestCase):
         mock_data.assert_called_once_with()
         self.assertIsInstance(migrate._data, MigrateData)
         self.assertIsInstance(migrate.db, PostgresDbDuo)
+        mock_option.assert_called_once_with()
+        self.assertIsInstance(migrate._option_data, OptionData)
+        self.assertIsInstance(migrate.option, PostgresDbDuo)
+        mock_form.assert_called_once_with()
+        self.assertIsInstance(migrate._form_data, FormData)
+        self.assertIsInstance(migrate.form, PostgresDbDuo)
         mock_model.assert_called_once_with(Relation.INIT)
         self.assertIsInstance(migrate.init, PostgresDbDuo)
         calls = mock_db.call_args_list
@@ -120,20 +137,26 @@ class MigrateTest(unittest.TestCase):
     @mock.patch.object(Migrate, 'create_schema')
     @mock.patch.object(Migrate, 'update_version', return_value=True)
     @mock.patch.object(Migrate, 'get_version', return_value="-1.00")
+    @mock.patch.object(Migrate, 'add_option_items')
     @mock.patch('src.migrate_db.get_resources_path', return_value="resources")
-    @mock.patch('src.migrate_db.get_ddl_files', return_value=['V0.00_META', 'V0.01_CREATE'])
+    @mock.patch('src.migrate_db.get_ddl_files', return_value=['V0.00_META', 'V0.01_CREATE', 'V1.00_DATA'])
+    @mock.patch('src.migrate_db.get_json_from_file')
     @mock.patch('src.migrate_db.get_version_from_name')
     def test_should_run_the_ddl_files_on_init_with_create_schema(self,
                                                                  mock_get_version_from_name,
+                                                                 mock_get_json_from_file,
                                                                  mock_get_ddl_files,
                                                                  mock_get_resources_path,
+                                                                 mock_add_option_items,
                                                                  mock_get_version,
                                                                  mock_update_version,
                                                                  mock_create_schema,
                                                                  mock_db,
                                                                  mock_log,
                                                                  ):
-        mock_get_version_from_name.side_effect = ["0.00", "0.01"]
+        option_dict = {"data": {"form": ["option`"]}}
+        mock_get_json_from_file.return_value = option_dict
+        mock_get_version_from_name.side_effect = ["0.00", "0.01", "1.00"]
         with mock.patch.object(Migrate, '__init__', return_value=None):
             migrate = Migrate()
             migrate.init = mock_db
@@ -151,7 +174,10 @@ class MigrateTest(unittest.TestCase):
         mock_get_version_from_name.assert_has_calls([
             call('V0.00_META'),
             call('V0.01_CREATE'),
+            call('V1.00_DATA')
         ])
+        mock_get_json_from_file.assert_called_once_with('resources/V1.00_DATA')
+        mock_add_option_items.assert_called_once_with(option_dict)
         mock_db.run_ddl_file.assert_has_calls([
             call('resources/V0.00_META'),
             call('resources/V0.01_CREATE')
@@ -518,3 +544,38 @@ class MigrateTest(unittest.TestCase):
         self.assertEqual(args[0], '')
 
         mock_exception.assert_has_calls([call('op', 'message'), call('Update to version', 'version')])
+
+    @mock.patch.object(PostgresDbDuo, 'insert_record', return_value=True)
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(OptionData, '__init__', return_value=None)
+    @mock.patch.object(FormData, '__init__', return_value=None)
+    def test_should_add_options_to_fields_form_on_add_option_items(self,
+                                                                   mock_form_data,
+                                                                   mock_option_data,
+                                                                   mock_db,
+                                                                   mock_insert):
+        with mock.patch.object(Migrate, '__init__', return_value=None):
+            migrate = Migrate()
+            mock_db.insert_record = mock_insert
+            migrate._option_data = mock_option_data
+            mock_form_data.get.side_effect = ["f_id1", "f_id2"]
+            migrate._form_data = mock_form_data
+            migrate.option = mock_db
+            migrate.form = mock_db
+            mock_db.insert_record = mock_insert
+
+        migrate.add_option_items({"form": {"field": ["value1", "value2"], "field2": ["value3", "value4"]}})
+
+        mock_form_data.on_data.assert_has_calls([
+            call({'form': 'form', 'field': 'field'}),
+            call({'form': 'form', 'field': 'field2'})
+        ])
+        mock_option_data.on_data.assert_has_calls([
+            call({'fieldId': 'f_id1', 'fValue': 'value1'}),
+            call({'fieldId': 'f_id1', 'fValue': 'value2'}),
+            call({'fieldId': 'f_id2', 'fValue': 'value3'}),
+            call({'fieldId': 'f_id2', 'fValue': 'value4'})
+        ])
+        migrate.form.insert_record.assert_has_calls([
+            call(''), call(''), call(''), call(''), call(''), call('')
+        ])

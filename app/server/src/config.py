@@ -66,7 +66,7 @@ class Config:
         return os.environ.get("SEPARATOR")
 
     @staticmethod
-    def get_tokens(token: str) -> (str, str):
+    def get_tokens(token: str) -> tuple[str, str]:
         """
         Get tokens from given token
         """
@@ -109,6 +109,30 @@ class Table:
         return self._name
 
 
+class Join(Table):
+    """
+    Table join Table
+    """
+
+    def __init__(self, table1: Table, table2: Table, key1: str, key2: str) -> None:
+        super().__init__("", True)
+        self.table1 = table1
+        self.table2 = table2
+        self.key1 = key1
+        self.key2 = key2
+
+    def get_name(self) -> str:
+        """
+        :return: table name
+        :rtype: str
+        """
+        return (f"{self.table1.get_name()} AS a "
+                f"INNER JOIN "
+                f"{self.table2.get_name()} AS b "
+                f"ON "
+                f"a.{self.key1} = b.{self.key2}")
+
+
 class Relation(enum.Enum):
     """
     Relation defining the table
@@ -124,3 +148,13 @@ class Relation(enum.Enum):
     UID = Table("user_identifier", True)
     ROLE = Table("t_role", True)
     LOGIN = Table("t_login", True)
+    FORM_FIELD = Table("form_field", True)
+    OPTION_DATA = Table("data_option", True)
+    OPTION = Join(Table("form_field", True),
+                  Table("data_option", True),
+                  "id",
+                  "field_id"
+                  )
+    PLAYER = Table("player", True)
+    T_PLAYER = Table("player_gear", True)
+    PLAYER_POSITION = Table("player_position", True)

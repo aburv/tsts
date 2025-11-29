@@ -2,6 +2,7 @@
 User Data
 """
 from enum import Enum
+from typing import Union
 
 from src.config import Relation
 from src.data import DataModel, FilterMeta
@@ -19,6 +20,19 @@ class UserFilterType(Enum):
     DEFAULT = FilterMeta(
         querying_fields=[],
         filtering_fields=[]
+    )
+    PLAYERS = FilterMeta(
+        querying_fields=["player", "is_active"],
+        filtering_fields=["player", "u_name", "dp"],
+    )
+    PLAYER_DP = FilterMeta(
+        querying_fields=["player", "is_active"],
+        filtering_fields=["dp"],
+    )
+    PLAYER_ID = FilterMeta(
+        querying_fields=["id", "is_active"],
+        filtering_fields=["player"],
+        record_count=1
     )
 
 
@@ -54,3 +68,4 @@ class UserData(DataModel):
         self.add_field('id', "id", str)
         self.add_field('u_name', "name", str)
         self.add_field('dp', "dp", str)
+        self.add_field('player', "player", Union[str, list])

@@ -1,1 +1,59 @@
-<p>player works!</p>
+@if (player) {
+
+<div class="banner">
+  <div class="player-name">{{ player.name }}</div>
+
+  <img height="80" width="80" [src]="player.dp" />
+
+  <div class="details">
+    <div class="sub">{{ player.positions.join(', ') }}</div>
+    <div>{{ player.location }}</div>
+  </div>
+
+  <div class="bio space-around">
+    <div><b>{{ player.age }}</b> yrs</div>
+    <div><b>{{ player.height }}</b> in cm</div>
+    <div><b>{{ player.weight }}</b> in kg</div>
+  </div>
+</div>
+
+@if (tabContent.length > 1) {
+<div class="tab-container">
+  @for (tab of tabContent; let i = $index; track i) {
+  <div class="tab full" [ngClass]="{ selected: selectedTabIndex() === i }" (click)="onTabSelect(i)">
+    {{ tab }}
+  </div>
+  }
+</div>
+}
+
+@switch (selectedTabIndex()) {
+@case (0) {
+<div class="container scrollable">
+
+</div>
+}
+
+<!-- Tab 1 -->
+@case (1) {
+<div class="container scrollable">
+
+</div>
+}
+
+<!-- Tab 2 -->
+@case (2) {
+<div class="container scrollable">
+  
+</div>
+}
+
+}
+
+} @else {
+
+<div class="warning-layout">
+  <p>Player not found</p>
+</div>
+
+}
