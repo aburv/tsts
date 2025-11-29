@@ -3,7 +3,12 @@
 <div class="banner">
   <div class="player-name">{{ player.name }}</div>
 
-  <img height="80" width="80" [src]="player.dp" />
+  <img 
+    height="80"
+    width="80"
+    [src]="player.dp"
+    [alt]="'{{ player.name }}-display-picture'" 
+  />
 
   <div class="details">
     <div class="sub">{{ player.positions.join(', ') }}</div>
@@ -20,7 +25,15 @@
 @if (tabContent.length > 1) {
 <div class="tab-container">
   @for (tab of tabContent; let i = $index; track i) {
-  <div class="tab full" [ngClass]="{ selected: selectedTabIndex() === i }" (click)="onTabSelect(i)">
+  <div
+    class="tab full"
+    [ngClass]="{ selected: selectedTabIndex() === i }"
+    role="button"
+    tabindex="0"
+    (click)="onTabSelect(i)"
+    (keyup.enter)="onTabSelect(i)"
+    (keyup.space)="onTabSelect(i)"
+  >
     {{ tab }}
   </div>
   }

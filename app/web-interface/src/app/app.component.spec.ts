@@ -303,7 +303,7 @@ describe('AppComponent', () => {
     expect(root.children[2].classes['footer-layout']).toBe(true);
 
     const appSupportIcons = root.children[1].queryAll(By.css('app-icon'));
-    const breakLine = root.children[1].query(By.css('br'));
+    // const breakLine = root.children[1].query(By.css('br'));
     expect(appSupportIcons.length).toBe(2);
     expect(appSupportIcons[0].componentInstance.name()).toBe('android');
     expect(appSupportIcons[0].componentInstance.size()).toBe(30);
