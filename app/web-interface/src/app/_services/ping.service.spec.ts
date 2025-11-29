@@ -32,6 +32,7 @@ describe('PingService', () => {
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }
@@ -50,6 +51,7 @@ describe('PingService', () => {
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }
@@ -68,6 +70,7 @@ describe('PingService', () => {
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }
@@ -86,6 +89,7 @@ describe('PingService', () => {
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }

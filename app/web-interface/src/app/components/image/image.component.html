@@ -1,11 +1,10 @@
-<div class="user">
-  @if (!id()) {
+<div class="content">
+  @if (id()) {
+  <img class="img" [attr.width]="size()" [attr.height]="size()" [src]="imageData" referrerpolicy="no-referrer"
+    [attr.alt]="alt()" />
+  }
+  @else {
   <app-button [type]="ButtonType.SECONDARY_ICON" [icon]="icon()" [iconSize]="size() - size()/8">
   </app-button>
-  }
-
-  @if (id()) {
-  <img class="user-img" [attr.width]="size()" [attr.height]="size()" [src]="imageData" referrerpolicy="no-referrer"
-    [attr.alt]="alt()" />
   }
 </div>

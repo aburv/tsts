@@ -28,7 +28,11 @@ export class DataService {
               })
             );
           }
-          if (error.status === 404 || error.status === 0) {
+          if (
+            (error.status === 404 || error.status === 0) 
+            &&
+            !(error.error && error.error.error &&
+            error.error.error.type === "RecordNotFoundException")) {
             this.pingService.ping();
             return of('');
           }

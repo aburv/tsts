@@ -2,7 +2,7 @@
 User Service
 """
 from src.db_duo import PostgresDbDuo
-from src.user.data import UserData
+from src.user.data import UserData, UserFilterType
 from src.user_id.service import UserIdServices
 from src.user_role.service import UserRoleServices
 
@@ -40,20 +40,20 @@ class UserServices:
         """
         Get user by id
         """
-        self._data.on_select({"id": user_id, "is_active": True}, "id")
+        self._data.on_select({"id": user_id, "is_active": True}, UserFilterType.ID)
         records = self._db.get_records()
         if len(records) > 0:
             return records[0]
         return None
 
-    def get_user_data(self, u_id: str) -> dict:
+    def get_user_data(self, u_id: str) -> dict:  # pylint: disable=unused-argument
         """
         :return:
         :rtype:
         """
         return {}
 
-    def done_user_onboarding(self, u_id) -> str:
+    def done_user_onboarding(self, u_id: str) -> str:
         """
         mark done on OnBoarding
         :return:

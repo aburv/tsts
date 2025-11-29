@@ -1,9 +1,19 @@
 """
 User id Data
 """
+from enum import Enum
+
 from src.config import Relation
-from src.data import DataModel
+from src.data import DataModel, FilterMeta
 from src.option_data import OptionData
+
+
+class UserIDFilterType(Enum):
+    """
+    User id filter type
+    """
+    ID = FilterMeta(querying_fields=["val", "g_id", "is_verified"], filtering_fields=["t_user"], record_count=1)
+    DEFAULT = FilterMeta(querying_fields=["t_user", "is_verified"], filtering_fields=["val", "type"], record_count=None)
 
 
 class UserIDData(DataModel):
@@ -34,24 +44,9 @@ class UserIDData(DataModel):
         self.add_field('g_id', "gId", str)
         self.add_field('is_verified', "isVerified", bool)
 
-    def on_select(self, data: dict, f_type: str | None = None):
+    def on_select(self, data: dict, f_type: UserIDFilterType = UserIDFilterType.DEFAULT):
         """
         Set up the data
         """
         self.set_data(data, False)
         self._filter_type = f_type
-
-    def get_querying_fields(self) -> list:
-        if self._filter_type == "id":
-            return ["val", "g_id", "is_verified"]
-        return ["t_user", "is_verified"]
-
-    def get_filtering_fields(self) -> list:
-        if self._filter_type == "id":
-            return ["t_user"]
-        return ["val", "type"]
-
-    def get_record_count(self) -> int | None:
-        if self._filter_type == "id":
-            return 1
-        return None

@@ -4,7 +4,7 @@ from unittest.mock import call
 
 from src.config import Relation
 from src.data import DataModel
-from src.user.data import UserData
+from src.user.data import UserData, UserFilterType
 
 
 class UserDataTest(unittest.TestCase):
@@ -17,7 +17,7 @@ class UserDataTest(unittest.TestCase):
         self.assertIsInstance(data, UserData)
 
     @mock.patch.object(DataModel, 'set_data')
-    def test_should_call_set_user_data_on_data(self, mock_set):
+    def test_should_call_set_user_data_on_data_with_inserting(self, mock_set):
         with mock.patch.object(UserData, '__init__', return_value=None):
             data = UserData()
 
@@ -26,14 +26,24 @@ class UserDataTest(unittest.TestCase):
         mock_set.assert_called_once_with({}, True)
 
     @mock.patch.object(DataModel, 'set_data')
+    def test_should_call_set_user_data_on_data_with_non_inserting(self, mock_set):
+        with mock.patch.object(UserData, '__init__', return_value=None):
+            data = UserData()
+
+        data.on_data({}, False)
+
+        mock_set.assert_called_once_with({}, False)
+        self.assertEqual(data._filter_type, UserFilterType.ID)
+
+    @mock.patch.object(DataModel, 'set_data')
     def test_should_call_set_user_data_on_select(self, mock_set):
         with mock.patch.object(UserData, '__init__', return_value=None):
             data = UserData()
 
-        data.on_select({}, "f_type")
+        data.on_select({}, UserFilterType.DEFAULT)
 
         mock_set.assert_called_once_with({}, False)
-        self.assertEqual(data._filter_type, "f_type")
+        self.assertEqual(data._filter_type, UserFilterType.DEFAULT)
 
     @mock.patch.object(DataModel, 'add_field')
     def test_should_add_user_fields_on_add_insert_fields(self, mock_add_field):
@@ -48,7 +58,7 @@ class UserDataTest(unittest.TestCase):
     def test_should_return_user_filtering_fields_when_filter_type_id_on_get_filtering_fields(self):
         with mock.patch.object(UserData, '__init__', return_value=None):
             data = UserData()
-            data._filter_type = "id"
+            data._filter_type = UserFilterType.ID
 
         actual = data.get_filtering_fields()
 
@@ -57,7 +67,7 @@ class UserDataTest(unittest.TestCase):
     def test_should_return_one_when_filter_type_id_on_get_record_count(self):
         with mock.patch.object(UserData, '__init__', return_value=None):
             data = UserData()
-            data._filter_type = "id"
+            data._filter_type = UserFilterType.ID
 
         actual = data.get_record_count()
 
@@ -66,7 +76,7 @@ class UserDataTest(unittest.TestCase):
     def test_should_return_user_querying_fields_when_filter_type_id_on_get_querying_fields(self):
         with mock.patch.object(UserData, '__init__', return_value=None):
             data = UserData()
-            data._filter_type = "id"
+            data._filter_type = UserFilterType.ID
 
         actual = data.get_querying_fields()
 
@@ -110,5 +120,3 @@ class UserDataTest(unittest.TestCase):
             call('u_name', "name", str),
             call('dp', "dp", str)
         ])
-
-        self.assertEqual(data._filter_type, "id")

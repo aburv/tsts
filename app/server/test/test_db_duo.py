@@ -111,7 +111,7 @@ class DbDuoTest(unittest.TestCase):
 
         db.run_ddl_file("file_name")
 
-        mock_open.assert_called_once_with('file_name', 'r')
+        mock_open.assert_called_once_with('file_name', 'r', encoding='utf-8')
         mock_execute.assert_called_once_with(mock_open().__enter__().read())
         db.con.commit.assert_called_once_with()
 
@@ -136,7 +136,7 @@ class DbDuoTest(unittest.TestCase):
             db.run_ddl_file("file_name")
 
         mock_exception.assert_called_once_with('Run DDL file', 'file_name on error')
-        mock_open.assert_called_once_with('file_name', 'r')
+        mock_open.assert_called_once_with('file_name', 'r', encoding='utf-8')
         assert not db.con.commit.called
 
     @mock.patch.object(Table, '__init__', return_value=None)

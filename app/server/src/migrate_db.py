@@ -11,7 +11,16 @@ from src.db_duo import PostgresDbDuo
 from src.logger import LoggerAPI
 from src.responses import TableNotFoundException, DBConnectionException, DBExecutionException
 
-ROOT_PATH = "resources"
+RESOURCES_FOLDER = "resources"
+
+
+def get_resources_path() -> str:
+    """
+    get resources path
+    """
+    current_path = os.path.dirname(os.path.abspath(""))
+
+    return os.path.join(current_path, RESOURCES_FOLDER)
 
 
 def get_ddl_files() -> list:
@@ -19,7 +28,7 @@ def get_ddl_files() -> list:
     get all controller files
     """
     file_names = []
-    for _, _, files in os.walk(ROOT_PATH):
+    for _, _, files in os.walk(get_resources_path()):
         for file in files:
             file_names.append(file)
     file_names.sort()
@@ -45,7 +54,7 @@ class MigrateData(DataModel):
 
     def on_data(self, data: dict):
         """
-        on_data
+        On Data
         """
         self.set_data(data, True)
 
@@ -73,8 +82,6 @@ class Migrate:
     def __init__(self) -> None:
         self.logger = LoggerAPI()
         self.param = Config.get_db_parameters()
-        self.meta_schema = self.param["meta_schema"]
-        self.schema = self.param["schema"]
         self._data = MigrateData()
         self.db = PostgresDbDuo(self._data)
         self.init = PostgresDbDuo(DataModel(Relation.INIT))
@@ -85,36 +92,40 @@ class Migrate:
         :return:
         :rtype:
         """
+        path = get_resources_path()
         self.logger.info_entry('Migrating DB')
         system_db_version = self.get_version()
+        self.logger.info_entry(f'Current Version: {system_db_version}')
         if system_db_version == "-1.00":
-            return
-        if system_db_version == "0.00":
-            self.create_schema(self.meta_schema)
-            self.create_schema(self.schema)
+            self.create_schema(self.param["meta_schema"])
+            self.create_schema(self.param["schema"])
         ddl_files = get_ddl_files()
         try:
             for ddl_file_name in ddl_files:
                 version = get_version_from_name(ddl_file_name)
-                file_name_path = str(os.path.join(ROOT_PATH, ddl_file_name))
-                self.logger.info_entry(
-                    f'Executing DDL command file: {file_name_path}'
-                )
-                if version.split(".")[1] == "00":
-                    self.db.run_ddl_file(file_name_path)
-                    self.update_version(version)
-                elif float(version) > float(system_db_version):
-                    self.init.run_ddl_file(file_name_path)
-                    self.update_version(version)
-                else:
+                file_name_path = str(os.path.join(path, ddl_file_name))
+                if float(version) <= float(system_db_version):
                     self.logger.info_entry(
-                        f'DDL command file already executed as fileV{version} '
-                        f'systemVersion {system_db_version}'
+                        f'DDL command file already executed as fileV{version} {ddl_file_name} - '
+                        f'systemDBVersion {system_db_version}'
                     )
+                else:
+                    if version.split(".")[1] == "00":
+                        self.logger.info_entry(
+                            f'Executing Meta schema command file: {ddl_file_name}'
+                        )
+                        self.db.run_ddl_file(file_name_path)
+                    else:
+                        self.logger.info_entry(
+                            f'Executing DDL command file: {ddl_file_name}'
+                        )
+                        self.init.run_ddl_file(file_name_path)
+                    self.update_version(version)
         except DBExecutionException as _:
             self.logger.error_entry('Migration stopped')
         except Exception as e:
             self.logger.error_entry(f'Migration stopped on {e}')
+        self.logger.info_entry('Migration Done')
 
     def create_schema(self, schema: str) -> None:
         """
@@ -146,9 +157,9 @@ class Migrate:
             version_records = self.db.get_records()
             if len(version_records) == 1:
                 return str(version_records[0]["version"])
-            return "0.00"
+            return "-1.00"
         except TableNotFoundException as _:
-            return "0.00"
+            return "-1.00"
         except DBExecutionException as _:
             return "-1.00"
 
@@ -165,7 +176,10 @@ class Migrate:
             raise DBExecutionException('Update to version', version) from _
 
 
-if __name__ == '__main__':
+def run_migrate():
+    """
+    Run migration script
+    """
     is_done = False  # pragma: no cover
     while not is_done:  # pragma: no cover
         try:  # pragma: no cover

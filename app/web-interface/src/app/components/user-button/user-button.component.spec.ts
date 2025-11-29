@@ -164,9 +164,15 @@ describe('UserButtonComponent', () => {
     expect(userLoginSpy).not.toHaveBeenCalled();
   }));
 
-  it('Should initialize Google Sign-In, render button, and prompt One Tap', () => {
+  it('Should initialize Google Sign-In, render button, and prompt One Tap', fakeAsync(() => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
+
+    component.user.set(null);
+    
+    fixture.detectChanges();
+
+    tick();
 
     const container = fixture.debugElement.query(By.css('#google-signin-button')).nativeElement as HTMLElement;
     spyOn(Config, 'getGCID').and.returnValue('GClientId');
@@ -194,7 +200,7 @@ describe('UserButtonComponent', () => {
 
     expect(google.accounts.id.prompt).toHaveBeenCalled();
 
-  });
+  }));
 
   it('Should set on setLocation', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
@@ -292,16 +298,16 @@ describe('UserButtonComponent', () => {
 
     const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
 
-    expect(googleButton.styles['visibility']).toBe('');
+    expect(googleButton).toBeNull();
 
     userDataService.getUser.and.returnValue({ dp: "dp", name: "name", email: "email" });
 
     component.setCurrentUser();
 
     expect(userDataService.getUser).toHaveBeenCalledOnceWith();
-    expect(component.user).toEqual({ dp: "dp", name: "name", email: "email" });
+    expect(component.user()).toEqual({ dp: "dp", name: "name", email: "email" });
 
-    expect(googleButton.styles['visibility']).toBe('hidden');
+    expect(googleButton).toBeNull();
   });
 
   it('View: Should set the content on no user', () => {
@@ -310,7 +316,7 @@ describe('UserButtonComponent', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
 
-    component.user = null;
+    component.user.set(null);
     component.isDialogOn = false;
 
     fixture.detectChanges();
@@ -331,21 +337,21 @@ describe('UserButtonComponent', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
 
-    component.user = {
+    component.user.set({
       dp: "dp", name: "name", email: "email"
-    };
+    });
 
     component.isDialogOn = false;
 
     fixture.detectChanges();
 
-    const googleElement = fixture.debugElement.query(By.css('div'));
+    const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
     const imageElement = fixture.debugElement.query(By.css('app-image'));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
-    expect(fixture.debugElement.children.length).toBe(2);
+    expect(fixture.debugElement.children.length).toBe(1);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleButton).toBeNull();
 
     expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
     expect(imageElement.componentInstance.id()).toBe('dp');
@@ -359,21 +365,21 @@ describe('UserButtonComponent', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
 
-    component.user = {
+    component.user.set({
       dp: "dp", name: "name", email: "email"
-    };
+    });
 
     component.isDialogOn = true;
 
     fixture.detectChanges();
 
-    const googleElement = fixture.debugElement.query(By.css('div'));
+    const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
     const imageElement = fixture.debugElement.query(By.css('app-image'));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
-    expect(fixture.debugElement.children.length).toBe(3);
+    expect(fixture.debugElement.children.length).toBe(2);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleButton).toBeNull();
 
     expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
     expect(imageElement.componentInstance.id()).toBe('dp');
@@ -387,21 +393,21 @@ describe('UserButtonComponent', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
 
-    component.user = {
+    component.user.set({
       dp: "dp", name: "name", email: "email"
-    };
+    });
 
     component.isDialogOn = true;
 
     fixture.detectChanges();
 
-    const googleElement = fixture.debugElement.query(By.css('div'));
+    const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
     const imageElement = fixture.debugElement.query(By.css('app-image'));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
-    expect(fixture.debugElement.children.length).toBe(3);
+    expect(fixture.debugElement.children.length).toBe(2);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleButton).toBeNull();
 
     expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
     expect(imageElement.componentInstance.id()).toBe('dp');
@@ -415,21 +421,21 @@ describe('UserButtonComponent', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
 
-    component.user = {
+    component.user.set({
       dp: "dp", name: "name", email: "email"
-    };
+    });
 
     component.isDialogOn = false;
 
     fixture.detectChanges();
 
-    const googleElement = fixture.debugElement.query(By.css('div'));
+    const googleElement = fixture.debugElement.query(By.css('#google-signin-button'));
     const imageElement = fixture.debugElement.query(By.css('app-image'));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
-    expect(fixture.debugElement.children.length).toBe(2);
+    expect(fixture.debugElement.children.length).toBe(1);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleElement).toBeNull();
 
     expect(imageElement.componentInstance.icon()).toBe(Icon.PERSON);
     expect(imageElement.componentInstance.id()).toBe('dp');
