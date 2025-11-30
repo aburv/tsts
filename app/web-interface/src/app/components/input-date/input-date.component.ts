@@ -1,12 +1,19 @@
 import { Component, computed, input, output } from '@angular/core';
+
 import { DateTime } from './dateTime'
+import { Icon, IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'app-input-date',
+  standalone: true,
+  imports: [
+    IconComponent
+  ],
   templateUrl: './input-date.component.html',
   styleUrls: ['./input-date.component.css']
 })
 export class InputDateComponent {
+  readonly Icon = Icon
   title = input<string>();
   value = input<DateTime>();
   min = input<DateTime>();

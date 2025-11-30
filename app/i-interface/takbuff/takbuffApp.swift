@@ -9,153 +9,165 @@ import SwiftUI
 
 @main
 struct takbuffApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    
     @Namespace private var animation
     @Namespace private var logo
     @Namespace private var name
+    @Namespace private var dp
     
-    @State var proceed = false
-
+    @State var user: User? = nil
+    
+    @State var screen: Screen = .SPLASH
+    
     var body: some Scene {
         WindowGroup {
             ZStack {
-                Color("banner")
+                Color((screen == .HOME || screen == .SPLASH) ? "banner" : "background")
                     .edgesIgnoringSafeArea(.all)
                 
-                if(proceed) {
+                if(screen == .HOME) {
                     Color("background")
                         .edgesIgnoringSafeArea(.bottom)
                 }
                 
                 VStack{
-                    if(proceed){
-                        ResponsiveView {properties in
-                            HomeScreen(animation: animation, name: name, logo: logo, layout: properties)
+                    switch screen {
+                    case .HOME:
+                        ResponsiveView { properties in
+                            HomeScreen(
+                                animation: animation,
+                                name: name,
+                                logo: logo,
+                                dp: dp,
+                                user: $user,
+                                screen: $screen,
+                                layout: properties
+                            )
+                        }
+                    case .USER:
+                        ResponsiveView { properties in
+                            UserScreen(
+                                animation: animation,
+                                logo: logo,
+                                dp: dp,
+                                user: $user,
+                                screen: $screen,
+                                dimen: properties.userDimen
+                            )
+                        }
+                    case .NEWUSER:
+                        ResponsiveView { properties in
+                            NewUserScreen(
+                                animation: animation,
+                                logo: logo,
+                                dp: dp,
+                                user: $user,
+                                screen: $screen,
+                                dimen: properties.newUserDimen
+                            )
+                        }
+                    case .SPLASH:
+                        ResponsiveView { properties in
+                            SplashScreen(
+                                animation: animation,
+                                name: name,
+                                logo: logo,
+                                screen: $screen,
+                                user: $user,
+                                dimen: properties.splashDimen
+                            )
                         }
                     }
-                    else {
-                        SplashScreen(animation: animation, name: name, logo: logo, proceed: $proceed)
-                    }
-                } .padding([.horizontal], 1.0)
+                }
+                .padding([.horizontal], 1.0)
             }
         }
+        .modelContainer(for: AppUserDevice.self)
     }
 }
 
 struct ResponsiveView<Content:View>: View {
     var content:(LayoutProperties) -> Content
     var body: some View {
-        GeometryReader{geo in
+        GeometryReader{ geo in
             let height = geo.size.height
             let width = geo.size.width
-            let landScape = height > 500 && width > 900
-            let dimen = CustomDimensValues(height:height, width:width)
+            let landScape = height > 500.0 && width > 900.0
+            let screenDimenType: ScreenDimenType = getDimens(width: width)
+            let homeDimen = HomeDimensValues(screenDimenType: screenDimenType)
+            let splashDimen = SplashDimensValues(screenDimenType: screenDimenType, height: height)
+            let newUserDimen = NewUserDimensValues(screenDimenType: screenDimenType)
+            let userDimen = UserDimensValues(screenDimenType: screenDimenType)
+            let dashboardDimen = DashboardDimensValues(screenDimenType: screenDimenType)
+            let searchDimen = SearchDimensValues(screenDimenType: screenDimenType)
+            
             content(
                 LayoutProperties(
                     isLandscape: landScape,
-                    dimen: dimen,
+                    homeDimen: homeDimen,
+                    splashDimen: splashDimen,
+                    newUserDimen: newUserDimen,
+                    userDimen: userDimen,
+                    dashboardDimen: dashboardDimen,
+                    searchDimen:searchDimen,
                     height: height,
                     width: width
                 )
             )
         }
     }
+    
+    func getDimens(width: CGFloat) -> ScreenDimenType {
+        if (width<700.0) {
+            .MOBILE
+        }
+        else if (width>=700.0 && width<1000.0) {
+            .MIN_TABLET
+        }
+        else if (width>=1000.0 && width<1200.0) {
+            .TABLET
+        }
+        else {
+            .DESKTOP
+        }
+    }
 }
 
-struct CustomDimensValues {
-    let keepBanner: Bool 
-    let keepSideLayouts: Bool
-    let bannerLayoutWidth: CGFloat?
+enum ScreenDimenType {
+    case MOBILE, MIN_TABLET, TABLET, DESKTOP
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    static var orientation: UIInterfaceOrientationMask = .portrait
     
-    let mainLayoutWidth: CGFloat?
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchingOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool{
+        return true
+    }
     
-    let searchlayoutPaddingTop: CGFloat
-    let searchlayoutPaddingBottom: CGFloat
-    let searchlayoutPaddingTrailing: CGFloat
-    let searchlayoutPaddingLeading: CGFloat
-    
-    let searchingBgHeight: CGFloat
-    let searchingBgWidth: CGFloat?
-    let searchingCornerRadius: CGFloat
-    
-    init(height:CGFloat, width:CGFloat){
-        switch width{
-        case _ where width<700.0:
-            keepBanner = false
-            keepSideLayouts = false
-            bannerLayoutWidth = nil
-            mainLayoutWidth = nil
-            
-            searchlayoutPaddingTop = 0.0
-            searchlayoutPaddingBottom = 0.0
-            searchlayoutPaddingLeading = 0.0
-            searchlayoutPaddingTrailing = 0.0
-            
-            searchingBgHeight = 70.0
-            searchingBgWidth = nil
-            searchingCornerRadius = 0.0
-        case _ where width>=700.0 && width<1000.0:
-            keepBanner = true
-            keepSideLayouts = false
-            bannerLayoutWidth = 800.0
-            mainLayoutWidth = 700.0
-            
-            searchlayoutPaddingTop = 0.0
-            searchlayoutPaddingBottom = 5.0
-            searchlayoutPaddingLeading = 20.0
-            searchlayoutPaddingTrailing = 10.0
-            
-            searchingBgHeight = 45.0
-            searchingBgWidth = 350.0
-            searchingCornerRadius = 25.0
-        case _ where width>=1000.0 && width<1200.0:
-            keepBanner = true
-            keepSideLayouts = false
-            bannerLayoutWidth = 900.0
-            mainLayoutWidth =  700.0
-            
-            searchlayoutPaddingTop = 0.0
-            searchlayoutPaddingBottom = 5.0
-            searchlayoutPaddingLeading = 20.0
-            searchlayoutPaddingTrailing = 10.0
-            
-            searchingBgHeight = 45.0
-            searchingBgWidth = 400.0
-            searchingCornerRadius = 25.0
-        case _ where width>=1200.0:
-            keepBanner = true
-            keepSideLayouts = true
-            bannerLayoutWidth = 1100.0
-            mainLayoutWidth = 700.0
-            
-            searchlayoutPaddingTop = 0.0
-            searchlayoutPaddingBottom = 5.0
-            searchlayoutPaddingLeading = 20.0
-            searchlayoutPaddingTrailing = 10.0
-            
-            searchingBgHeight = 45.0
-            searchingBgWidth = 400.0
-            searchingCornerRadius = 25.0
-        default:
-            keepBanner = true
-            keepSideLayouts = true
-            bannerLayoutWidth = 1200.0
-            mainLayoutWidth = 700.0
-            
-            searchlayoutPaddingTop = 0.0
-            searchlayoutPaddingBottom = 5.0
-            searchlayoutPaddingLeading = 20.0
-            searchlayoutPaddingTrailing = 10.0
-            
-            searchingBgHeight = 45.0
-            searchingBgWidth = 400.0
-            searchingCornerRadius = 25.0
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return Self.orientation
+    }
+}
+
+extension View {
+    func setOrientation(_ orientation: UIInterfaceOrientationMask) {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            AppDelegate.orientation = orientation
+            windowScene.requestGeometryUpdate(.iOS(interfaceOrientations: orientation))
+            windowScene.keyWindow?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations()
         }
     }
 }
 
 struct LayoutProperties {
     var isLandscape:Bool
-    var dimen:CustomDimensValues
+    var homeDimen: HomeDimensValues
+    var splashDimen: SplashDimensValues
+    var newUserDimen: NewUserDimensValues
+    var userDimen: UserDimensValues
+    var dashboardDimen: DashboardDimensValues
+    var searchDimen: SearchDimensValues
     var height:CGFloat
     var width:CGFloat
 }

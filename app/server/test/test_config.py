@@ -2,7 +2,8 @@ import os
 import unittest
 from unittest import mock
 
-from src.config import Config, Table, Relation
+from src.config import Config, Table, Relation, Join
+from src.responses import DataValidationException
 
 
 class ConfigTest(unittest.TestCase):
@@ -30,6 +31,62 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     @mock.patch.dict(os.environ, {
+        "REDIS_USER": 'user',
+        "REDIS_PASSWORD": 'pass',
+        "REDIS_HOST": 'host',
+        "REDIS_PORT": 'port',
+    }, clear=True)
+    def test_should_return_redis_db_creds_on_get_caching_parameters(self):
+        expected = {
+            'user': 'user',
+            'host': 'host',
+            'pass': 'pass',
+            'port': 'port',
+        }
+        actual = Config.get_caching_parameters()
+        self.assertEqual(expected, actual)
+
+    @mock.patch.dict(os.environ, {
+        "BROKER_HOST": 'host',
+        "BROKER_PORT": 'port',
+    }, clear=True)
+    def test_should_return_broker_server_connection_string_on_get_broker_connection_string(self):
+        expected = "host:port"
+        actual = Config.get_broker_connection_string()
+        self.assertEqual(expected, actual)
+
+    @mock.patch.dict(os.environ, {
+        "AUTH_HOST": "host",
+        "AUTH_PORT": "port"}, clear=True)
+    def test_should_return_auth_connection_string(self):
+        actual = Config.get_auth_connection_string()
+        self.assertEqual("host:port", actual)
+
+    @mock.patch.dict(os.environ, {
+        "SEPARATOR": "separator_str"}, clear=True)
+    def test_should_return_separator_string(self):
+        actual = Config.get_separator()
+        self.assertEqual("separator_str", actual)
+
+    @mock.patch.object(Config, "get_separator", return_value="separator_str")
+    def test_should_return_tokens_on_get_tokens(self, mock_get_separator):
+        actual = Config.get_tokens("token1separator_strToken2")
+
+        mock_get_separator.assert_called_once_with()
+        self.assertEqual(('token1', 'Token2'), actual)
+
+    @mock.patch.object(DataValidationException, "__init__", return_value=None)
+    @mock.patch.object(Config, "get_separator", return_value="separator_str")
+    def test_should_raise_data_validation_exception_when_no_separator_on_get_tokens(self,
+                                                                                    mock_get_separator,
+                                                                                    mock_exception):
+        with self.assertRaises(DataValidationException):
+            Config.get_tokens("token1token2")
+
+        mock_exception.assert_called_once_with('Invalid Tokens ', 'token1token2 list index out of range')
+        mock_get_separator.assert_called_once_with()
+
+    @mock.patch.dict(os.environ, {
         "WEB_CLIENT_KEY": "test_web_key",
         "ANDROID_CLIENT_KEY": "test_android_key",
         "IOS_CLIENT_KEY": "test_ios_key",
@@ -45,7 +102,19 @@ class TableTest(unittest.TestCase):
         table = Table(expected, False)
         actual = table.get_name()
         self.assertEqual(expected, actual)
-        self.assertEqual(False, table.schema_type)
+        self.assertFalse(table.schema_type)
+
+
+class JoinTest(unittest.TestCase):
+    def test_should_return_join_table_name_on_get_name(self):
+        expected = "table_1 AS a INNER JOIN table_2 AS b ON a.id = b.id"
+        table = Join(Table("table_1", True),
+                     Table("table_2", True),
+                     "id",
+                     "id")
+        actual = table.get_name()
+        self.assertEqual(expected, actual)
+        self.assertTrue(table.schema_type)
 
 
 class RelationTest(unittest.TestCase):
@@ -58,3 +127,17 @@ class RelationTest(unittest.TestCase):
         self.assertEqual(Relation.AUDIT.value.get_name(), 'audit')
         self.assertTrue(isinstance(Relation.AUDIT_FIELD, Relation))
         self.assertEqual(Relation.AUDIT_FIELD.value.get_name(), 'audit_field')
+        self.assertTrue(isinstance(Relation.DEVICE, Relation))
+        self.assertEqual(Relation.DEVICE.value.get_name(), 'device')
+        self.assertTrue(isinstance(Relation.IMAGE, Relation))
+        self.assertEqual(Relation.IMAGE.value.get_name(), 't_image')
+        self.assertTrue(isinstance(Relation.FORM_FIELD, Relation))
+        self.assertEqual(Relation.FORM_FIELD.value.get_name(), 'form_field')
+        self.assertTrue(isinstance(Relation.OPTION_DATA, Relation))
+        self.assertEqual(Relation.OPTION_DATA.value.get_name(), 'data_option')
+        self.assertTrue(isinstance(Relation.OPTION, Relation))
+        self.assertTrue(isinstance(Relation.OPTION.value, Join))
+        self.assertTrue(isinstance(Relation.OPTION.value.table1, Table))
+        self.assertTrue(isinstance(Relation.OPTION.value.table2, Table))
+        self.assertTrue(isinstance(Relation.PLAYER, Relation))
+        self.assertEqual(Relation.PLAYER.value.get_name(), 'player')

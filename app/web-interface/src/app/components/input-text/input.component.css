@@ -74,11 +74,11 @@ input:focus+span {
   width: 150px;
 }
 
-.x-medium {
+.medium {
   width: 200px;
 }
 
-.medium {
+.x-medium {
   width: 250px;
 }
 

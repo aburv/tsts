@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS device (
     os_version VARCHAR(10),
     device_type VARCHAR(10),
     platform VARCHAR(200),
-    is_active Boolean
+    is_active BOOLEAN
 );

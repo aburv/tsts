@@ -1,6 +1,10 @@
-<div class="dialog-frame">
+<div class="dialog-frame" 
+     (click)="onBackgroundClick($event)"
+     (keydown.escape)="onBackgroundClick($event)"
+     tabindex="0"
+     role="dialog"
+     aria-modal="true">
   <div class="content">
-    <ng-container *ngTemplateOutlet="content">
-    </ng-container>
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
   </div>
 </div>

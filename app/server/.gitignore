@@ -20,3 +20,9 @@ venv/
 # MacOS
 */.DS_Store
 .DS_Store
+
+broker_pb2.py
+broker_pb2_grpc.py
+
+authentication_pb2.py
+authentication_pb2_grpc.py
