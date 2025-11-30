@@ -80,6 +80,12 @@ export class UserDataService extends LocalDataService {
     });
   }
 
+  getMyPlayerId(): string {
+    const storageData = this.getValues();
+    const data = storageData === null ? null : AuthUtils.decodeJwt(storageData['idToken']);
+    return data === null ? "" : data["user"]['playerId'];
+  }
+
   clear(): void {
     this.clearData();
   }

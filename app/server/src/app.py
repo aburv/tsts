@@ -16,6 +16,8 @@ from src.login.controller import LOGIN_BLUEPRINT
 from src.search.controller import SEARCH_BLUEPRINT
 from src.user.controller import USER_BLUEPRINT
 
+from src.player.controller import PLAYER_BLUEPRINT
+
 
 def assign_request_id():
     """
@@ -68,6 +70,8 @@ class App:
         self._app.register_blueprint(IMAGE_BLUEPRINT, url_prefix="/api/image")
 
         self._app.register_blueprint(SEARCH_BLUEPRINT, url_prefix="/api/search")
+
+        self._app.register_blueprint(PLAYER_BLUEPRINT, url_prefix="/api/player")
 
     def create(self):
         """

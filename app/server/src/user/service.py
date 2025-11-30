@@ -70,3 +70,15 @@ class UserServices:
         )
 
         return "t"
+
+    def get_users_by_player_ids_and_text(self, player_ids: list, text: str):
+        self._data.on_select({"player": player_ids, "is_active": True, "u_name": text}, UserFilterType.PLAYERS)
+        return self._db.get_records()
+
+    def get_user_dp_by_player(self, player_id):
+        self._data.on_select({"player": player_id, "is_active": True}, UserFilterType.PLAYER_DP)
+        return self._db.get_record_field_value()
+
+    def get_player_id(self, user_id) -> str | None:
+        self._data.on_select({"id": user_id, "is_active": True}, UserFilterType.PLAYER_ID)
+        return self._db.get_record_field_value()

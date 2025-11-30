@@ -141,3 +141,65 @@ class UserServiceTest(unittest.TestCase):
         )
         mock_role_services.assert_called_once_with()
         self.assertEqual(actual, expected)
+
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(UserData, '__init__', return_value=None)
+    def test_should_return_empty_on_get_users_by_player_ids_and_text(self,
+                                                                     mock_user_data,
+                                                                     mock_db):
+        with mock.patch.object(UserServices, '__init__', return_value=None):
+            service = UserServices()
+            mock_db.get_records.return_value = []
+            service._data = mock_user_data
+            service._db = mock_db
+
+        actual = service.get_users_by_player_ids_and_text(["player_id_1", "player_id_2"], "text")
+
+        mock_user_data.on_select.assert_called_once_with(
+            {
+                'player': ['player_id_1', 'player_id_2'],
+                'is_active': True,
+                'u_name': 'text'
+            },
+            UserFilterType.PLAYERS
+        )
+        mock_db.get_records.assert_called_once_with()
+
+        self.assertEqual(actual, [])
+
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(UserData, '__init__', return_value=None)
+    def test_should_return_empty_on_get_user_dp_by_player(self,
+                                                          mock_user_data,
+                                                          mock_db):
+        with mock.patch.object(UserServices, '__init__', return_value=None):
+            service = UserServices()
+            mock_db.get_record_field_value.return_value = "value"
+            service._data = mock_user_data
+            service._db = mock_db
+
+        actual = service.get_user_dp_by_player("player_id")
+
+        mock_user_data.on_select.assert_called_once_with({'player': 'player_id', 'is_active': True},
+                                                         UserFilterType.PLAYER_DP)
+        mock_db.get_record_field_value.assert_called_once_with()
+
+        self.assertEqual(actual, "value")
+
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(UserData, '__init__', return_value=None)
+    def test_should_return_empty_on_get_player_id(self,
+                                                  mock_user_data,
+                                                  mock_db):
+        with mock.patch.object(UserServices, '__init__', return_value=None):
+            service = UserServices()
+            mock_db.get_record_field_value.return_value = "value"
+            service._data = mock_user_data
+            service._db = mock_db
+
+        actual = service.get_player_id("user_id")
+
+        mock_user_data.on_select.assert_called_once_with({'id': 'user_id', 'is_active': True}, UserFilterType.PLAYER_ID)
+        mock_db.get_record_field_value.assert_called_once_with()
+
+        self.assertEqual(actual, "value")
