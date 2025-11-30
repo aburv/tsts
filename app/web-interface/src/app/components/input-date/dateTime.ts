@@ -9,7 +9,7 @@ export class DateTime {
     value = signal<Date | null>(null);
     type: DateStringType
 
-    constructor(value: string | null, type: DateStringType = DateStringType.DATE) {
+    constructor(value: string | null = null, type: DateStringType = DateStringType.DATE) {
         if (value !== null) {
             this.value.set(new Date(value));
         }
@@ -55,11 +55,11 @@ export class DateTime {
     getFormatString(): string {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
         if (this.value() !== null) {
-            let value: string = ' ' + this.value()!.getFullYear();
+            let value: string = '' + this.value()!.getFullYear();
             if (this.type === DateStringType.DATE) {
-                value = ', ' + this.value()!.getDate() + value;
+                value = this.value()!.getDate() + ', ' + value;
             }
-            return months[this.value()!.getMonth()] + value;
+            return months[this.value()!.getMonth()] + ' ' + value;
         }
         return ""
     }

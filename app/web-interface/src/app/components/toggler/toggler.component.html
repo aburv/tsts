@@ -1,4 +1,16 @@
 <div class="content">
-    <span class="item" [ngClass]="{'selected' : selected() === option}" *ngFor="let option of options()"
-        (click)="childEmitter.emit(option)">{{option}}</span>
+  @for (option of options(); track option) {
+    <span 
+      class="item" 
+      [class.selected]="selected() === option" 
+      (click)="childEmitter.emit(option)"
+      (keydown.enter)="childEmitter.emit(option)"
+      (keydown.space)="childEmitter.emit(option)"
+      tabindex="0"
+      role="button"
+      [attr.aria-pressed]="selected() === option"
+    >
+      {{ option }}
+    </span>
+  }
 </div>

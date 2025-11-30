@@ -111,8 +111,8 @@ class DbDuoTest(unittest.TestCase):
 
         db.run_ddl_file("file_name")
 
-        mock_open.assert_called_once_with('file_name', 'r')
-        mock_execute.assert_called_once_with(mock_open().read())
+        mock_open.assert_called_once_with('file_name', 'r', encoding='utf-8')
+        mock_execute.assert_called_once_with(mock_open().__enter__().read())
         db.con.commit.assert_called_once_with()
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
@@ -136,7 +136,7 @@ class DbDuoTest(unittest.TestCase):
             db.run_ddl_file("file_name")
 
         mock_exception.assert_called_once_with('Run DDL file', 'file_name on error')
-        mock_open.assert_called_once_with('file_name', 'r')
+        mock_open.assert_called_once_with('file_name', 'r', encoding='utf-8')
         assert not db.con.commit.called
 
     @mock.patch.object(Table, '__init__', return_value=None)
@@ -200,6 +200,58 @@ class DbDuoTest(unittest.TestCase):
         )
         mock_exception.assert_called_once_with('Is Table exist', 'table on error')
         assert not db.con.commit.called
+
+    @mock.patch.object(Table, '__init__', return_value=None)
+    @mock.patch.object(PostgresDbDuo, 'get_records')
+    @mock.patch.object(DataModel, 'get_filtering_fields', return_value=["field"])
+    def test_should_return_value_when_get_records_has_value_on_get_record_field_value(self,
+                                                                                      mock_get_filtering_fields,
+                                                                                      mock_get_records,
+                                                                                      mock_table
+                                                                                      ):
+        mock_get_records.return_value = [{"field": "value"}]
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            model = DataModel(Relation.INIT)
+            mock_table.schema_type = False
+            model.table = mock_table
+
+        with mock.patch.object(PostgresDbDuo, '__init__', return_value=None):
+            db = PostgresDbDuo(model)
+            db._data = model
+            db._schema = 'schema'
+
+        actual = db.get_record_field_value()
+
+        mock_get_records.assert_called_once_with()
+        mock_get_filtering_fields.assert_called_once_with()
+
+        self.assertEqual(actual, "value")
+
+    @mock.patch.object(Table, '__init__', return_value=None)
+    @mock.patch.object(PostgresDbDuo, 'get_records')
+    @mock.patch.object(DataModel, 'get_filtering_fields', return_value=["field"])
+    def test_should_return_none_when_get_records_has_no_value_on_get_record_field_value(self,
+                                                                                        mock_get_filtering_fields,
+                                                                                        mock_get_records,
+                                                                                        mock_table
+                                                                                        ):
+        mock_get_records.return_value = []
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            model = DataModel(Relation.INIT)
+            mock_table.schema_type = False
+            model.table = mock_table
+
+        with mock.patch.object(PostgresDbDuo, '__init__', return_value=None):
+            db = PostgresDbDuo(model)
+            db._data = model
+            db._schema = 'schema'
+
+        actual = db.get_record_field_value()
+
+        mock_get_records.assert_called_once_with()
+        assert not mock_get_filtering_fields.called
+
+        self.assertEqual(actual, None)
 
     @mock.patch.object(TableNotFoundException, '__init__', return_value=None)
     @mock.patch.object(Table, '__init__', return_value=None)
@@ -299,10 +351,11 @@ class DbDuoTest(unittest.TestCase):
             db._data = model
 
         actual = db.get_update_statement()
+
         mock_table_name.assert_called_once_with()
         mock_get_querying_fields_and_value.assert_called_once_with()
         self.assertEqual(
-            ('UPDATE table SET field=%s WHERE field_1=%s AND field_2=%s', ('value_1', 'value_2')),
+            ('UPDATE table SET field=%s WHERE field_1=%s AND field_2=%s', ('value', 'value_1', 'value_2')),
             actual
         )
 
@@ -310,7 +363,7 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(DataModel, 'get_grouping_field', return_value="field_4")
     @mock.patch.object(DataModel, 'get_ordering_type', return_value=OrderType("field_4", True))
     @mock.patch.object(DataModel, 'get_querying_fields_and_value',
-                       return_value={'field_1': "value_1", 'field_2': "value_2"})
+                       return_value={'field_1': "value_1", 'field_2': "value_2", "field_3": ["value_3", "value_4"]})
     @mock.patch.object(DataModel, 'get_filtering_fields', return_value=['field_5', 'field_4'])
     @mock.patch.object(DataModel, 'get_table_name', return_value="table")
     @mock.patch.object(Table, '__init__', return_value=None)
@@ -327,7 +380,7 @@ class DbDuoTest(unittest.TestCase):
             model = DataModel(Relation.INIT)
             mock_table.schema_type = False
             model.table = mock_table
-            model._fields = {'field_1': "value_1", 'field_2': "value_1"}
+            model._fields = {'field_1': "value_1", 'field_2': "value_2", "field_3": ["value_3", "value_4"]}
 
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(model)
@@ -342,9 +395,9 @@ class DbDuoTest(unittest.TestCase):
         mock_get_record_count.assert_called_once_with()
         mock_table_name.assert_called_once_with()
         self.assertEqual(
-            ('SELECT field_5, field_4 FROM table WHERE field_1= %s AND field_2= %s '
+            ('SELECT field_5, field_4 FROM table WHERE field_1= %s AND field_2= %s AND field_3= ANY(%s) '
              'GROUP BY field_4 ORDER BY field_4 DESC LIMIT 1',
-             ('value_1', 'value_2')),
+             ('value_1', 'value_2', ['value_3', 'value_4'])),
             actual
         )
 
@@ -813,14 +866,14 @@ class DbDuoTest(unittest.TestCase):
             db.client = mock_connect.cursor.return_value
             mock_execute = mock_connect.cursor.return_value.execute
 
-        db.update_record("record_id", "my_id")
+        db.update_record("my_id", "record_id")
 
         mock_is_empty.assert_called_once_with()
         mock_update_statement.assert_called_once_with()
         mock_table_name.assert_called_once_with()
         mock_audit_payload.assert_called_once_with()
         mock_is_success.assert_has_calls([
-            call('UPDATE 0 1'),
+            call('UPDATE 1'),
         ])
         mock_audit_update.assert_called_once_with('table', 'record_id', {'field': 'value', 'field_2': 1}, 'my_id')
         mock_execute.assert_has_calls([
@@ -873,7 +926,7 @@ class DbDuoTest(unittest.TestCase):
         mock_update_statement.assert_called_once_with()
         assert not mock_audit_update.called
         mock_is_success.assert_has_calls([
-            call('UPDATE 0 1'),
+            call('UPDATE 1'),
         ])
         mock_table_name.assert_called_once_with()
         mock_execute.assert_has_calls([
@@ -974,7 +1027,7 @@ class DbDuoTest(unittest.TestCase):
 
         with self.assertRaises(DBExecutionException):
             with self.assertRaises(DataValidationException):
-                db.update_record("record_id", "my_id")
+                db.update_record("my_id", "record_id")
 
         mock_table_name.assert_called_once_with()
         mock_is_empty.assert_called_once_with()
@@ -1035,13 +1088,13 @@ class DbDuoTest(unittest.TestCase):
 
         with self.assertRaises(DBExecutionException):
             with self.assertRaises(DBOperationException):
-                db.update_record("record_id", "my_id")
+                db.update_record("my_id", "record_id")
 
         mock_table_name.assert_called_once_with()
         mock_is_empty.assert_called_once_with()
         mock_get_update_statement.assert_called_once_with()
         mock_is_success.assert_has_calls([
-            call('UPDATE 0 1'),
+            call('UPDATE 1'),
         ])
         mock_execute.assert_has_calls([
             call('BEGIN;'),
@@ -1250,3 +1303,5 @@ class DbDuoTest(unittest.TestCase):
         db.close()
 
         db.client.close.assert_called_once_with()
+
+        self.assertTrue(True)

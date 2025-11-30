@@ -11,7 +11,7 @@ class LoggerAPI:
     """
 
     def __init__(self) -> None:
-        logging.basicConfig(level="INFO")
+        logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
     def info_entry(self, message) -> None:
@@ -31,3 +31,12 @@ class LoggerAPI:
         :rtype:
         """
         self.logger.error(message)
+
+    def warning_entry(self, message) -> None:
+        """
+        :param message:
+        :type message:
+        :return:
+        :rtype:
+        """
+        self.logger.warning(message)

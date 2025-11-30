@@ -1,5 +1,14 @@
-<div class="content" [ngClass]="type()">
-    <app-icon [ngStyle]="{height: (iconSize() + 2).toString() + 'px' }" *ngIf="icon()" [name]="icon()!" [fill]="iconColor()" [size]="iconSize()"></app-icon>
+<div class="content" [class]="type()">
+  @if (icon()) {
+    <app-icon 
+      [style.height]="(iconSize() + 2).toString() + 'px'" 
+      [name]="icon()!" 
+      [fill]="iconColor()" 
+      [size]="iconSize()">
+    </app-icon>
+  }
 
-    <span *ngIf="text()" class="text">{{ text() }}</span>
+  @if (text()) {
+    <span class="text">{{ text() }}</span>
+  }
 </div>

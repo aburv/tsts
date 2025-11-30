@@ -27,8 +27,7 @@
 }
 
 @media only screen and (max-width: 550px) {
-
     .content {
-      width: 70vw;
+        width: 70vw;
     }
-  }
+}

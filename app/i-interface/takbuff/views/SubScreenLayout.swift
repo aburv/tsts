@@ -9,14 +9,22 @@ import SwiftUI
 
 struct SubScreenLayout: View {
     let animation: Namespace.ID
-    let layout: LayoutProperties
     
     @Binding var isLoading: Bool
-    @Binding var screen: SubScreen
+    @Binding var screen: Screen
+    @Binding var subScreen: SubScreen
+    
+    let layout: LayoutProperties
+
     
     var body: some View{
-        switch screen {
-            case .Dashboard: DashboardScreen(isLoading: $isLoading, screen: $screen)
+        switch subScreen {
+        case .Dashboard: DashboardScreen(
+            isLoading: $isLoading,
+            screen: $screen,
+            subScreen: $subScreen,
+            dimen: layout.dashboardDimen
+        )
         }
     }
 }
