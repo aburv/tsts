@@ -11,7 +11,7 @@ describe('IconComponent', () => {
   const icons: any = { g: [""] }
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [IconComponent],
+      imports: [IconComponent],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();

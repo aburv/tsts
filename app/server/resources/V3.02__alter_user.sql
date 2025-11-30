@@ -1,0 +1,5 @@
+ALTER TABLE t_user
+ADD COLUMN player VARCHAR(36);
+
+ALTER TABLE t_user
+ADD CONSTRAINT fk_player FOREIGN KEY (player) REFERENCES player(id);

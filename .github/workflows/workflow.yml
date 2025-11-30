@@ -1,0 +1,101 @@
+name: Prod ecosystem
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "app/**"
+
+jobs:
+  set-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set-tag.outputs.tag }}
+    steps:
+      - name: Set Git SHA as tag
+        id: set-tag
+        run: |
+          echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Set failure message
+        id: set-failure
+        run: |
+          echo "failure_message=Tag" >> $GITHUB_OUTPUT
+  
+  build-data:
+    needs: [set-tag]
+    uses: ./.github/workflows/build_push_image.yml
+    with:
+      tag: ${{ needs.set-tag.outputs.tag }}
+      repo: ${{ vars.DATA_REPO }}
+      folder: ./app/server
+    secrets:
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+  
+  deploy-interface:
+    needs: [set-tag]
+    uses: ./.github/workflows/build-deploy-interface.yml
+    with:
+      BUILD_ENV: prod
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.SITE_ACCESS_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.SITE_SECRET_KEY }}
+      S3_BUCKET: ${{ secrets.APP_S3_BUCKET }}
+      REGION: ${{ secrets.APP_AWS_REGION }}
+      CLOUDFRONT_DISTRIBUTION: ${{ secrets.APP_CLOUD_FRONT_DISTRIBUTION }}
+      API_KEY: ${{ secrets.PROD_API_KEY }}
+      AUTH_KEY: ${{ secrets.PROD_AUTH_KEY }}
+      G_CLIENT_ID: ${{ secrets.PROD_G_CLIENT_ID }}
+      SEPARATOR: ${{ secrets.PROD_SEPARATOR }}
+  
+  deploy-data:
+    needs: [set-tag, build-data]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      tag: ${{ needs.set-tag.outputs.tag }}
+      service: data
+      environment: production
+      repo: ${{ vars.DATA_REPO }}
+    secrets:
+      ECS_CLUSTER: ${{ secrets.CLUSTER_NAME }}
+      ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      API_KEY: ${{ secrets.PROD_API_KEY }}
+      SEPARATOR: ${{ secrets.PROD_SEPARATOR }}
+
+  set-failures:
+    needs: [set-tag, build-data, deploy-data, deploy-interface]
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      failures: ${{ steps.set-failure.outputs.failures_json }}
+    steps:
+      - name: Set failures
+        id: set-failure
+        run: |
+          FAILURE_JSON=$(jq -c -n \
+            --arg tagging "${{ needs.set-tag.outputs.failure_message }}" \
+            --arg "build_data" "${{ needs.build-data.outputs.failure_message }}" \
+            --arg "deploy_interface" "${{ needs.deploy-interface.outputs.failure_message }}" \
+            --arg "deploy_data" "${{ needs.deploy-data.outputs.failure_message }}" \
+            '{tagging: $tagging, "build-data":$build_data, 
+            "deploy-interface":$deploy_interface, "deploy-data":$deploy_data}'
+          )
+          
+          echo "failures_json=$FAILURE_JSON" >> $GITHUB_OUTPUT
+
+  notify:
+    needs: [set-tag, set-failures]
+    if: always()
+    uses: ./.github/workflows/notify.yml
+    with:
+      sha: ${{ needs.set-tag.outputs.tag }}
+      failures_json: ${{ needs.dev-set-failures.outputs.failures }}
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_URL }}

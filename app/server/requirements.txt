@@ -2,15 +2,25 @@
 gunicorn==23.0.0
 
 # Web Frameworks
-Flask==3.0.3
-Flask-Cors==5.0.0
+Flask==3.1.2
+Flask-Cors==6.0.1
 
-#Process Image
-Pillow==11.0.0
+# Process Image
+Pillow==12.0.0
 
-# postgres Driver
-psycopg2-binary==2.9.9
+# Postgres Driver
+psycopg2-binary==2.9.11
 
-#caching redis
-Flask-Caching==2.3.0
-redis==5.1.1
+# Caching redis
+Flask-Caching==2.3.1
+redis==7.1.0
+
+# gRPC calls
+grpcio==1.76.0
+grpcio-tools==1.76.0
+
+# Utils
+Werkzeug~=3.1.3
+
+# Rest calls
+requests~=2.32.3

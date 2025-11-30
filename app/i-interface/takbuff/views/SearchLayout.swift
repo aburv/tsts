@@ -20,15 +20,15 @@ struct SearchLayout: View {
         ZStack (alignment: .trailing) {
             ZStack{
                 RoundedRectangle(
-                    cornerRadius: isSearching ? layout.dimen.searchingCornerRadius : radius,
+                    cornerRadius: isSearching ? layout.homeDimen.searchingCornerRadius : radius,
                     style: .continuous
                 )
                 .foregroundColor(Color(isSearching ? "background" : "bright"))
                 .frame(width: nil, height: nil)
             }
             .frame(
-                width: isSearching ? layout.dimen.searchingBgWidth : nonSearchingIconBgSize,
-                height: isSearching ? layout.dimen.searchingBgHeight : nonSearchingIconBgSize
+                width: isSearching ? layout.homeDimen.searchingBgWidth : nonSearchingIconBgSize,
+                height: isSearching ? layout.homeDimen.searchingBgHeight : nonSearchingIconBgSize
             )
             .foregroundColor(Color("dark"))
             
@@ -47,7 +47,7 @@ struct SearchLayout: View {
                     TextField("Search here", text: $searchText)
                         .foregroundColor(Color("dark"))
                         .padding(.horizontal)
-                        .frame(maxWidth: isSearching ? layout.dimen.searchingBgWidth : .infinity)
+                        .frame(maxWidth: isSearching ? layout.homeDimen.searchingBgWidth : .infinity)
                 }
                 
                 SearchIcon(
@@ -56,7 +56,7 @@ struct SearchLayout: View {
                 )
             }
         }
-        .frame(maxWidth: layout.dimen.searchingBgWidth, alignment: .trailing)
+        .frame(maxWidth: layout.homeDimen.searchingBgWidth, alignment: .trailing)
     }
     
 }
