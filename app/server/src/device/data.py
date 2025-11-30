@@ -10,8 +10,8 @@ class DeviceData(DataModel):
     """
     Data Device
     """
-    TYPES = OptionData.get_device_types()
-    PLATFORMS = OptionData.get_platforms()
+    TYPES = list(OptionData.get_device_types().keys())
+    PLATFORMS = list(OptionData.get_platforms().keys())
 
     def __init__(self):
         super().__init__(Relation.DEVICE)

@@ -98,6 +98,26 @@ class DataModelTest(unittest.TestCase):
 
         self.assertEqual(model._fields, {"d_id": "device_id"})
 
+    @mock.patch.object(DataModel, "is_date_valid", return_value=True)
+    def test_should_add_validated_date_str_field_and_value_on_add_field(self, mock_is_date_valid):
+        model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
+        model._data = {"dId": "2024-12-12"}
+
+        model.add_field("d_id", "dId", str, validate_type="date")
+
+        mock_is_date_valid.assert_called_once_with('2024-12-12')
+        self.assertEqual(model._fields, {"d_id": '2024-12-12'})
+
+    @mock.patch.object(DataModel, "is_time_valid", return_value=True)
+    def test_should_add_validated_time_str_field_and_value_on_add_field(self, mock_is_time_valid):
+        model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
+        model._data = {"dId": "20:12:12"}
+
+        model.add_field("d_id", "dId", str, validate_type="time")
+
+        mock_is_time_valid.assert_called_once_with('20:12:12')
+        self.assertEqual(model._fields, {"d_id": '20:12:12'})
+
     def test_should_add_validated_field_and_value_by_data_list_on_add_field(self):
         model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
         model._data = {"dId": "device_id"}
@@ -107,6 +127,43 @@ class DataModelTest(unittest.TestCase):
         self.assertEqual(model._fields, {"d_id": "device_id"})
 
     @mock.patch.object(DataValidationException, "__init__", return_value=None)
+    @mock.patch.object(DataModel, "is_date_valid", return_value=False)
+    def test_should_raise_data_validation_exception_invalid_date_on_add_field(self, mock_is_date_valid, mock_exception):
+        model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
+        model._data = {"dId": "2024-12-12"}
+
+        with self.assertRaises(DataValidationException):
+            model.add_field("d_id", "dId", str, validate_type="date")
+
+        mock_is_date_valid.assert_called_once_with('2024-12-12')
+        mock_exception.assert_called_once_with('Improper data values', "{'dId': '2024-12-12'} d_id 2024-12-12")
+        self.assertEqual(model._fields, {})
+
+    @mock.patch.object(DataValidationException, "__init__", return_value=None)
+    @mock.patch.object(DataModel, "is_time_valid", return_value=False)
+    def test_should_raise_data_validation_exception_invalid_time_on_add_field(self, mock_is_time_valid, mock_exception):
+        model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
+        model._data = {"dId": "20:12:12"}
+
+        with self.assertRaises(DataValidationException):
+            model.add_field("d_id", "dId", str, validate_type="time")
+
+        mock_is_time_valid.assert_called_once_with('20:12:12')
+        mock_exception.assert_called_once_with('Improper data values', "{'dId': '20:12:12'} d_id 20:12:12")
+        self.assertEqual(model._fields, {})
+
+    @mock.patch.object(DataValidationException, "__init__", return_value=None)
+    def test_should_raise_data_validation_exception_invalid_validation_type_on_add_field(self, mock_exception):
+        model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
+        model._data = {"dId": "20:12:12"}
+
+        with self.assertRaises(DataValidationException):
+            model.add_field("d_id", "dId", str, validate_type="ti")
+
+        mock_exception.assert_called_once_with('Improper data validation_type', "{'dId': '20:12:12'} d_id 20:12:12 ti")
+        self.assertEqual(model._fields, {})
+
+    @mock.patch.object(DataValidationException, "__init__", return_value=None)
     def test_should_raise_data_validation_exception_on_mismatch_type_in_add_field(self, mock_exception):
         model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
         model._data = {"dId": "device_id"}
@@ -114,7 +171,7 @@ class DataModelTest(unittest.TestCase):
         with self.assertRaises(DataValidationException):
             model.add_field("d_id", "dId", int)
 
-        mock_exception.assert_called_once_with('Improper data values', " {'dId': 'device_id'} d_id device_id")
+        mock_exception.assert_called_once_with('Improper data values', "{'dId': 'device_id'} d_id device_id")
         self.assertEqual(model._fields, {})
 
     @mock.patch.object(DataValidationException, "__init__", return_value=None)
@@ -125,7 +182,7 @@ class DataModelTest(unittest.TestCase):
         with self.assertRaises(DataValidationException):
             model.add_field("d_id", "dId", str, data_list=["d"])
 
-        mock_exception.assert_called_once_with('Improper data values', " {'dId': 'device_id'} d_id device_id")
+        mock_exception.assert_called_once_with('Improper data values', "{'dId': 'device_id'} d_id device_id")
         self.assertEqual(model._fields, {})
 
     @mock.patch.object(DataValidationException, "__init__", return_value=None)
@@ -137,7 +194,7 @@ class DataModelTest(unittest.TestCase):
         with self.assertRaises(DataValidationException):
             model.add_field("d_id", "dId", str)
 
-        mock_exception.assert_called_once_with('Improper data values', " {'dId': ''} d_id ")
+        mock_exception.assert_called_once_with('Improper data values', "{'dId': ''} d_id ")
         self.assertEqual(model._fields, {})
 
     @mock.patch.object(DataValidationException, "__init__", return_value=None)
@@ -184,7 +241,7 @@ class DataModelTest(unittest.TestCase):
         model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
 
         expected = [{'field_1': 'value_1', 'field_2': 'value_2'}, {'field_1': 'value_3', 'field_2': 'value_4'}]
-        actual = model.frame_records((('value_1', 'value_2'), ('value_3', 'value_4'),))
+        actual = model.frame_records([('value_1', 'value_2'), ('value_3', 'value_4')])
 
         mock_filter_fields.assert_called_once_with()
         self.assertEqual(expected, actual)
@@ -271,3 +328,31 @@ class DataModelTest(unittest.TestCase):
         actual = model.get_values()
 
         self.assertEqual(['value1', 'value2', 'value3'], actual)
+
+    def test_should_return_true_when_valid_date_format_on_is_date_valid(self):
+        model = DataModel(Relation.INIT)
+
+        actual = model.is_date_valid("2024-17-12")
+
+        self.assertTrue(actual)
+
+    def test_should_return_false_when_invalid_date_format_on_is_date_valid(self):
+        model = DataModel(Relation.INIT)
+
+        actual = model.is_date_valid("20-12-12")
+
+        self.assertFalse(actual)
+
+    def test_should_return_true_when_valid_time_format_on_is_time_valid(self):
+        model = DataModel(Relation.INIT)
+
+        actual = model.is_time_valid("20:12:12")
+
+        self.assertTrue(actual)
+
+    def test_should_return_false_when_invalid_time_format_on_is_time_valid(self):
+        model = DataModel(Relation.INIT)
+
+        actual = model.is_time_valid("200:12:12")
+
+        self.assertFalse(actual)

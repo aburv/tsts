@@ -11,7 +11,7 @@ describe('ButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ButtonComponent],
+      imports: [ButtonComponent],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
@@ -53,23 +53,23 @@ describe('ButtonComponent', () => {
   });
 
   it('View: Should set button icon and its properties without text', () => {
-    componentRef.setInput("icon", "iconName");
+    componentRef.setInput("icon", { name: 'iconName' });
     componentRef.setInput("iconColor", "color");
     componentRef.setInput("iconSize", 2);
 
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.nativeElement.querySelector('app-icon');
+    const icon = fixture.debugElement.query(By.css('app-icon'));
 
-    expect(icon.name).toBe('iconName');
-    expect(icon.size).toBe(2);
-    expect(icon.fill).toBe('color');
+    expect(icon.componentInstance.name()).toEqual({ name: 'iconName' });
+    expect(icon.componentInstance.size()).toBe(2);
+    expect(icon.componentInstance.fill()).toBe('color');
     expect(title).toBe(null);
   });
 
   it('View: Should set button text with icon and its properties', () => {
-    componentRef.setInput("icon", "iconName");
+    componentRef.setInput("icon", { name: 'iconName' });
     componentRef.setInput("iconColor", "color");
     componentRef.setInput("iconSize", 2);
     componentRef.setInput("text", "text");
@@ -77,11 +77,11 @@ describe('ButtonComponent', () => {
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.nativeElement.querySelector('app-icon');
+    const icon = fixture.debugElement.query(By.css('app-icon'));
 
     expect(title.textContent).toEqual("text");
-    expect(icon.name).toBe('iconName');
-    expect(icon.size).toBe(2);
-    expect(icon.fill).toBe('color');
+    expect(icon.componentInstance.name()).toEqual({ name: 'iconName' });
+    expect(icon.componentInstance.size()).toBe(2);
+    expect(icon.componentInstance.fill()).toBe('color');
   });
 });
