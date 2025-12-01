@@ -1,3 +1,25 @@
+
+const toggleBtn = document.getElementById('theme-toggle');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function setTheme(mode) {
+    document.body.classList.remove('light', 'dark');
+    document.body.classList.add(mode);
+    toggleBtn.textContent = mode !== 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', mode);
+}
+
+setTheme(prefersDark.matches ? 'dark' : 'light');
+
+toggleBtn.addEventListener('click', () => {
+    const current = document.body.classList.contains('dark') ? 'dark' : 'light';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+prefersDark.addEventListener('change', e => {
+    setTheme(e.matches ? 'dark' : 'light');
+});
+
 // ✅ Disable automatic scroll restoration (most important)
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
@@ -8,7 +30,6 @@ window.addEventListener('beforeunload', () => {
 });
 
 // Animation constants
-
 const SCREEN_WITH_CHANGE = 1000
 const BALL_ROTATION_DEGREES = 720;
 const BALL_ROTATION_DURATION = 2;
@@ -78,18 +99,18 @@ tl.to(introWrapper, {
 
 if (window.innerWidth > SCREEN_WITH_CHANGE) {
     // Move right for wide screens
-tl.to(introWrapper, {
-    x: TEXT_SLIDE_DISTANCE,
-    duration: TEXT_SLIDE_DURATION,
-    ease: "power2.inOut",
-    onStart: () => {
-        sideImage.style.visibility = "hidden";
-    },
-    onUpdate: function () {
-        sideImage.style.visibility = "visible";
-        sideImage.style.opacity = this.progress();
-    }
-});
+    tl.to(introWrapper, {
+        x: TEXT_SLIDE_DISTANCE,
+        duration: TEXT_SLIDE_DURATION,
+        ease: "power2.inOut",
+        onStart: () => {
+            sideImage.style.visibility = "hidden";
+        },
+        onUpdate: function () {
+            sideImage.style.visibility = "visible";
+            sideImage.style.opacity = this.progress();
+        }
+    });
 } else {
     // Move down for narrow screens
     tl.to(introWrapper, {
@@ -192,7 +213,7 @@ window.addEventListener('scroll', () => {
     const startScroll = zoneTop;
     const endScroll = zoneTop + zoneHeight - window.innerHeight;
 
-    const topOffset = window.innerWidth > SCREEN_WITH_CHANGE ? '50%' : '40%' ; // Adjust as needed
+    const topOffset = window.innerWidth > SCREEN_WITH_CHANGE ? '50%' : '40%'; // Adjust as needed
 
     if (scrollY >= startScroll && scrollY <= endScroll) {
         sideImage.style.position = 'fixed';
