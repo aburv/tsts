@@ -1,4 +1,81 @@
 
+const form = document.querySelector("#contactForm");
+const button = document.querySelector("#sendBtn");
+const statusMsg = document.querySelector("#statusMsg");
+const buttonText = document.querySelector(".btn-text");
+
+try {
+    const url = "/api/contact";
+}
+catch {
+    button.disabled = true;
+    form.childNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            node.disabled = true;
+        }
+    });
+    statusMsg.textContent = "⚠️ Contact form is not configured.";
+}
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+        name: form.name.value,
+        email: form.email.value,
+        message: form.message.value
+    };
+
+    // Start loader
+    button.classList.add("loading");
+    button.disabled = true;
+    statusMsg.textContent = "";
+    buttonText.textContent = "";
+
+    try {
+        const res = await fetch("/api/contact", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (result.success) {
+            statusMsg.textContent = "✅ Message sent successfully!";
+            form.reset();
+        } else {
+            statusMsg.textContent = "❌ Failed to send message.";
+        }
+    } catch {
+        statusMsg.textContent = "⚠️ Network error. Try again later.";
+    } finally {
+        button.classList.remove("loading");
+        button.disabled = false;
+    }
+});
+
+const toggleBtn = document.getElementById('theme-toggle');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function setTheme(mode) {
+    document.body.classList.remove('light', 'dark');
+    document.body.classList.add(mode);
+    toggleBtn.textContent = mode !== 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', mode);
+}
+
+setTheme(prefersDark.matches ? 'dark' : 'light');
+
+toggleBtn.addEventListener('click', () => {
+    const current = document.body.classList.contains('dark') ? 'dark' : 'light';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+prefersDark.addEventListener('change', e => {
+    setTheme(e.matches ? 'dark' : 'light');
+});
+
 // Footer data
 const list = [
     { title: "Go to app", url: "https://www.takbuff.com", },
