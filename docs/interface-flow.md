@@ -26,11 +26,27 @@ flowchart TD
     AN --> |Yes| AAA
     AK --> BA
     AJ --> |Skip| BA
-    AAB --> |on Confirm Data| BA
-    subgraph New Login Screen
-      AAA[Init layout] --> AAB[Update/Confirm with User profile data]
+    subgraph New Login Screen - Mobile screen
+      AAA[Init layout] --> AAB[Confirm with User profile info]
+      AAB --> |on Confirm Data| AAC[select user role]
+      AAC --> |on Player select| AAD
+      subgraph Player Registration form
+        AAD --> |yes| AAAA[Screen 1 Player user details]
+        AAAA --> AAAB[Screen 2 Player details]
+        AAAB --> AAAC[Screen 3 Player partcipation details]
+        AAAC --> |for all tournaments|AAAD
+        AAAD --> AAAE[Screen 4 Player preview]
+      end
     end
+    AAAE --> |on Done| BA
     subgraph Dashboard Screen
       BA[Init layout]
+    end
+    BA --> C[onPlayerClick]
+    C --> CA
+    B(On Player click/URL) --> CA[Init layout]
+    subgraph Player Screen
+      CA --> CB[Data calls]
+      CB --> CC[Creates TABS]
     end
 ```
