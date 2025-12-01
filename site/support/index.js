@@ -1,4 +1,25 @@
 
+const toggleBtn = document.getElementById('theme-toggle');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function setTheme(mode) {
+    document.body.classList.remove('light', 'dark');
+    document.body.classList.add(mode);
+    toggleBtn.textContent = mode !== 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('theme', mode);
+}
+
+setTheme(prefersDark.matches ? 'dark' : 'light');
+
+toggleBtn.addEventListener('click', () => {
+    const current = document.body.classList.contains('dark') ? 'dark' : 'light';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+prefersDark.addEventListener('change', e => {
+    setTheme(e.matches ? 'dark' : 'light');
+});
+
 // Footer data
 const list = [
     { title: "Go to app", url: "https://www.takbuff.com", },
