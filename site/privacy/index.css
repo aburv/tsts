@@ -12,6 +12,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    overscroll-behavior: none;
 }
 
 html,
@@ -61,7 +62,7 @@ body.dark {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 3rem;
+    padding: 1.25rem 3rem;
     z-index: 100;
     backdrop-filter: blur(10px);
 }
@@ -74,10 +75,9 @@ body.dark {
 }
 
 #ball {
-    display: flex;
-    position: relative;
-    justify-content: center;
-    align-items: center;
+    width: 60px;
+    height: 60px;
+    will-change: transform;
 }
 
 #theme-toggle {
