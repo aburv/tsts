@@ -12,6 +12,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    overscroll-behavior: none;
 }
 
 html,
@@ -52,6 +53,20 @@ body.dark {
     --text: #c5c6c7;
 }
 
+.header{
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: var(--bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 3rem;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
 #container {
     padding: 100px 20px;
     min-height: 100vh;
@@ -63,27 +78,20 @@ body.dark {
 }
 
 #ball {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 20px;
     width: 60px;
     height: 60px;
     will-change: transform;
 }
 
 #theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
     border-radius: 8px;
     padding: 0.5rem 0.8rem;
     background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    z-index: 1000;
     color: var(--accent);
+    margin-left: 1.5rem;
     transition: transform 0.3s;
 }
 

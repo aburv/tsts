@@ -12,6 +12,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    overscroll-behavior: none;
 }
 
 html,
@@ -23,7 +24,7 @@ body {
     font-family: 'Nunito', 'Nunito Fallback';
     background-color: var(--bg);
     color: var(--text);
-    overscroll-behavior: none;
+    /* overscroll-behavior: none; */
     overflow-y: hidden;
     /* initially locked for animation */
 }
