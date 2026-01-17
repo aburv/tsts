@@ -18,7 +18,7 @@ describe('ImageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ImageComponent],
+      imports: [ImageComponent],
       providers: [
         {
           provide: ImageService,
@@ -69,14 +69,14 @@ describe('ImageComponent', () => {
 
     const root = fixture.debugElement.query(By.css('div'));
    
-    expect(root.classes['user']).toBe(true);
+    expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
     const buttonElement = fixture.debugElement.query(By.css('app-button'));
     const imageElement = fixture.debugElement.query(By.css('img'));
 
     expect(imageElement.attributes['referrerpolicy']).toBe('no-referrer');
-    expect(imageElement.classes['user-img']).toBe(true);
+    expect(imageElement.classes['img']).toBe(true);
     expect(imageElement.attributes['src']).toBe('');
     expect(imageElement.attributes['width']).toBe('50');
     expect(imageElement.attributes['height']).toBe('50');
@@ -89,7 +89,7 @@ describe('ImageComponent', () => {
 
   it('View: Should set content on no id', () => {
     componentRef.setInput("id", "");
-    componentRef.setInput("icon", "iconname");
+    componentRef.setInput("icon", { name: 'iconname' });
     componentRef.setInput("size", "50");
     componentRef.setInput("alt", "alt");
 
@@ -97,7 +97,7 @@ describe('ImageComponent', () => {
 
     const root = fixture.debugElement.query(By.css('div'));
    
-    expect(root.classes['user']).toBe(true);
+    expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
     const buttonElement = fixture.debugElement.query(By.css('app-button'));
@@ -105,9 +105,9 @@ describe('ImageComponent', () => {
 
     expect(imageElement).toBeNull();
 
-    expect(buttonElement.attributes['type']).toBe('secondary icon');
-    expect(buttonElement.nativeElement.icon).toBe('iconname');
-    expect(buttonElement.nativeElement.iconSize).toBe(43.75);
+    expect(buttonElement.componentInstance.type()).toBe('secondary icon');
+    expect(buttonElement.componentInstance.icon()).toEqual({ name: 'iconname' });
+    expect(buttonElement.componentInstance.iconSize()).toBe(43.75);
 
     expect(component.fetch).not.toHaveBeenCalled();
   });

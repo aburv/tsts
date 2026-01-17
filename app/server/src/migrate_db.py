@@ -1,6 +1,7 @@
 """
 Migrating script
 """
+import json
 import os
 
 import psycopg2
@@ -9,9 +10,19 @@ from src.config import Config, Relation
 from src.data import DataModel, OrderType
 from src.db_duo import PostgresDbDuo
 from src.logger import LoggerAPI
+from src.option.data import OptionData, FormData
 from src.responses import TableNotFoundException, DBConnectionException, DBExecutionException
 
-ROOT_PATH = "resources"
+RESOURCES_FOLDER = "resources"
+
+
+def get_resources_path() -> str:
+    """
+    get resources path
+    """
+    current_path = os.path.dirname(os.path.abspath(""))
+
+    return os.path.join(current_path, RESOURCES_FOLDER)
 
 
 def get_ddl_files() -> list:
@@ -19,11 +30,19 @@ def get_ddl_files() -> list:
     get all controller files
     """
     file_names = []
-    for _, _, files in os.walk(ROOT_PATH):
+    for _, _, files in os.walk(get_resources_path()):
         for file in files:
             file_names.append(file)
     file_names.sort()
     return file_names
+
+
+def get_json_from_file(file_path: str) -> dict:
+    """
+    Get Json from file
+    """
+    with open(file_path, encoding="utf-8") as f:
+        return json.load(f)
 
 
 def get_version_from_name(file_name: str) -> str:
@@ -45,7 +64,7 @@ class MigrateData(DataModel):
 
     def on_data(self, data: dict):
         """
-        on_data
+        On Data
         """
         self.set_data(data, True)
 
@@ -65,7 +84,7 @@ class MigrateData(DataModel):
         return OrderType("date_time", True)
 
 
-class Migrate:
+class Migrate: # pylint: disable=too-many-instance-attributes
     """
     Migrate class
     """
@@ -73,10 +92,12 @@ class Migrate:
     def __init__(self) -> None:
         self.logger = LoggerAPI()
         self.param = Config.get_db_parameters()
-        self.meta_schema = self.param["meta_schema"]
-        self.schema = self.param["schema"]
         self._data = MigrateData()
         self.db = PostgresDbDuo(self._data)
+        self._option_data = OptionData()
+        self.option = PostgresDbDuo(self._option_data)
+        self._form_data = FormData()
+        self.form = PostgresDbDuo(self._form_data)
         self.init = PostgresDbDuo(DataModel(Relation.INIT))
 
     def run(self) -> None:
@@ -85,36 +106,47 @@ class Migrate:
         :return:
         :rtype:
         """
+        path = get_resources_path()
         self.logger.info_entry('Migrating DB')
         system_db_version = self.get_version()
+        self.logger.info_entry(f'Current Version: {system_db_version}')
         if system_db_version == "-1.00":
-            return
-        if system_db_version == "0.00":
-            self.create_schema(self.meta_schema)
-            self.create_schema(self.schema)
+            self.create_schema(self.param["meta_schema"])
+            self.create_schema(self.param["schema"])
         ddl_files = get_ddl_files()
         try:
             for ddl_file_name in ddl_files:
                 version = get_version_from_name(ddl_file_name)
-                file_name_path = str(os.path.join(ROOT_PATH, ddl_file_name))
-                self.logger.info_entry(
-                    f'Executing DDL command file: {file_name_path}'
-                )
-                if version.split(".")[1] == "00":
-                    self.db.run_ddl_file(file_name_path)
-                    self.update_version(version)
-                elif float(version) > float(system_db_version):
-                    self.init.run_ddl_file(file_name_path)
-                    self.update_version(version)
-                else:
+                file_name_path = str(os.path.join(path, ddl_file_name))
+                if float(version) <= float(system_db_version):
                     self.logger.info_entry(
-                        f'DDL command file already executed as fileV{version} '
-                        f'systemVersion {system_db_version}'
+                        f'DDL command file already executed as fileV{version} {ddl_file_name} - '
+                        f'systemDBVersion {system_db_version}'
                     )
+                else:
+                    if version.split(".")[1] == "00":
+                        if version.split(".")[0] == "0":
+                            self.logger.info_entry(
+                                f'Executing Meta schema command file: {ddl_file_name}'
+                            )
+                            self.db.run_ddl_file(file_name_path)
+                        else:
+                            self.logger.info_entry(
+                                f'Inserting Data from JSON file: {ddl_file_name}'
+                            )
+                            option_items = get_json_from_file(file_name_path)
+                            self.add_option_items(option_items)
+                    else:
+                        self.logger.info_entry(
+                            f'Executing DDL command file: {ddl_file_name}'
+                        )
+                        self.init.run_ddl_file(file_name_path)
+                    self.update_version(version)
         except DBExecutionException as _:
             self.logger.error_entry('Migration stopped')
         except Exception as e:
             self.logger.error_entry(f'Migration stopped on {e}')
+        self.logger.info_entry('Migration Done')
 
     def create_schema(self, schema: str) -> None:
         """
@@ -146,9 +178,9 @@ class Migrate:
             version_records = self.db.get_records()
             if len(version_records) == 1:
                 return str(version_records[0]["version"])
-            return "0.00"
+            return "-1.00"
         except TableNotFoundException as _:
-            return "0.00"
+            return "-1.00"
         except DBExecutionException as _:
             return "-1.00"
 
@@ -164,12 +196,28 @@ class Migrate:
         except DBExecutionException as _:
             raise DBExecutionException('Update to version', version) from _
 
+    def add_option_items(self, data: dict):
+        """
+        Inserting option into db
+        """
+        for form in data.keys():
+            for form_field, values in data[form].items():
+                self._form_data.on_data({'form': form, 'field': form_field})
+                self.form.insert_record("")
+                field_id = self._form_data.get("id")
+                for value in values:
+                    self._option_data.on_data({'fieldId': field_id, 'fValue': value})
+                    self.option.insert_record("")
 
-if __name__ == '__main__':
-    IS_DONE = False  # pragma: no cover
-    while not IS_DONE:  # pragma: no cover
+
+def run_migrate():
+    """
+    Run migration script
+    """
+    is_done = False  # pragma: no cover
+    while not is_done:  # pragma: no cover
         try:  # pragma: no cover
             Migrate().run()  # pragma: no cover
-            IS_DONE = True  # pragma: no cover
+            is_done = True  # pragma: no cover
         except DBConnectionException as _:  # pragma: no cover
             pass  # pragma: no cover

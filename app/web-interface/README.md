@@ -18,6 +18,29 @@ setup the values at `/src/environments/environment.ts`
 npm install
 ```
 
+### Dev setup for better development
+
+To avoid the CORS:
+* Create a file `proxy.conf.json` and paste the below line into it
+
+```
+{
+  "/api": {
+    "target": "<backend-server host url>",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
+```
+
+* Paste the below lines to `angular.json` under `projects/web-interface/architect/serve`
+```
+"options": {
+   "proxyConfig": "proxy.conf.json"
+}
+```
+
 * Run locally.
 
 ```commandline
@@ -65,7 +88,6 @@ title: string
 icon: Icon
 onClick(event: MouseEvent){}
 ```
-
 ```HTML
 <app-button 
    [type]="type" 
@@ -123,7 +145,8 @@ size: number
 ></app-icon>
 ```
 
-Image
+* ### Image
+
 ```TS
 imageId: string
 icon: Icon

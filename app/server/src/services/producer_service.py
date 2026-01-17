@@ -21,7 +21,7 @@ class ProducerServices:
 
         self.client = BrokerServiceStub(channel)
 
-    def add_event(self, topic: str, key: str, content: str) -> (str, str):
+    def add_event(self, topic: str, key: str, content: str) -> tuple[str, str]:
         """
         Add event call
         """

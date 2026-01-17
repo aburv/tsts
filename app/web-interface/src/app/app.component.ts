@@ -1,7 +1,9 @@
-import { Component, computed, ElementRef, Signal, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, Signal, signal, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
-import { Observable, Observer, fromEvent, merge } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable, Observer, fromEvent, merge, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ThemeService } from './_services/theme.service';
@@ -15,19 +17,29 @@ import { Config } from './config';
 import { Icon, IconComponent } from './components/icon/icon.component';
 
 import { UserButtonComponent } from './components/user-button/user-button.component';
+import { ImageComponent } from './components/image/image.component';
 
 @Component({
   selector: 'app-root',
   imports: [
-    RouterOutlet, 
+    RouterOutlet,
     CommonModule,
     IconComponent,
+    ImageComponent,
     UserButtonComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  private router = inject(Router);
+  private themeService = inject(ThemeService);
+  private loaderService = inject(LoaderService);
+  private userService = inject(UserService);
+  private deviceService = inject(DeviceService);
+  private searchService = inject(SearchService);
+  private pingService = inject(PingService);
+
   @ViewChild('searchInput') searchInput!: ElementRef;
 
   readonly Icon = Icon
@@ -41,11 +53,11 @@ export class AppComponent {
 
   isInternetDown = signal(false);
 
-  isSearching = false;
+  isSearching  = signal<boolean>(false);
 
   searchText = signal<string>('');
 
-  searchResult: Array<string> = []
+  searchResult = signal<{ [key: string]: any[] } | null>(null);
 
   thisyear = new Date().getFullYear();
 
@@ -54,11 +66,11 @@ export class AppComponent {
   links = [
     {
       title: 'Terms & Conditions',
-      link: '/terms-conditions'
+      link: '/terms'
     },
     {
       title: 'Help',
-      link: '/faq'
+      link: '/support'
     },
     {
       title: 'Blog',
@@ -66,7 +78,7 @@ export class AppComponent {
     },
     {
       title: 'Privacy Policies',
-      link: '/privacy-policies'
+      link: '/privacy'
     },
     {
       title: 'FAQ',
@@ -82,15 +94,12 @@ export class AppComponent {
     },
   ]
 
-  constructor(
-    private router: Router,
-    private themeService: ThemeService,
-    private loaderService: LoaderService,
-    private userService: UserService,
-    private deviceService: DeviceService,
-    private searchService: SearchService,
-    private pingService: PingService
-  ) {
+  objectKeys = Object.keys;
+
+  constructor() {
+    const userService = this.userService;
+    const deviceService = this.deviceService;
+
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
     this.themeService.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {
@@ -122,11 +131,22 @@ export class AppComponent {
         }, 500);
       }
     });
+
+    toObservable(this.searchText).pipe(
+      debounceTime(1500),
+      distinctUntilChanged(),
+      switchMap(query => {
+        if (!query.trim()) return of({});
+        return this.searchService.get(this.searchText());
+      })
+    ).subscribe((data: any) => {
+      this.searchResult.set(data["data"])
+    });
   }
 
   turnToSearching(): void {
-    if (!this.isSearching) {
-      this.isSearching = true;
+    if (!this.isSearching()) {
+      this.isSearching.set(true);
       setTimeout(() => {
         this.searchInput.nativeElement.focus();
       }, 500)
@@ -135,19 +155,18 @@ export class AppComponent {
 
   onChange(event: any): void {
     this.searchText.set(event.target.value);
-    if (this.searchText() !== "") {
-      this.searchService.get(this.searchText()).subscribe((data: any) => {
-        this.searchResult = data["data"]
-      });
-    }
   }
 
   onSearchClose(): void {
     this.searchText.set('');
-    this.isSearching = false;
+    this.isSearching.set(false);
   }
 
   navigateToDashboard(): void {
     this.router.navigate(['home']);
+  }
+
+  navigate(domain: string, id: string): void {
+    this.router.navigate([domain, id]);
   }
 }

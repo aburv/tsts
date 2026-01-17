@@ -8,7 +8,7 @@ import requests
 from werkzeug.datastructures import FileStorage
 
 from src.db_duo import PostgresDbDuo
-from src.image.data import ImageData
+from src.image.data import ImageData, ImageSize
 from src.responses import RuntimeException
 
 
@@ -46,7 +46,8 @@ class ImageServices:
         """
         Get image by id
         """
-        self._data.on_select({"id": i_id}, size)
+        size_type = ImageSize.to_enum(size)
+        self._data.on_select({"id": i_id}, size_type)
         data = self._db.get_records()
         if len(data) > 0:
             return zlib.decompress(data[0][self._data.get_filtering_fields()[0]])

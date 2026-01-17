@@ -11,7 +11,7 @@ class LoggerAPI:
     """
 
     def __init__(self) -> None:
-        logging.basicConfig(level="INFO")
+        logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s', level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
     def info_entry(self, message) -> None:

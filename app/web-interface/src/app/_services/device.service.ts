@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { LocalDataService } from './localStore.service';
 import { DataService } from './data.service';
 
@@ -16,9 +16,9 @@ type Device = {
   providedIn: 'root',
 })
 export class DeviceService extends LocalDataService {
-  constructor(
-    private api: DataService
-  ) {
+  private api = inject(DataService);
+
+  constructor() {
     super('DIV_DA');
   }
 
@@ -49,11 +49,11 @@ export class DeviceService extends LocalDataService {
       if (/Mobile/.test(info)) {
         deviceType = 'P'
       }
-      else{
+      else {
         deviceType = 'T'
       }
     }
-   
+
     if (/iPhone/.test(info)) {
       deviceType = 'P'
       os = "IOS"

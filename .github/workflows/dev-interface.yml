@@ -1,4 +1,4 @@
-name: Deploy dev interface
+name: Web App - Lint, Test, Deploy dev
 
 on:
   push:
@@ -8,7 +8,11 @@ on:
       - 'app/web-interface/**'
 
 jobs:
+  lint-and-test:
+    uses: ./.github/workflows/web-app-lint-test.yml
+
   deploy:
+    needs: lint-and-test
     uses: ./.github/workflows/build-deploy-interface.yml
     with:
       BUILD_ENV: preprod
@@ -18,3 +22,7 @@ jobs:
       S3_BUCKET: ${{ secrets.DEV_APP_S3_BUCKET }}
       REGION: ${{ secrets.DEV_APP_AWS_REGION }}
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.DEV_APP_CLOUD_FRONT_DISTRIBUTION }}
+      API_KEY: ${{ secrets.DEV_API_KEY }}
+      AUTH_KEY: ${{ secrets.DEV_AUTH_KEY }}
+      G_CLIENT_ID: ${{ secrets.DEV_G_CLIENT_ID }}
+      SEPARATOR: ${{ secrets.DEV_SEPARATOR }}
