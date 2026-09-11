@@ -83,7 +83,7 @@ describe('User Data Services', () => {
         expect(service.setUserTokens).toHaveBeenCalledOnceWith({ idToken: "idToken", accessToken: "accessToken" });
 
         setTokenSpy.calls.reset();
-        userSpy.refreshToken
+        userSpy.refreshToken();
     });
 
     it('Should call get on local storage on getValues call', () => {

@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { UserButtonComponent } from './user-button.component';
-import { UserDataService } from 'src/app/_services/UserData.service';
-import { AuthUserService } from 'src/app/_services/auth-user.service';
-import { DeviceService } from 'src/app/_services/device.service';
+import { ImageComponent } from '../image/image.component';
+import { Icon } from '../icon/icon.component';
+import { UserDataService } from '../../_services/UserData.service';
+import { AuthUserService } from '../../_services/auth-user.service';
+import { DeviceService } from '../../_services/device.service';
+import { ImageService } from '../../_services/image.service';
 import { of } from 'rxjs';
-import { GAuthUser } from 'src/app/_models/user';
-import { Config } from 'src/app/config';
+import { GAuthUser } from '../../_models/user';
+import { Config } from '../../config';
 import { By } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
@@ -28,10 +32,14 @@ describe('UserButtonComponent', () => {
   ]);
   deviceService.getDeviceId.and.returnValue('deviceId');
 
+  const imageService = jasmine.createSpyObj('ImageService', ['get']);
+  imageService.get.and.returnValue(of('image'));
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UserButtonComponent],
+      imports: [UserButtonComponent],
       providers: [
+        provideHttpClient(),
         {
           provide: AuthUserService,
           useValue: authUserService
@@ -44,6 +52,10 @@ describe('UserButtonComponent', () => {
           provide: DeviceService,
           useValue: deviceService
         },
+        {
+          provide: ImageService,
+          useValue: imageService
+        },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
@@ -51,10 +63,22 @@ describe('UserButtonComponent', () => {
   });
 
   beforeEach(async () => {
+    (window as any).google = {
+      accounts: {
+        id: {
+          initialize: jasmine.createSpy('initialize'),
+          renderButton: jasmine.createSpy('renderButton'),
+          prompt: jasmine.createSpy('prompt')
+        }
+      }
+    };
+
     userDataService.autoSignIn.calls.reset();
     authUserService.getLoggedUser.calls.reset();
     userDataService.signIn.calls.reset();
     userDataService.getUser.calls.reset();
+    authUserService.getLoggedUser.and.returnValue(of(null));
+    userDataService.autoSignIn.and.returnValue(of(false));
   });
 
   it('Should create', () => {
@@ -294,7 +318,7 @@ describe('UserButtonComponent', () => {
     fixture.detectChanges();
 
     const googleElement = fixture.debugElement.query(By.css('div'));
-    const imageElement = fixture.debugElement.query(By.css('app-image'));
+    const imageElement = fixture.debugElement.query(By.directive(ImageComponent));
 
     expect(fixture.debugElement.children.length).toBe(1);
 
@@ -325,8 +349,9 @@ describe('UserButtonComponent', () => {
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    const image = imageElement.componentInstance as ImageComponent;
+    expect(image.icon()).toBe(Icon.PERSON);
+    expect(image.id()).toBe('dp');
 
     expect(dialogElement).toBeNull();
   });
@@ -346,15 +371,16 @@ describe('UserButtonComponent', () => {
     fixture.detectChanges();
 
     const googleElement = fixture.debugElement.query(By.css('div'));
-    const imageElement = fixture.debugElement.query(By.css('app-image'));
+    const imageElement = fixture.debugElement.query(By.directive(ImageComponent));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
     expect(fixture.debugElement.children.length).toBe(3);
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    const image = imageElement.componentInstance as ImageComponent;
+    expect(image.icon()).toBe(Icon.PERSON);
+    expect(image.id()).toBe('dp');
 
     expect(dialogElement).toBeTruthy();
   });
@@ -374,15 +400,16 @@ describe('UserButtonComponent', () => {
     fixture.detectChanges();
 
     const googleElement = fixture.debugElement.query(By.css('div'));
-    const imageElement = fixture.debugElement.query(By.css('app-image'));
+    const imageElement = fixture.debugElement.query(By.directive(ImageComponent));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
     expect(fixture.debugElement.children.length).toBe(3);
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    const image = imageElement.componentInstance as ImageComponent;
+    expect(image.icon()).toBe(Icon.PERSON);
+    expect(image.id()).toBe('dp');
 
     expect(dialogElement).toBeTruthy();
   });
@@ -409,8 +436,9 @@ describe('UserButtonComponent', () => {
 
     expect(googleElement.nativeElement.id).toBe('google-signin-button');
 
-    expect(imageElement.attributes['icon']).toBe('person');
-    expect(imageElement.attributes['id']).toBe('dp');
+    const image = imageElement.componentInstance as ImageComponent;
+    expect(image.icon()).toBe(Icon.PERSON);
+    expect(image.id()).toBe('dp');
 
     expect(component.isDialogOn).toBeFalse();
     expect(dialogElement).toBeNull();

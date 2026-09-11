@@ -45,7 +45,8 @@
           }
         </div>
 
-        <app-user-button></app-user-button>
+        <!-- // remove this once backend is stable -->
+        <!-- <app-user-button></app-user-button> -->
       </div>
 
       <div class="layout">
@@ -124,11 +125,12 @@
     </div>
   }
 
-  @if (isServerDown()) {
+  <!-- // remove this once backend is stable -->
+  <!-- @if (isServerDown()) {
     <div class="toast">
       Please try again later
     </div>
-  }
+  } -->
 
   @if (isInternetDown()) {
     <div class="toast">

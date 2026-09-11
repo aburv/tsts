@@ -11,7 +11,7 @@ describe('InputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [InputComponent],
+      imports: [InputComponent],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   });
@@ -201,7 +201,7 @@ describe('InputComponent', () => {
     const input = fixture.debugElement.query(By.css('input'));
 
     expect(content.children.length).toBe(1);
-    expect(title.textContent).toBe('title *');
+    expect(title.textContent.trim()).toBe('title *');
     expect(input.nativeElement.value).toBe('value');
     expect(input.attributes['placeholder']).toBe('placeholder');
     expect(input.classes['type']).toBe(true);
@@ -209,7 +209,7 @@ describe('InputComponent', () => {
     input.triggerEventHandler('input', 'sometext');
 
     expect(component.onInput).toHaveBeenCalledOnceWith('sometext');
-    spy.calls.reset;
+    spy.calls.reset();
   });
 
   it('View:  Should set the layout on edit mode without validator and default type', () => {
@@ -225,7 +225,7 @@ describe('InputComponent', () => {
     const input = fixture.debugElement.query(By.css('input'));
 
     expect(content.children.length).toBe(1);
-    expect(title.textContent).toBe('title ');
+    expect(title.textContent.trim()).toBe('title');
     expect(input.nativeElement.value).toBe('value');
     expect(input.attributes['placeholder']).toBe('placeholder');
     expect(input.classes['small']).toBe(true);

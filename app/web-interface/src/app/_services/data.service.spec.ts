@@ -12,7 +12,8 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(of(responseData));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
+        PingService.isServerDown.set(false);
 
         const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
 
@@ -39,7 +40,8 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 404, statusText: "Not Found" } }));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
+        PingService.isServerDown.set(false);
 
         const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
 
@@ -68,8 +70,9 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 0, statusText: "Not Found" } }));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
-
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
+        PingService.isServerDown.set(false);
+        
         const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
 
         const service = new DataService(httpSpy, pingSpy, userDataSpy);
@@ -101,7 +104,8 @@ describe('DataService', () => {
             of(responseData)
         );
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
+        PingService.isServerDown.set(false);
 
         const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
         userDataSpy.refreshUserToken.and.returnValue(of(true))
@@ -131,7 +135,8 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 401, statusText: "UnAuthenticated" } }));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
+        PingService.isServerDown.set(false);
 
         const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
         userDataSpy.refreshUserToken.and.returnValue(of(false))
@@ -161,8 +166,9 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 305, statusText: "Not Found" } }));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
-
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
+        PingService.isServerDown.set(false);
+        
         const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
 
         const service = new DataService(httpSpy, pingSpy, userDataSpy);

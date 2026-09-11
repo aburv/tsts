@@ -10,7 +10,7 @@ describe('ChipSetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChipSetComponent],
+      imports: [ChipSetComponent],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
@@ -44,7 +44,7 @@ describe('ChipSetComponent', () => {
     const items = fixture.debugElement.queryAll(By.css('.item'));
     for (let i = 0; i < items.length; i++) {
       const itemElement = items[i].nativeElement;
-      expect(itemElement.textContent).toBe(options[i].text);
+      expect(itemElement.textContent.trim()).toBe(options[i].text);
       if(selected.includes(options[i].id)){
         expect(items[i].classes['selected']).toBe(true); 
       }
