@@ -166,8 +166,9 @@ describe('DataService', () => {
         const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 305, statusText: "Not Found" } }));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
-
+        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
+        PingService.isServerDown.set(false);
+        
         const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
 
         const service = new DataService(httpSpy, pingSpy, userDataSpy);
