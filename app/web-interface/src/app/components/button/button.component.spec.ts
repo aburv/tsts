@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ButtonComponent } from './button.component';
+import { IconComponent } from '../icon/icon.component';
 
 
 describe('ButtonComponent', () => {
@@ -11,7 +12,7 @@ describe('ButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ButtonComponent],
+      imports: [ButtonComponent],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .compileComponents();
@@ -60,11 +61,11 @@ describe('ButtonComponent', () => {
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.nativeElement.querySelector('app-icon');
+    const icon = fixture.debugElement.query(By.directive(IconComponent)).componentInstance;
 
-    expect(icon.name).toBe('iconName');
-    expect(icon.size).toBe(2);
-    expect(icon.fill).toBe('color');
+    expect(icon.name()).toBe('iconName');
+    expect(icon.size()).toBe(2);
+    expect(icon.fill()).toBe('color');
     expect(title).toBe(null);
   });
 
@@ -77,11 +78,11 @@ describe('ButtonComponent', () => {
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.nativeElement.querySelector('app-icon');
+    const icon = fixture.debugElement.query(By.directive(IconComponent)).componentInstance;
 
     expect(title.textContent).toEqual("text");
-    expect(icon.name).toBe('iconName');
-    expect(icon.size).toBe(2);
-    expect(icon.fill).toBe('color');
+    expect(icon.name()).toBe('iconName');
+    expect(icon.size()).toBe(2);
+    expect(icon.fill()).toBe('color');
   });
 });
