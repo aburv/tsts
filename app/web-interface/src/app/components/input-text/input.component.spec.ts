@@ -209,7 +209,7 @@ describe('InputComponent', () => {
     input.triggerEventHandler('input', 'sometext');
 
     expect(component.onInput).toHaveBeenCalledOnceWith('sometext');
-    spy.calls.reset;
+    spy.calls.reset();
   });
 
   it('View:  Should set the layout on edit mode without validator and default type', () => {
