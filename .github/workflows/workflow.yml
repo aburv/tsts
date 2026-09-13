@@ -47,10 +47,10 @@ jobs:
       S3_BUCKET: ${{ secrets.APP_S3_BUCKET }}
       REGION: ${{ secrets.APP_AWS_REGION }}
       CLOUDFRONT_DISTRIBUTION: ${{ secrets.APP_CLOUD_FRONT_DISTRIBUTION }}
-      API_KEY: ${{ secrets.PROD_API_KEY }}
-      AUTH_KEY: ${{ secrets.PROD_AUTH_KEY }}
-      G_CLIENT_ID: ${{ secrets.PROD_G_CLIENT_ID }}
-      SEPARATOR: ${{ secrets.PROD_SEPARATOR }}
+      API_KEY: ${{ secrets.APP_API_KEY }}
+      AUTH_KEY: ${{ secrets.APP_AUTH_KEY }}
+      G_CLIENT_ID: ${{ secrets.APP_G_CLIENT_ID }}
+      SEPARATOR: ${{ secrets.APP_SEPARATOR }}
   
   deploy-data:
     needs: [set-tag, build-data]

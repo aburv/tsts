@@ -24,7 +24,7 @@ on:
         required: true
       G_CLIENT_ID:
         required: true
-      SEPARATOR:    
+      SEPARATOR:
         required: true
 
 defaults:
@@ -59,7 +59,9 @@ jobs:
         run: npm run build -- --configuration=${{ inputs.BUILD_ENV }}
 
       - name: List build output (debug)
-        run: ls -R dist
+        run: |
+          test -f dist/web-interface/index.html
+          ls -R dist/web-interface
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -69,8 +71,7 @@ jobs:
           aws-region: ${{ secrets.REGION }}
 
       - name: Sync files to S3
-        run: |
-          aws s3 sync dist/web-interface s3://$S3_BUCKET_NAME/ --delete
+        run: aws s3 sync dist/web-interface/ s3://$S3_BUCKET_NAME/ --delete
         env:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET }}
       

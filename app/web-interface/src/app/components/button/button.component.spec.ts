@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ButtonComponent } from './button.component';
+import { IconComponent } from '../icon/icon.component';
 
 
 describe('ButtonComponent', () => {
@@ -60,11 +61,11 @@ describe('ButtonComponent', () => {
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.debugElement.query(By.css('app-icon'));
+    const icon = fixture.debugElement.query(By.directive(IconComponent)).componentInstance;
 
-    expect(icon.componentInstance.name()).toEqual({ name: 'iconName' });
-    expect(icon.componentInstance.size()).toBe(2);
-    expect(icon.componentInstance.fill()).toBe('color');
+    expect(icon.name()).toBe('iconName');
+    expect(icon.size()).toBe(2);
+    expect(icon.fill()).toBe('color');
     expect(title).toBe(null);
   });
 
@@ -77,11 +78,11 @@ describe('ButtonComponent', () => {
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.debugElement.query(By.css('app-icon'));
+    const icon = fixture.debugElement.query(By.directive(IconComponent)).componentInstance;
 
     expect(title.textContent).toEqual("text");
-    expect(icon.componentInstance.name()).toEqual({ name: 'iconName' });
-    expect(icon.componentInstance.size()).toBe(2);
-    expect(icon.componentInstance.fill()).toBe('color');
+    expect(icon.name()).toBe('iconName');
+    expect(icon.size()).toBe(2);
+    expect(icon.fill()).toBe('color');
   });
 });

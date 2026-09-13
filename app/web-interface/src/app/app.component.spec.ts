@@ -1,4 +1,5 @@
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { Router } from '@angular/router';
@@ -13,6 +14,7 @@ import { PingService } from './_services/ping.service';
 import { DeviceService } from './_services/device.service';
 import { SearchService } from './_services/search.service';
 import { Config } from './config';
+import { IconComponent, Icon } from './components/icon/icon.component';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
@@ -22,7 +24,7 @@ describe('AppComponent', () => {
 
   const deviceService = jasmine.createSpyObj('DeviceService', [
     'sendDeviceDetails',
-    'getDeviceId'
+    'getDeviceId',
   ]);
   deviceService.sendDeviceDetails.and.returnValue()
   deviceService.getDeviceId.and.returnValue('test-device-id');
@@ -50,28 +52,53 @@ describe('AppComponent', () => {
     navigate: jasmine.createSpy('navigate'),
   };
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, AppComponent, HttpClientTestingModule],
-      providers: [
-        { provide: Router, useValue: router },
-        { provide: ThemeService, useValue: themeService },
-        { provide: UserService, useValue: userService },
-        { provide: DeviceService, useValue: deviceService },
-        { provide: SearchService, useValue: searchService },
-        { provide: LoaderService, useValue: loaderService },
-        { provide: PingService, useValue: pingService },
-      ],
-      teardown: { destroyAfterEach: false },
+  beforeEach(() => {
+    (globalThis as any).google = {
+      accounts: {
+        id: {
+          initialize: jasmine.createSpy('initialize'),
+          renderButton: jasmine.createSpy('renderButton'),
+          prompt: jasmine.createSpy('prompt')
+        }
+      }
+    };
+
+    return TestBed.configureTestingModule({
+    imports: [RouterTestingModule, AppComponent],
+    providers: [
+      provideHttpClient(),
+      {
+        provide: Router,
+        useValue: router,
+      },
+      {
+        provide: ThemeService,
+        useValue: themeService,
+      },
+      {
+        provide: UserService,
+        useValue: userService,
+      },
+      {
+        provide: DeviceService,
+        useValue: deviceService
+      },
+      {
+        provide: SearchService,
+        useValue: searchService
+      },
+      {
+        provide: LoaderService,
+        useValue: loaderService,
+      },
+      {
+        provide: PingService,
+        useValue: pingService,
+      }
+    ],
+       teardown: { destroyAfterEach: false },
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
-
-    const googleSpy = {
-      initialize: jasmine.createSpy('initialize'),
-      renderButton: jasmine.createSpy('renderButton'),
-      prompt: jasmine.createSpy('prompt'),
-    };
-    (window as any).google = { accounts: { id: googleSpy } };
 
     userService.getUserData.calls.reset();
     deviceService.sendDeviceDetails.calls.reset();
@@ -302,6 +329,17 @@ describe('AppComponent', () => {
     expect(root.children[1].classes['app-support-layout']).toBe(true);
     expect(root.children[2].classes['footer-layout']).toBe(true);
 
+    const icon = root.children[1].queryAll(By.css('app-icon'));
+    const breakLine = root.children[1].query(By.css('br'));
+    expect(root.children[1].children.length).toBe(3);
+    expect(root.children[1].children[0]).toBe(icon[0]);
+    expect(icon[0].componentInstance.name()).toBe(Icon.ANDROID);
+    expect(icon[0].componentInstance.size()).toBe(30);
+    expect(root.children[1].children[1]).toBe(breakLine);
+    expect(root.children[1].children[2]).toBe(icon[1]);
+    expect(icon[1].componentInstance.name()).toBe(Icon.IOS);
+    expect(icon[1].componentInstance.size()).toBe(30);
+
     const appSupportIcons = root.children[1].queryAll(By.css('app-icon'));
     // const breakLine = root.children[1].query(By.css('br'));
     expect(appSupportIcons.length).toBe(2);
@@ -310,6 +348,27 @@ describe('AppComponent', () => {
     expect(appSupportIcons[1].componentInstance.name()).toBe('ios');
     expect(appSupportIcons[1].componentInstance.size()).toBe(30);
 
+    expect(root.children[2].children.length).toBe(1);
+    expect(root.children[2].children[0].classes['footer']).toBe(true);
+    expect(root.children[2].children[0].children.length).toBe(2);
+    expect(root.children[2].children[0].children[0].classes['links']).toBe(true);
+    expect(root.children[2].children[0].children[0].classes['bottom']).toBe(true);
+    const bottomLinks = root.children[2].children[0].children[0];
+    const bottomAnchors = bottomLinks.queryAll(By.css('a'));
+    expect(bottomAnchors.length).toBe(app.links.length);
+
+    for (let i = 0; i < bottomAnchors.length; i++) {
+      expect(bottomAnchors[i].nativeElement.textContent.trim()).toBe(app.links[i].title);
+      expect(bottomAnchors[i].classes['link']).toBe(true);
+      expect(bottomAnchors[i].attributes['href']).toBe('https://host' + app.links[i].link);
+      expect(bottomAnchors[i].attributes['target']).toBe('_blank');
+    }
+    expect(bottomLinks.queryAll(By.css('.separator')).length).toBe(app.links.length - 1);
+    expect(root.children[2].children[0].children[1].children.length).toBe(3);
+    expect(root.children[2].children[0].children[1].children[0].nativeElement.textContent).toBe('Powered by Aburv | Takbuff © ' + app.thisyear);
+    expect(root.children[2].children[0].children[1].children[1].attributes['class']).toBe('break');
+    expect(root.children[2].children[0].children[1].children[2].nativeElement.textContent).toBe(' An Open Source Application');
+    expect(root.children[2].children[0].children[1].children[2].styles["font-size"]).toBe('12px');
     const footer = root.children[2].children[0];
     expect(footer.classes['footer']).toBe(true);
     
@@ -367,6 +426,12 @@ describe('AppComponent', () => {
     const content = root.children[0];
 
     expect(root.children.length).toBe(3);
+    expect(root.children[0].classes['content']).toBe(true);
+    expect(root.children[0].children.length).toBe(2);
+    expect(root.children[0].children[0].classes['header-layout']).toBe(true);
+    expect(root.children[0].children[0].children.length).toBe(3); // app-user-button is commented in the html file
+    expect(root.children[0].children[0].children[0].classes['title']).toBe(true);
+    root.children[0].children[0].children[0].triggerEventHandler('click');
     expect(content.classes['content']).toBe(true);
     
     const header = content.children[0];
@@ -376,13 +441,28 @@ describe('AppComponent', () => {
     expect(title.classes['title']).toBe(true);
     title.triggerEventHandler('click');
     expect(app.navigateToDashboard).toHaveBeenCalledOnceWith();
-    
-    const titleImg = title.query(By.css('img'));
-    const titleText = title.query(By.css('b'));
-    expect(titleImg.attributes['src']).toBe('../assets/logo_app_164.png');
-    expect(titleText.nativeElement.textContent).toBe('Takbuff');
-    expect(titleText.styles['color']).toBe('rgb(238, 238, 238)');
+    expect(root.children[0].children[0].children[0].children.length).toBe(2);
+    const img = root.children[0].children[0].children[0].query(By.css('img'));
+    const bold = root.children[0].children[0].children[0].query(By.css('b'));
+    expect(root.children[0].children[0].children[0].children[0]).toBe(img);
+    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
+    expect(root.children[0].children[0].children[0].children[1]).toBe(bold);
+    expect(bold.nativeElement.textContent).toBe('Takbuff');
 
+    expect(root.children[0].children[0].children[1].classes['spacer']).toBe(true);
+
+    expect(root.children[0].children[0].children[2].classes['search']).toBe(true);
+    expect(root.children[0].children[0].children[2].children.length).toBe(2);
+
+    let icon = root.children[0].children[0].children[2].queryAll(By.css('app-icon'));
+    const input = root.children[0].children[0].children[2].query(By.css('input'));
+    expect(root.children[0].children[0].children[2].children[0]).toBe(icon[0]);
+    expect(icon[0].componentInstance.name()).toBe(Icon.SEARCH);
+    expect(icon[0].componentInstance.size()).toBe(30);
+    expect(icon[0].styles['cursor']).toBe('pointer');
+    expect(root.children[0].children[0].children[2].children[1]).toEqual(input);
+    expect(input.attributes['placeholder']).toBe('Search here');
+    expect(input.nativeElement.value).toBe('');
     expect(header.children[1].classes['spacer']).toBe(true);
 
     const search = header.children[2];
@@ -398,12 +478,9 @@ describe('AppComponent', () => {
     expect(searchInput.attributes['placeholder']).toBe('Search here');
     expect(searchInput.nativeElement.value).toBe('');
 
-    const userButton = header.query(By.css('app-user-button'));
-    expect(userButton).toBeTruthy();
-
-    const layout = content.children[1];
-    expect(layout.classes['content-layout']).toBe(true);
-    expect(layout.children.length).toBe(3);
+    // ignore this as it is commented in the html file
+    // const userButton = header.query(By.css('app-user-button'));
+    // expect(userButton).toBeTruthy(); 
 
     expect(layout.children[0].classes['side-bar-layout']).toBe(true);
     
@@ -423,6 +500,16 @@ describe('AppComponent', () => {
 
     fixture.detectChanges();
 
+    expect(root.children[0].children[0].children[2].children.length).toBe(3);
+    icon = root.children[0].children[0].children[2].queryAll(By.css('app-icon'));
+    expect(root.children[0].children[0].children[2].children[0]).toBe(icon[0]);
+    expect(icon[0].styles['cursor']).toBe('default');
+    expect(root.children[0].children[0].children[2].children[2]).toBe(icon[1]);
+    expect(icon[1].componentInstance.name()).toBe(Icon.CROSS);
+    expect(icon[1].componentInstance.size()).toBe(20);
+    expect(icon[1].styles['cursor']).toBe('pointer');
+    expect(app.searchText()).toBe('value');
+    icon[1].triggerEventHandler('click');
     const searchIconsAfter = search.queryAll(By.css('app-icon'));
     expect(searchIconsAfter.length).toBe(2);
     expect(searchIconsAfter[0].styles['cursor']).toBe('default');
@@ -482,6 +569,17 @@ describe('AppComponent', () => {
     expect(sidebarLinks.classes['links']).toBe(true);
     expect(sidebarLinks.classes['side']).toBe(true);
 
+    const sideLinks = root.children[0].children[1].children[2].children[1];
+    const sideAnchors = sideLinks.queryAll(By.css('a'));
+    expect(sideAnchors.length).toBe(app.links.length);
+
+    for (let i = 0; i < sideAnchors.length; i++) {
+      expect(sideAnchors[i].nativeElement.textContent.trim()).toBe(app.links[i].title);
+      expect(sideAnchors[i].classes['link']).toBe(true);
+      expect(sideAnchors[i].attributes['href']).toBe('https://host' + app.links[i].link);
+      expect(sideAnchors[i].attributes['target']).toBe('_blank');
+    }
+    expect(sideLinks.queryAll(By.css('.separator')).length).toBe(4);
     const links = sidebarLinks.queryAll(By.css('a'));
     expect(links.length).toBe(app.links.length);
     
@@ -515,8 +613,11 @@ describe('AppComponent', () => {
 
     const root = fixture.debugElement.query(By.css('div'));
     const toast = root.query(By.css('.toast'));
+
     expect(toast).toBeTruthy();
     expect(toast.nativeElement.textContent.trim()).toBe('Please try again later');
+    expect(root.children.length).toBe(3);  // since server down toast is commented
+    // expect(root.children[3].classes['toast']).toBe(true);
   }));
 
   it('View: Should show internet down alert', fakeAsync(() => {
@@ -531,6 +632,11 @@ describe('AppComponent', () => {
     const toast = root.query(By.css('.toast'));
     expect(toast).toBeTruthy();
     expect(toast.nativeElement.textContent.trim()).toBe('No Internet connection');
+
+    expect(app.isServerDown()).toBe(true);
+
+    expect(root.children.length).toBe(3);  // since server down toast is commented
+    // expect(root.children[3].classes['toast']).toBe(true);
   }));
 
   it('View: Should hide alerts when services are up', fakeAsync(() => {

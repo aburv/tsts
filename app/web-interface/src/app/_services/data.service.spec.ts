@@ -12,6 +12,8 @@ describe('DataService', () => {
     let pingSpy: jasmine.SpyObj<PingService>;
     let userDataSpy: jasmine.SpyObj<UserDataService>;
 
+    PingService.isServerDown.set(false);
+
     beforeEach(() => {
         httpSpy = jasmine.createSpyObj('HttpClient', ['post', 'get']);
         pingSpy = jasmine.createSpyObj('PingService', ['ping']);
