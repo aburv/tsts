@@ -12,31 +12,31 @@
 </head>
 
 <body>
-    <button id="theme-toggle">🌙</button>
+    <div class="header">
+        <div style="width: 73px;"></div>
 
-    <a href="/">
-        <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
-    </a>
+        <a href="/">
+            <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
+        </a>
+
+        <button id="theme-toggle">🌙</button>    
+    </div>
 
     <section id="contact" class="section" style="margin-bottom: 0px;">
         <h1>Contact Us</h1>
         <p>Show your interest and your thoughts <br />We love to hear from you</p>
 
-        <form class="contact-form" id="contactForm">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Your Name" required>
-
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="Your Email" required>
-
-            <label for="message">Your thoughts</label>
-            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
-            <button type="submit" id="sendBtn">
-                <span class="btn-text">Send Message</span>
-                <span class="loader"></span>
-            </button>
-            <p id="statusMsg"></p>
-        </form>
+    <form class="contact-form" id="contactForm">
+      <input type="text" id="name" name="name" placeholder="Your Name" required />
+      <input type="email" id="email" name="email" placeholder="Your Email" required />
+      <textarea id="message" name="message" placeholder="Your Message..." rows="5" required></textarea>
+      <input type="text" name="website" id="website" style="display:none" tabindex="-1" autocomplete="off" />
+      <button type="submit" id="sendBtn">
+        <span class="btn-text">Send Message</span>
+        <span class="loader"></span>
+      </button>
+      <p id="statusMsg"></p>
+    </form>
 
     </section>
 
