@@ -1,11 +1,10 @@
 import unittest
 from unittest import mock
 
-from src.app import App
-from src.caching import Caching
 from src.config import Config
 from src.device.service import DeviceServices
 from src.responses import ValidResponse, APIException, APIResponse
+from test.test_app_config import get_app
 
 
 class DeviceControllerTest(unittest.TestCase):
@@ -25,16 +24,15 @@ class DeviceControllerTest(unittest.TestCase):
         mock_secret_config.return_value = ['test_key']
         expected_response_data = b'response_json'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.post("/api/device/register",
-                                         headers={
-                                             'x-api-key': 'test_key',
-                                             'content-type': 'application/json'
-                                         },
-                                         json={'data': {}}
-                                         )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post("/api/device/register",
+                                     headers={
+                                         'x-api-key': 'test_key',
+                                         'content-type': 'application/json'
+                                     },
+                                     json={'data': {}}
+                                     )
 
         mock_service_init.assert_called_once_with()
         mock_register_device.assert_called_once_with({})
@@ -62,16 +60,15 @@ class DeviceControllerTest(unittest.TestCase):
             )
         expected_response_data = b'response_json'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.post("/api/device/register",
-                                         headers={
-                                             'x-api-key': 'test_key',
-                                             'content-type': 'application/json'
-                                         },
-                                         json={'data': {}}
-                                         )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post("/api/device/register",
+                                     headers={
+                                         'x-api-key': 'test_key',
+                                         'content-type': 'application/json'
+                                     },
+                                     json={'data': {}}
+                                     )
 
         mock_service_init.assert_called_once_with()
         mock_register_device.assert_called_once_with({})

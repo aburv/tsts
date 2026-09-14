@@ -1,7 +1,10 @@
 """
 Data file
 """
+import re
 import uuid
+from enum import Enum
+from typing import NamedTuple, List, Optional
 
 from src.config import Relation, Table
 from src.responses import DataValidationException
@@ -19,6 +22,16 @@ class OrderType:
         self.field = field
 
 
+class FilterMeta(NamedTuple):
+    """
+    Filter type
+    """
+    querying_fields: List[str]
+    filtering_fields: List[str]
+    grouping_fields: Optional[List[str]] = None
+    record_count: Optional[int] = None
+
+
 class DataModel:
     """
     Data Model
@@ -29,7 +42,7 @@ class DataModel:
     _has_id: bool
     _is_a_record: bool
 
-    _filter_type: str
+    _filter_type: Optional[Enum] = None
 
     def __init__(self, relation: Relation, has_id: bool = True, is_a_record: bool = True):
         self.table = relation.value
@@ -82,11 +95,13 @@ class DataModel:
         """
         Subset of Fields to be querying from db
         """
+        if self._filter_type:
+            return self._filter_type.value.querying_fields
         return []
 
     def get_querying_fields_and_value(self) -> dict | None:
         """
-        =Fields and its value to be querying from db
+        Fields and its value to be querying from db
         """
         query_fields = self.get_querying_fields()
         if not query_fields:
@@ -97,12 +112,16 @@ class DataModel:
         """
         Subset of Fields to be retrieved from db
         """
+        if self._filter_type:
+            return self._filter_type.value.filtering_fields
         return []
 
-    def get_grouping_field(self) -> dict | None:
+    def get_grouping_field(self) -> List[str] | None:
         """
         Subset of Fields to get group by
         """
+        if self._filter_type:
+            return self._filter_type.value.grouping_fields
         return None
 
     def get_ordering_type(self) -> OrderType | None:
@@ -121,9 +140,11 @@ class DataModel:
         """
         No of records to retrieve
         """
+        if self._filter_type:
+            return self._filter_type.value.record_count
         return None
 
-    def frame_records(self, data: tuple):
+    def frame_records(self, data: list):
         """
         Framing the records
         """
@@ -143,8 +164,9 @@ class DataModel:
             key: str,
             f_type: type,
             is_optional: bool = True,
-            data_list: list | None = None
-    ):
+            data_list: list | None = None,
+            validate_type: str | None = None
+    ):  # pylint: disable=too-many-arguments
         """
         add the field to data
         """
@@ -153,12 +175,39 @@ class DataModel:
             if isinstance(value, f_type):
                 if (data_list is not None and value in data_list) or (
                         data_list is None and value != ""):
-                    self._fields.update({name: value})
-                    return
-            raise DataValidationException("Improper data values", f" {self._data} {name} {value}")
+                    if validate_type is not None:
+                        if validate_type not in ["date", "time"]:
+                            raise DataValidationException("Improper data validation_type",
+                                                          f"{self._data} {name} {value} {validate_type}")
+                        if (validate_type == "date" and self.is_date_valid(value)) or (
+                                validate_type == "time" and self.is_time_valid(value)):
+                            self._fields.update({name: value})
+                            return
+                    else:
+                        self._fields.update({name: value})
+                        return
+            raise DataValidationException("Improper data values", f"{self._data} {name} {value}")
         except KeyError as e:
             if not is_optional:
                 raise DataValidationException("Necessary field not present", f"{self._data} {name}") from e
+
+    @staticmethod
+    def is_date_valid(value):
+        """
+        Validate yyyy-mm-dd format
+        """
+        date = re.match(r'(\d{4})[/.-](\d{2})[/.-](\d{2})$', value)
+
+        return date is not None
+
+    @staticmethod
+    def is_time_valid(value):
+        """
+        Validate hh:mm:ss format
+        """
+        time = re.match(r'(\d{2})[/.:](\d{2})[/.:](\d{2})$', value)
+
+        return time is not None
 
     def is_empty(self) -> bool:
         """

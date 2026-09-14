@@ -1,8 +1,8 @@
 """
-User Id Service
+UserId Service
 """
 from src.db_duo import PostgresDbDuo
-from src.user_id.data import UserIDData
+from src.user_id.data import UserIDData, UserIDFilterType
 
 
 class UserIdServices:
@@ -32,5 +32,5 @@ class UserIdServices:
         """
         Get user id by id value
         """
-        self._data.on_select({"value": id_value, "is_verified": True}, "id")
+        self._data.on_select({"value": id_value, "is_verified": True}, UserIDFilterType.ID)
         return self._db.get_record_field_value()

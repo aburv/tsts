@@ -18,7 +18,7 @@ describe('AuthUserService', () => {
 
         authService.handleGoogleResponse({ credential: "token" })
 
-        authService.getLoggedUser().subscribe((user: GAuthUser) => {
+        authService.getLoggedUser().subscribe((user: GAuthUser | null) => {
             expect(user).toEqual({
                 'sub': 'sub',
                 'name': 'name',

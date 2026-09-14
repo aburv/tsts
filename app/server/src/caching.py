@@ -10,7 +10,7 @@ from src.config import Config
 from src.responses import APIException, CachedResponse, ValidResponse
 
 
-def get_if_cached(api_key: str, timeout=60):
+def get_if_cached(api_key: str, timeout=60, user_specific=True, needs_user=True):
     """
     Decorator checks with cache
     """
@@ -18,8 +18,15 @@ def get_if_cached(api_key: str, timeout=60):
     def decorator(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
-            param = '/'.join([f"{key}:{value}" for key, value in kwargs.items()])
-            key = f"{RedisConfig.CACHE_KEY_PREFIX}{api_key}/{param}"
+            if needs_user and kwargs["user_id"] is None:
+                key = ""
+            else:
+                param = '/'.join(
+                    f"{key}:{value}"
+                    for key, value in kwargs.items()
+                    if user_specific or (key != "user_id" or value is not None)
+                )
+                key = f"{RedisConfig.CACHE_KEY_PREFIX}{api_key}/{param}"
 
             cached_data = Caching.CACHE.get(key)
             if cached_data is not None:
@@ -32,9 +39,11 @@ def get_if_cached(api_key: str, timeout=60):
             try:
                 result: ValidResponse | bytes = func(*args, **kwargs)
                 if isinstance(result, bytes):
-                    Caching.CACHE.set(key, result, timeout=timeout)
+                    if result != b'':
+                        Caching.CACHE.set(key, result, timeout=timeout)
                     return Response(result, mimetype='image/png')
-                Caching.CACHE.set(key, result.get_data(), timeout=timeout)
+                if key != "":
+                    Caching.CACHE.set(key, result.get_data(), timeout=timeout)
                 return result.get_response_json()
             except APIException as e:
                 return e.get_response_json()
@@ -75,4 +84,3 @@ class RedisConfig:
         return f'redis://{params.get("user")}:{params.get("pass")}@{params.get("host")}:{params.get("port")}/0'
 
     CACHE_REDIS_URL = get_cache_url()
-

@@ -10,9 +10,16 @@ from src.responses import SecurityException, APIException
 from src.services.auth_service import AuthServices
 
 
-def validate(is_auth_mandatory: bool = True, is_required: bool = True, resource: str = "", permission: str = ""):
+def validate(
+        is_auth_mandatory: bool = True,
+        is_required: bool = True,
+        resource: str = "",
+        permission: str = ""):
     """
     :param is_auth_mandatory:
+    :type is_auth_mandatory:
+    :param is_required:
+    :type is_required:
     :param resource:
     :type resource:
     :param permission:

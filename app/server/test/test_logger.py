@@ -20,7 +20,7 @@ class LoggerTest(unittest.TestCase):
         LoggerAPI()
 
         mock_get_logger.assert_called_with('src.logger')
-        mock_basic_config.assert_called_once_with(level="INFO")
+        mock_basic_config.assert_called_once_with(format='%(levelname)s - %(asctime)s - %(message)s', level=20)
 
     @mock.patch.object(LoggerAPI, '__init__', return_value=None)
     @mock.patch.object(Logger, 'info')

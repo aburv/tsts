@@ -35,7 +35,7 @@ def add_image(user_id: str | None) -> Response:
 
 @IMAGE_BLUEPRINT.route("/<r_id>/<size>", methods=["GET"])
 @validate(is_required=False)
-@get_if_cached(api_key="image")
+@get_if_cached(api_key="image", needs_user=False)
 def get_image(r_id, size) -> bytes:
     """
     :return:
@@ -51,7 +51,7 @@ def get_image(r_id, size) -> bytes:
 @IMAGE_BLUEPRINT.route("/<r_id>/", methods=["GET"])
 @validate(resource=IMAGE_TAG, permission="view")
 @get_if_cached(api_key="image")
-def get_original_image(r_id, user_id: str | None) -> bytes:
+def get_original_image(r_id, user_id: str | None) -> bytes:  # pylint: disable=unused-argument
     """
     :return:
     :rtype:

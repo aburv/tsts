@@ -1,29 +1,25 @@
 import unittest
 from unittest import mock
 
-from src.app import App
-from src.caching import Caching
 from src.config import Config
 from src.responses import SecurityException, APIException
+from test.test_app_config import get_app
 
 
 class PingControllerTest(unittest.TestCase):
 
     @mock.patch.object(Config, 'get_api_keys')
-    @mock.patch.object(Caching, 'init_cache')
-    def test_should_return_success_response_on_ping_call(self, mock_init_caching, mock_keys):
+    def test_should_return_success_response_on_ping_call(self, mock_keys):
         mock_keys.return_value = ['test_key']
 
         expected_response_data = b'{"data":"success"}\n'
 
-        app = App.create()
+        app = get_app()
         with app.test_client() as c:
             actual_response = c.post("/api/ping/",
                                      headers={'x-api-key': 'test_key'})
 
         mock_keys.assert_called_once_with()
-
-        mock_init_caching.assert_called_once_with(app)
 
         self.assertEqual(expected_response_data, actual_response.data)
         self.assertEqual(200, actual_response.status_code)
@@ -44,11 +40,10 @@ class PingControllerTest(unittest.TestCase):
         mock_response.return_value = response
         expected_response_data = response
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.post("/api/ping/",
-                                         headers={'x-api-key': 'invalid_key'})
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post("/api/ping/",
+                                     headers={'x-api-key': 'invalid_key'})
 
         mock_keys.assert_called()
         mock_exception_init.assert_called_once_with('Client', 'Not Authenticated',
@@ -59,10 +54,9 @@ class PingControllerTest(unittest.TestCase):
     def test_should_return_success_response_on_aws_ping(self):
         expected_response_data = b'{"data":"success"}\n'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get("/api/ping/aws")
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/ping/aws")
 
         self.assertEqual(expected_response_data, actual_response.data)
         self.assertEqual(200, actual_response.status_code)
