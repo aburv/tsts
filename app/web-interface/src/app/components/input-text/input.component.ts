@@ -20,7 +20,7 @@ export enum Validator {
   IP = 'ip'
 }
 
-const regexes: { [x: string]: RegExp } = {
+const regexes: Record<string, RegExp> = {
   phone: /^([0-9]{10})$/,
   email: /^(([^<>()\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   zip: /^[1-9][0-9]{5}$/,

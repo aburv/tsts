@@ -26,7 +26,7 @@ describe('ImageComponent', () => {
           useValue: imageService
         },
       ],
-      schemas:[CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   });
@@ -69,7 +69,7 @@ describe('ImageComponent', () => {
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
+
     expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
@@ -90,14 +90,14 @@ describe('ImageComponent', () => {
 
   it('View: Should set content on no id', () => {
     componentRef.setInput("id", "");
-    componentRef.setInput("icon", { name: 'iconname' });
+    componentRef.setInput("icon", 'iconname');
     componentRef.setInput("size", "50");
     componentRef.setInput("alt", "alt");
 
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
+
     expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 

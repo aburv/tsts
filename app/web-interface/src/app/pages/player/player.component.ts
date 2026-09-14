@@ -1,18 +1,18 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoaderService } from 'src/app/_services/loader.service';
-import { PlayerService } from 'src/app/_services/player.service';
-import { UserDataService } from 'src/app/_services/UserData.service';
+import { LoaderService } from '../../_services/loader.service';
+import { PlayerService } from '../../_services/player.service';
+import { UserDataService } from '../../_services/UserData.service';
 
-type Player = {
+interface Player {
   name: string,
   dp: string,
   location: string,
   height: string,
   weight: string,
   age: string,
-  positions: Array<string>
+  positions: string[]
 }
 
 @Component({
@@ -35,10 +35,8 @@ export class PlayerComponent implements OnInit{
 
   player: Player | null = null
 
-  tabContent: Array<string> = ["Overview"];
+  tabContent: string[] = ["Overview"];
   selectedTabIndex = signal(0)
-
-  constructor() { }
 
   ngOnInit(): void {
     this.route.params.subscribe((param) => {

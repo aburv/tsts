@@ -1,20 +1,22 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, flushMicrotasks, TestBed, tick } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { By } from '@angular/platform-browser';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { Config } from '../../config';
+
+import { Icon } from '../icon/icon.component';
+
 import { UserButtonComponent } from './user-button.component';
 import { ImageComponent } from '../image/image.component';
-import { Icon } from '../icon/icon.component';
 import { UserDataService } from '../../_services/UserData.service';
 import { AuthUserService } from '../../_services/auth-user.service';
 import { DeviceService } from '../../_services/device.service';
 import { ImageService } from '../../_services/image.service';
-import { of } from 'rxjs';
+
 import { GAuthUser } from '../../_models/user';
-import { Config } from '../../config';
-import { GAuthUser } from '../../_models/user';
-import { Icon } from '../icon/icon.component';
-import { Config } from 'src/app/config';
-import { By } from '@angular/platform-browser';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('UserButtonComponent', () => {
 
@@ -37,26 +39,6 @@ describe('UserButtonComponent', () => {
   beforeAll(() => {
     deviceService = jasmine.createSpyObj('DeviceService', ['getDeviceId', 'getValues']);
   });
-
-  it('Should loadGoogleClient resolves when google appears after delay', fakeAsync(() => {
-    const fixture = TestBed.createComponent(UserButtonComponent);
-    const comp = fixture.componentInstance;
-
-    delete (window as any)['google'];
-
-    let resolved: any = null;
-    comp.loadGoogleClient().then((g: any) => resolved = g);
-
-    tick(50);
-    expect((window as any)['google']).toBeUndefined();
-
-    (window as any)['google'] = { accounts: { id: { initialize: jasmine.createSpy(), renderButton: jasmine.createSpy(), prompt: jasmine.createSpy() } } };
-
-    tick(50);
-    flushMicrotasks();
-
-    expect(resolved).toBe((window as any)['google']);
-  }));
 
   beforeEach(async () => {
     deviceService.getDeviceId.and.returnValue('test-device-id');
@@ -96,20 +78,7 @@ describe('UserButtonComponent', () => {
       ],
       teardown: { destroyAfterEach: false },
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
-  });
-
-  beforeEach(async() => {
-    (window as any).google = {
-      accounts: {
-        id: {
-          initialize: jasmine.createSpy('initialize'),
-          renderButton: jasmine.createSpy('renderButton'),
-          prompt: jasmine.createSpy('prompt')
-        }
-      }
-    };
+    }).compileComponents();
 
     userDataService.autoSignIn.calls.reset();
     authUserService.getLoggedUser.calls.reset();
@@ -125,6 +94,40 @@ describe('UserButtonComponent', () => {
     deviceService.getDeviceId.and.returnValue('test-device-id');
     deviceService.getValues.and.returnValue({ id: 'test-device-id' });
   });
+
+  afterEach(() => {
+    userDataService.autoSignIn.calls.reset();
+    authUserService.getLoggedUser.calls.reset();
+    userDataService.signIn.calls.reset();
+    userDataService.getUser.calls.reset();
+    authUserService.getLoggedUser.and.returnValue(of(null));
+    userDataService.autoSignIn.and.returnValue(of(false));
+    deviceService.getDeviceId.calls.reset();
+    deviceService.getValues.calls.reset();
+    
+    userDataService.autoSignIn.and.returnValue(of(false));
+    authUserService.getLoggedUser.and.returnValue(of());
+  });
+
+  it('Should loadGoogleClient resolves when google appears after delay', fakeAsync(() => {
+    const fixture = TestBed.createComponent(UserButtonComponent);
+    const comp = fixture.componentInstance;
+
+    delete (window as any)['google'];
+
+    let resolved: any = null;
+    comp.loadGoogleClient().then((g: any) => resolved = g);
+
+    tick(50);
+    expect((window as any)['google']).toBeUndefined();
+
+    (window as any)['google'] = { accounts: { id: { initialize: jasmine.createSpy(), renderButton: jasmine.createSpy(), prompt: jasmine.createSpy() } } };
+
+    tick(50);
+    flushMicrotasks();
+
+    expect(resolved).toBe((window as any)['google']);
+  }));
 
   it('Should create', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
@@ -377,13 +380,15 @@ describe('UserButtonComponent', () => {
 
     fixture.detectChanges();
 
+    // const googleElement = fixture.debugElement.query(By.css('div'));
     const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
     const imageElement = fixture.debugElement.query(By.css('app-image'));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
     expect(fixture.debugElement.children.length).toBe(1);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    // expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleButton).toBeNull();
 
     const image = imageElement.componentInstance as ImageComponent;
     expect(image.icon()).toBe(Icon.PERSON);
@@ -408,13 +413,15 @@ describe('UserButtonComponent', () => {
 
     fixture.detectChanges();
 
+    // const googleElement = fixture.debugElement.query(By.css('div'));
     const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
     const imageElement = fixture.debugElement.query(By.directive(ImageComponent));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
     expect(fixture.debugElement.children.length).toBe(2);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    // expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleButton).toBeNull()
 
     const image = imageElement.componentInstance as ImageComponent;
     expect(image.icon()).toBe(Icon.PERSON);
@@ -439,15 +446,15 @@ describe('UserButtonComponent', () => {
 
     fixture.detectChanges();
 
-    const googleElement = fixture.debugElement.query(By.css('div'));
+    // const googleElement = fixture.debugElement.query(By.css('div'));
     const imageElement = fixture.debugElement.query(By.directive(ImageComponent));
     const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
-    const imageElement = fixture.debugElement.query(By.css('app-image'));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
     expect(fixture.debugElement.children.length).toBe(2);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    // expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleButton).toBeNull();
 
     const image = imageElement.componentInstance as ImageComponent;
     expect(image.icon()).toBe(Icon.PERSON);
@@ -460,6 +467,7 @@ describe('UserButtonComponent', () => {
 
   it('View: Should turn dialog display when clicked on user with no dialog', () => {
     userDataService.autoSignIn.and.returnValue(of(""));
+    authUserService.getLoggedUser.and.returnValue(of());
 
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
@@ -469,16 +477,15 @@ describe('UserButtonComponent', () => {
     });
 
     component.isDialogOn = false;
-
     fixture.detectChanges();
 
-    const googleElement = fixture.debugElement.query(By.css('#google-signin-button'));
+    const googleButton = fixture.debugElement.query(By.css('#google-signin-button'));
     const imageElement = fixture.debugElement.query(By.css('app-image'));
     const dialogElement = fixture.debugElement.query(By.css('app-dialog'));
 
     expect(fixture.debugElement.children.length).toBe(1);
 
-    expect(googleElement.nativeElement.id).toBe('google-signin-button');
+    expect(googleButton).toBeNull();
 
     const image = imageElement.componentInstance as ImageComponent;
     expect(image.icon()).toBe(Icon.PERSON);

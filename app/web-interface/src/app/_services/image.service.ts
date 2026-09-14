@@ -4,9 +4,7 @@ import { Config } from '../config';
 import { Observable, of, tap } from 'rxjs';
 import { PingService } from './ping.service';
 
-export interface ImageCache {
-  [url: string]: ArrayBuffer;
-}
+export type ImageCache = Record<string, ArrayBuffer>;
 
 @Injectable({
   providedIn: 'root',

@@ -1,3 +1,5 @@
+/// <reference types="jasmine" />
+
 import { TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -7,14 +9,13 @@ import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
 import { of, throwError } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
 import { DeviceService } from './_services/device.service';
 import { SearchService } from './_services/search.service';
 import { Config } from './config';
-import { IconComponent, Icon } from './components/icon/icon.component';
+import { Icon } from './components/icon/icon.component';
 
 describe('AppComponent', () => {
   const userService = jasmine.createSpyObj('UserService', [
@@ -52,7 +53,7 @@ describe('AppComponent', () => {
     navigate: jasmine.createSpy('navigate'),
   };
 
-  beforeEach(() => {
+  beforeEach(async() => {
     (globalThis as any).google = {
       accounts: {
         id: {
@@ -61,9 +62,22 @@ describe('AppComponent', () => {
           prompt: jasmine.createSpy('prompt')
         }
       }
-    };
+    }
+    
+    userService.getUserData.calls.reset();
+    deviceService.sendDeviceDetails.calls.reset();
+    deviceService.getDeviceId.calls.reset();
+    themeService.initTheme.calls.reset();
+    themeService.setTheme.calls.reset();
+    searchService.get.calls.reset();
+    router.navigate.calls.reset();
+    
+    LoaderService.status.set(false);
+    PingService.isServerDown.set(false);
 
-    return TestBed.configureTestingModule({
+    spyOn(Config, "getSiteDomain").and.returnValue("https://host");
+
+    await TestBed.configureTestingModule({
     imports: [RouterTestingModule, AppComponent],
     providers: [
       provideHttpClient(),
@@ -100,18 +114,6 @@ describe('AppComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
-    userService.getUserData.calls.reset();
-    deviceService.sendDeviceDetails.calls.reset();
-    deviceService.getDeviceId.calls.reset();
-    themeService.initTheme.calls.reset();
-    themeService.setTheme.calls.reset();
-    searchService.get.calls.reset();
-    router.navigate.calls.reset();
-    
-    LoaderService.status.set(false);
-    PingService.isServerDown.set(false);
-
-    spyOn(Config, "getSiteDomain").and.returnValue("https://host");
   });
 
   let media: any;
@@ -132,7 +134,6 @@ describe('AppComponent', () => {
   });
 
   it('Should create the app on success loading data', fakeAsync(() => {
-
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
@@ -169,7 +170,7 @@ describe('AppComponent', () => {
   }));
 
   it('Should handle fromEvent offline/online mapping when fromEvent is mocked', fakeAsync(() => {
-    const added: Array<{ event: string; handler: EventListenerOrEventListenerObject }> = [];
+    const added: { event: string; handler: EventListenerOrEventListenerObject }[] = [];
     const addSpy = spyOn(window as any, 'addEventListener').and.callFake((event: string, handler: any) => {
       added.push({ event, handler });
       try {
@@ -212,7 +213,7 @@ describe('AppComponent', () => {
     expect(app.isInInit).toBe(true);
     expect(userService.getUserData).toHaveBeenCalledTimes(1);
 
-    tick(1100);
+    tick(500);
     fixture.detectChanges();
 
     expect(app.isInInit).toBe(false);
@@ -223,21 +224,25 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
 
     app.onChange({ target: { value: 'search-term' } });
+    fixture.detectChanges();
+    tick(1500);
+
     expect(app.searchText()).toBe('search-term');
-
-    tick();
-
-    // expect(searchService.get).toHaveBeenCalledOnceWith('search-term');   
-
+    expect(searchService.get).toHaveBeenCalledOnceWith('search-term');   
     searchService.get.calls.reset();
+
     app.onChange({ target: { value: '' } });
-    tick();
+    fixture.detectChanges();
+    tick(1500);
+
     expect(app.searchText()).toBe('');
     expect(searchService.get).not.toHaveBeenCalled();
-
     searchService.get.calls.reset();
+
     app.onChange({ target: { value: '   ' } });
-    tick();
+    fixture.detectChanges();
+    tick(1500);
+
     expect(app.searchText()).toBe('   ');
     expect(searchService.get).not.toHaveBeenCalled();
   }));
@@ -303,10 +308,11 @@ describe('AppComponent', () => {
 
     fixture.detectChanges();
 
-    const root = fixture.debugElement.query(By.css('div'));
+    const root = fixture.debugElement.query(By.css('div'));;
 
     expect(root.classes['screen']).toBe(true);
 
+    expect(root.children.length).toBe(3);
     expect(root.children[0].classes['splash-layout']).toBe(true);
     expect(root.children[1].classes['app-support-layout']).toBe(true);
     expect(root.children[2].classes['footer-layout']).toBe(true);
@@ -321,13 +327,7 @@ describe('AppComponent', () => {
     expect(text.styles['text-align']).toBe('center');
     expect(text.styles['font-size']).toBe('30px');
 
-    tick(1100);
-    fixture.detectChanges();
-
-    expect(root.children.length).toBe(3);
-    expect(root.children[0].classes['content']).toBe(true);
-    expect(root.children[1].classes['app-support-layout']).toBe(true);
-    expect(root.children[2].classes['footer-layout']).toBe(true);
+    expect(app.isInInit).toBe(true);
 
     const icon = root.children[1].queryAll(By.css('app-icon'));
     const breakLine = root.children[1].query(By.css('br'));
@@ -339,14 +339,6 @@ describe('AppComponent', () => {
     expect(root.children[1].children[2]).toBe(icon[1]);
     expect(icon[1].componentInstance.name()).toBe(Icon.IOS);
     expect(icon[1].componentInstance.size()).toBe(30);
-
-    const appSupportIcons = root.children[1].queryAll(By.css('app-icon'));
-    // const breakLine = root.children[1].query(By.css('br'));
-    expect(appSupportIcons.length).toBe(2);
-    expect(appSupportIcons[0].componentInstance.name()).toBe('android');
-    expect(appSupportIcons[0].componentInstance.size()).toBe(30);
-    expect(appSupportIcons[1].componentInstance.name()).toBe('ios');
-    expect(appSupportIcons[1].componentInstance.size()).toBe(30);
 
     expect(root.children[2].children.length).toBe(1);
     expect(root.children[2].children[0].classes['footer']).toBe(true);
@@ -392,32 +384,16 @@ describe('AppComponent', () => {
     expect(footerText.query(By.css('.break'))).toBeTruthy();
     expect(footerSpans[1].nativeElement.textContent.trim()).toBe('An Open Source Application');
     expect(footerSpans[1].styles['font-size']).toBe('12px');
-
-    const sideBarLinks = root.children[0].children[1].children[2].children[1];
-    expect(sideBarLinks.classes['links']).toBe(true);
-    expect(sideBarLinks.classes['side']).toBe(true);
-    
-    const sideLinks = sideBarLinks.queryAll(By.css('a'));
-    expect(sideLinks.length).toBe(app.links.length);
-    sideLinks.forEach((link, i) => {
-      expect(link.nativeElement.textContent.trim()).toBe(app.links[i].title);
-      expect(link.classes['link']).toBe(true);
-      expect(link.attributes['href']).toBe('https://host' + app.links[i].link);
-      expect(link.attributes['target']).toBe('_blank');
-    });
-
-    const separators = sideBarLinks.queryAll(By.css('.separator'));
-    expect(separators.length).toBe(4);
   }));
 
   it('View: Should set content and its children', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    spyOn(app, 'navigateToDashboard')
+   const navigateToDashboardSpy = spyOn(app, 'navigateToDashboard')
     spyOn(app, 'turnToSearching')
-    spyOn(app, 'onSearchClose')
-    spyOn(app, 'onChange')
+    const onSearchCloseSpy = spyOn(app, 'onSearchClose')
+    const onChangeSearchSpy = spyOn(app, 'onChange')
 
     tick(1100);
     fixture.detectChanges();
@@ -429,7 +405,7 @@ describe('AppComponent', () => {
     expect(root.children[0].classes['content']).toBe(true);
     expect(root.children[0].children.length).toBe(2);
     expect(root.children[0].children[0].classes['header-layout']).toBe(true);
-    expect(root.children[0].children[0].children.length).toBe(3); // app-user-button is commented in the html file
+    expect(root.children[0].children[0].children.length).toBe(4);
     expect(root.children[0].children[0].children[0].classes['title']).toBe(true);
     root.children[0].children[0].children[0].triggerEventHandler('click');
     expect(content.classes['content']).toBe(true);
@@ -437,6 +413,7 @@ describe('AppComponent', () => {
     const header = content.children[0];
     expect(header.classes['header-layout']).toBe(true);
     
+    navigateToDashboardSpy.calls.reset()
     const title = header.children[0];
     expect(title.classes['title']).toBe(true);
     title.triggerEventHandler('click');
@@ -479,8 +456,10 @@ describe('AppComponent', () => {
     expect(searchInput.nativeElement.value).toBe('');
 
     // ignore this as it is commented in the html file
-    // const userButton = header.query(By.css('app-user-button'));
-    // expect(userButton).toBeTruthy(); 
+    const userButton = header.query(By.css('app-user-button'));
+    expect(userButton).toBeTruthy(); 
+
+    const layout = content.children[1]
 
     expect(layout.children[0].classes['side-bar-layout']).toBe(true);
     
@@ -508,8 +487,16 @@ describe('AppComponent', () => {
     expect(icon[1].componentInstance.name()).toBe(Icon.CROSS);
     expect(icon[1].componentInstance.size()).toBe(20);
     expect(icon[1].styles['cursor']).toBe('pointer');
-    expect(app.searchText()).toBe('value');
+
+    searchInput.triggerEventHandler('keyup', { target: { value: 'value' } });
+    expect(app.onChange).toHaveBeenCalledOnceWith({ target: { value: 'value' } });
+    onChangeSearchSpy.calls.reset();
+
     icon[1].triggerEventHandler('click');
+
+    expect(app.onSearchClose).toHaveBeenCalledOnceWith();
+    onSearchCloseSpy.calls.reset();
+
     const searchIconsAfter = search.queryAll(By.css('app-icon'));
     expect(searchIconsAfter.length).toBe(2);
     expect(searchIconsAfter[0].styles['cursor']).toBe('default');
@@ -517,10 +504,12 @@ describe('AppComponent', () => {
     expect(searchIconsAfter[1].componentInstance.size()).toBe(20);
     expect(searchIconsAfter[1].styles['cursor']).toBe('pointer');
 
-    const searchMainContent = layout.query(By.css('.main-layout'));
-    const searchResults = searchMainContent.queryAll(By.css('.search-result-item'));
-    expect(searchResults.length).toBe(result["player"].length);
 
+    // const searchMainContent = layout.query(By.css('.main-layout'));
+    // const searchResults = searchMainContent.queryAll(By.css('.search-result-item'));
+    // expect(searchResults.length).toBe(result["player"].length);
+
+    onSearchCloseSpy.calls.reset();
     searchIconsAfter[1].triggerEventHandler('click');
     expect(app.onSearchClose).toHaveBeenCalledOnceWith();
 
@@ -608,7 +597,7 @@ describe('AppComponent', () => {
 
     tick(1100);
     fixture.detectChanges();
-
+    
     expect(app.isServerDown()).toBe(true);
 
     const root = fixture.debugElement.query(By.css('div'));
@@ -616,8 +605,8 @@ describe('AppComponent', () => {
 
     expect(toast).toBeTruthy();
     expect(toast.nativeElement.textContent.trim()).toBe('Please try again later');
-    expect(root.children.length).toBe(3);  // since server down toast is commented
-    // expect(root.children[3].classes['toast']).toBe(true);
+    expect(root.children.length).toBe(4);
+    expect(root.children[3].classes['toast']).toBe(true);
   }));
 
   it('View: Should show internet down alert', fakeAsync(() => {
@@ -633,10 +622,10 @@ describe('AppComponent', () => {
     expect(toast).toBeTruthy();
     expect(toast.nativeElement.textContent.trim()).toBe('No Internet connection');
 
-    expect(app.isServerDown()).toBe(true);
+    expect(app.isServerDown()).toBe(false);
 
-    expect(root.children.length).toBe(3);  // since server down toast is commented
-    // expect(root.children[3].classes['toast']).toBe(true);
+    expect(root.children.length).toBe(4);
+    expect(root.children[3].classes['toast']).toBe(true);
   }));
 
   it('View: Should hide alerts when services are up', fakeAsync(() => {

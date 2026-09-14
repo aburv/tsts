@@ -14,7 +14,6 @@ function getAuthUrl(): string {
 export class AuthService {
   private http = inject(HttpClient);
 
-
   signIn(userLoginData: any): Observable<any> {
     return this.http.post(getAuthUrl() + 'login', { data: userLoginData }, Config.getHeaders());
   }

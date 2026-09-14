@@ -62,7 +62,7 @@ export class AppComponent {
 
   searchText = signal<string>('');
 
-  searchResult = signal<{ [key: string]: any[] } | null>(null);
+  searchResult = signal<Record<string, any[]> | null>(null);
 
   thisyear = new Date().getFullYear();
 

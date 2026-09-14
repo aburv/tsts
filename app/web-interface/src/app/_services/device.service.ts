@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { LocalDataService } from './localStore.service';
 import { DataService } from './data.service';
 
-type Device = {
+interface Device {
   deviceId: string,
   os: string,
   version: string,
