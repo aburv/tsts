@@ -101,6 +101,7 @@ body.dark {
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--accent);
+    margin-left: 1.5rem;
     transition: transform 0.3s;
 }
 
