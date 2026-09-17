@@ -52,6 +52,10 @@ form.addEventListener("submit", async (e) => {
     } finally {
         button.classList.remove("loading");
         button.disabled = false;
+        buttonText.textContent = "Send Message";
+        form.name.value = '';
+        form.email.value = '';
+        form.message.value = '';
     }
 });
 
