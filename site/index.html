@@ -97,6 +97,86 @@
         </div>
     </div>
 
+    <main class="homepage-content" id="discover">
+        <section class="discover-intro" aria-labelledby="discover-title">
+            <div>
+                <p class="content-eyebrow">One place for the whole match</p>
+                <h1 id="discover-title">Follow the rally<br><em>from first serve to final point.</em></h1>
+            </div>
+            <p class="discover-lede">Takbuff brings the court, the score, and the people around the game into one open
+                space built for players and curious newcomers.</p>
+        </section>
+
+        <section class="feature-grid" aria-label="Takbuff features">
+            <article class="feature-panel feature-panel-main">
+                <span class="feature-index">01</span>
+                <div>
+                    <p class="feature-kicker">Score with clarity</p>
+                    <h2>Every touch<br>stays in view.</h2>
+                    <p>Keep momentum visible with a scoring flow that is quick enough for the sideline and clear enough
+                        to revisit later.</p>
+                    <a href="https://www.takbuff.com" target="_blank" rel="noopener noreferrer" class="feature-link">
+                        Open the app
+                        <span aria-hidden="true">↗</span>
+                    </a>
+                </div>
+                <div class="score-orbit" aria-hidden="true">
+                    <span>15</span><small>POINTS</small><i></i>
+                </div>
+            </article>
+            <article class="feature-panel feature-panel-warm">
+                <span class="feature-index">02</span>
+                <p class="feature-kicker">Learn the rhythm</p>
+                <h2>Start with<br>the basics.</h2>
+                <p>Understand the roles, the formats, and the decisions that make a rally feel like a conversation.</p>
+                <a href="/about-game" class="feature-link">Explore the game <span aria-hidden="true">↗</span></a>
+            </article>
+            <article class="feature-panel feature-panel-outline">
+                <span class="feature-index">03</span>
+                <p class="feature-kicker">Build in public</p>
+                <h2>Make the next<br>version together.</h2>
+                <p>Takbuff is open source. Read the notes, share an idea, or help shape the tools your community needs.
+                </p>
+                <a href="https://github.com/aburv/tsts" target="_blank" rel="noopener noreferrer"
+                    class="feature-link">Visit GitHub <span aria-hidden="true">↗</span></a>
+            </article>
+        </section>
+
+        <section class="mode-section" aria-labelledby="mode-title">
+            <div class="mode-heading">
+                <p class="content-eyebrow">Choose your view</p>
+                <h2 id="mode-title">The game looks<br><em>different from here.</em></h2>
+            </div>
+            <div class="mode-switcher">
+                <div class="mode-tabs" role="tablist" aria-label="Takbuff perspectives">
+                    <button class="mode-tab is-active" role="tab" aria-selected="true" aria-controls="mode-panel"
+                        data-mode="players">For players</button>
+                    <button class="mode-tab" role="tab" aria-selected="false" aria-controls="mode-panel"
+                        data-mode="organizers">For organizers</button>
+                    <button class="mode-tab" role="tab" aria-selected="false" aria-controls="mode-panel"
+                        data-mode="fans">For fans</button>
+                </div>
+                <div class="mode-panel" id="mode-panel" role="tabpanel" tabindex="0">
+                    <span class="mode-number" id="mode-number">01</span>
+                    <div>
+                        <p class="mode-label" id="mode-label">Players</p>
+                        <h3 id="mode-heading">Stay in the flow.</h3>
+                        <p id="mode-description">Track the score, understand the rules, and return to the moments that
+                            changed the match.</p>
+                    </div>
+                    <span class="mode-mark" aria-hidden="true">→</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="home-cta" aria-labelledby="home-cta-title">
+            <p class="content-eyebrow">The next rally starts here</p>
+            <h2 id="home-cta-title">Bring your court<br><em>into focus.</em></h2>
+            <a class="home-cta-link" href="https://www.takbuff.com" target="_blank" rel="noopener noreferrer">Get
+                started <span aria-hidden="true">↗</span></a>
+        </section>
+    </main>
+
     <!-- Footer -->
     <div class="container">
         <footer class="footer">
@@ -106,7 +186,8 @@
                         <div>
                             <a href="https://www.aburv.com" target="_blank" rel="noopener noreferrer">
                                 <img alt="Company Logo" src="./assets/logo_company.svg" class="company-logo" />
-                            </a>                        </div>
+                            </a>
+                        </div>
                         <div class="spacer"></div>
 
                         <div class="footer-column">
@@ -123,8 +204,14 @@
                         </div>
                     </div>
 
-                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank"
-                            rel="noopener noreferrer">Aburv</a> | © <span id="year"></span> Takbuff</div>                    <div class="spacer"></div>
+                    <div class="footer-text">
+                        Powered by
+                        <a href="https://www.aburv.com" target="_blank" rel="noopener noreferrer">
+                            Aburv
+                        </a> | © <span id="year"></span>
+                        Takbuff
+                    </div>
+                    <div class="spacer"></div>
                     <div id="scrollTopBtn" style="cursor: pointer; position: absolute; right: 0; bottom: 0;">
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
                             <path
