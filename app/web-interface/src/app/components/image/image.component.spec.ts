@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImageComponent } from './image.component';
 import { ComponentRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ImageService } from 'src/app/_services/image.service';
+import { ImageService } from '../../_services/image.service';
+import { ButtonComponent, ButtonType } from '../button/button.component';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
@@ -18,7 +19,7 @@ describe('ImageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ImageComponent],
+      imports: [ImageComponent],
       providers: [
         {
           provide: ImageService,
@@ -72,7 +73,7 @@ describe('ImageComponent', () => {
     expect(root.classes['user']).toBe(true);
     expect(root.children.length).toBe(1);
 
-    const buttonElement = fixture.debugElement.query(By.css('app-button'));
+    const buttonElement = fixture.debugElement.query(By.directive(ButtonComponent));
     const imageElement = fixture.debugElement.query(By.css('img'));
 
     expect(imageElement.attributes['referrerpolicy']).toBe('no-referrer');
@@ -105,9 +106,10 @@ describe('ImageComponent', () => {
 
     expect(imageElement).toBeNull();
 
-    expect(buttonElement.attributes['type']).toBe('secondary icon');
-    expect(buttonElement.nativeElement.icon).toBe('iconname');
-    expect(buttonElement.nativeElement.iconSize).toBe(43.75);
+    const button = buttonElement.componentInstance as ButtonComponent;
+    expect(button.type()).toBe(ButtonType.SECONDARY_ICON);
+    expect(button.icon()).toBe('iconname' as never);
+    expect(button.iconSize()).toBe(43.75);
 
     expect(component.fetch).not.toHaveBeenCalled();
   });

@@ -4,6 +4,20 @@ const button = document.querySelector("#sendBtn");
 const statusMsg = document.querySelector("#statusMsg");
 const buttonText = document.querySelector(".btn-text");
 
+function checkForm() {
+    button.disabled = !(
+        form.name.value.trim() &&
+        form.email.value.trim() &&
+        form.message.value.trim()
+    );
+}
+
+form.name.addEventListener("input", checkForm);
+form.email.addEventListener("input", checkForm);
+form.message.addEventListener("input", checkForm);
+
+checkForm();
+
 try {
     const url = "/api/contact";
 }
@@ -19,6 +33,12 @@ catch {
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    
+    if (form.website.value) {
+      statusMsg.textContent = "❌ Bot detected. Submission blocked.";
+      return;
+    }
+
     const data = {
         name: form.name.value,
         email: form.email.value,

@@ -1,8 +1,9 @@
-import { Component, computed, ElementRef, Signal, signal, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, Signal, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { Observable, Observer, fromEvent, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
@@ -29,6 +30,10 @@ import { UserButtonComponent } from './components/user-button/user-button.compon
 })
 export class AppComponent {
   @ViewChild('searchInput') searchInput!: ElementRef;
+
+  private initTimeout?: ReturnType<typeof setTimeout>;
+  private searchTimeout?: ReturnType<typeof setTimeout>;
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly Icon = Icon
   isInInit = true;
@@ -91,6 +96,15 @@ export class AppComponent {
     private searchService: SearchService,
     private pingService: PingService
   ) {
+    this.destroyRef.onDestroy(() => {
+      if (this.initTimeout) {
+        clearTimeout(this.initTimeout);
+      }
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+    });
+
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
     this.themeService.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {
@@ -104,20 +118,20 @@ export class AppComponent {
         sub.next(navigator.onLine);
         sub.complete();
       })
-    ).subscribe((isOnline: boolean) => {
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((isOnline: boolean) => {
       this.isInternetDown.set(!isOnline)
     });
 
     deviceService.sendDeviceDetails()
 
-    userService.getUserData().subscribe({
+    userService.getUserData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        setTimeout(() => {
+        this.initTimeout = setTimeout(() => {
           this.isInInit = false;
         }, 1000);
       },
       error: () => {
-        setTimeout(() => {
+        this.initTimeout = setTimeout(() => {
           this.isInInit = false;
         }, 500);
       }
@@ -127,7 +141,7 @@ export class AppComponent {
   turnToSearching(): void {
     if (!this.isSearching) {
       this.isSearching = true;
-      setTimeout(() => {
+      this.searchTimeout = setTimeout(() => {
         this.searchInput.nativeElement.focus();
       }, 500)
     }

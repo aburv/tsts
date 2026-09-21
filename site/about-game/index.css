@@ -77,6 +77,20 @@ body.dark {
     backdrop-filter: blur(10px);
 }
 
+.header{
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: var(--bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 3rem;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
 #container {
     padding: 0;
     min-height: auto;

@@ -18,6 +18,14 @@ on:
         required: true
       CLOUDFRONT_DISTRIBUTION:
         required: true
+      API_KEY:
+        required: true
+      AUTH_KEY:
+        required: true
+      G_CLIENT_ID:
+        required: true
+      SEPARATOR:
+        required: true
 
 defaults:
   run:
@@ -39,20 +47,22 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # - name: Generate env.js from template
-      #   run: |
-      #     sed -e "s|\${API_KEY}|${{ secrets.API_KEY }}|g" \
-      #         -e "s|\${AUTH_KEY}|${{ secrets.AUTH_KEY }}|g" \
-      #         -e "s|\${G_CLIENT_ID}|${{ secrets.G_CLIENT_ID }}|g" \
-      #         -e "s|\${SEPARATOR}|${{ secrets.SEPARATOR }}|g" \
-      #         src/assets/env.template.js > src/assets/env.js
+      - name: Generate runtime environment
+        run: |
+          sed -e "s|\${API_KEY}|${{ secrets.API_KEY }}|g" \
+              -e "s|\${AUTH_KEY}|${{ secrets.AUTH_KEY }}|g" \
+              -e "s|\${G_CLIENT_ID}|${{ secrets.G_CLIENT_ID }}|g" \
+              -e "s|\${SEPARATOR}|${{ secrets.SEPARATOR }}|g" \
+              src/assets/env.template.js > src/assets/env.js
 
       # 👇 Build Angular app based on passed environment
       - name: Build Angular app
         run: npm run build -- --configuration=${{ inputs.BUILD_ENV }}
 
       - name: List build output (debug)
-        run: ls -R dist
+        run: |
+          test -f dist/web-interface/index.html
+          ls -R dist/web-interface
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -62,8 +72,7 @@ jobs:
           aws-region: ${{ secrets.REGION }}
 
       - name: Sync files to S3
-        run: |
-          aws s3 sync dist/ s3://$S3_BUCKET_NAME/ --delete
+        run: aws s3 sync dist/web-interface/ s3://$S3_BUCKET_NAME/ --delete
         env:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET }}
       

@@ -1,7 +1,7 @@
 import { Component, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ImageService } from 'src/app/_services/image.service';
+import { ImageService } from '../../_services/image.service';
 import { ButtonComponent, ButtonType } from '../button/button.component';
 import { Icon } from '../icon/icon.component';
 
