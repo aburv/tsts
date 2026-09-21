@@ -12,6 +12,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    overscroll-behavior: none;
 }
 
 html,
@@ -19,13 +20,11 @@ body {
     margin: 0;
     padding: 0;
     height: fit-content;
-    /* for scroll */
+    scroll-behavior: smooth;
     font-family: 'Nunito', 'Nunito Fallback';
-    background-color: var(--bg);
+    background: var(--bg);
     color: var(--text);
-    /* overscroll-behavior: none; */
-    /* overflow-y: hidden; */
-    /* initially locked for animation */
+    overflow-x: hidden;
 }
 
 .layout {
@@ -52,44 +51,91 @@ body.dark {
     --text: #c5c6c7;
 }
 
+.header{
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: var(--bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 3rem;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
 #container {
-    padding: 100px 20px;
-    min-height: 100vh;
+    padding: 120px 20px 80px;
+    min-height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    text-align: left;
 }
 
 #ball {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 20px;
     width: 60px;
     height: 60px;
     will-change: transform;
 }
 
 #theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
     border-radius: 8px;
     padding: 0.5rem 0.8rem;
     background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    z-index: 1000;
     color: var(--accent);
+    margin-left: 1.5rem;
     transition: transform 0.3s;
 }
 
 #theme-toggle:hover {
     background: var(--toggle-bg);
     transform: scale(1.2);
+}
+
+.policy {
+    width: min(100%, 860px);
+    line-height: 1.7;
+}
+
+.policy h1 {
+    margin-bottom: 0.25rem;
+    color: var(--accent);
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.policy h2 {
+    margin: 2rem 0 0.65rem;
+    font-size: 1.35rem;
+}
+
+.policy p {
+    margin: 0 0 1rem;
+}
+
+.policy .updated {
+    margin-bottom: 2rem;
+    color: var(--accent);
+}
+
+.policy ul {
+    margin: 0 0 1rem 1.5rem;
+}
+
+.policy li {
+    padding-left: 0.35rem;
+    margin-bottom: 0.45rem;
+}
+
+.policy a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
 }
 
 .footer {
@@ -99,12 +145,10 @@ body.dark {
 }
 
 .fContainer {
-    /* position: absolute; */
     max-width: 100vw;
     width: 100%;
     margin: 0 auto;
     padding: 0 1rem;
-    /* bottom: 0px; */
 }
 
 .footerInner {
@@ -146,7 +190,6 @@ li a {
     border-bottom: 1px solid transparent;
     display: inline-flex;
     margin: 5px;
-    /* width: max-content; */
     cursor: pointer;
 }
 
@@ -190,12 +233,24 @@ li a:hover {
 
 
 @media only screen and (max-width: 1000px) {
+    .header {
+        padding: 1.25rem 1.5rem;
+    }
+
     .footer-column {
         width: 150px;
     }
 }
 
 @media only screen and (max-width: 750px) {
+    .header {
+        padding: 1.25rem 0.5rem;
+    }
+
+    #theme-toggle {
+        padding: 0.5rem 0.6rem;
+    }
+    
     .footer-column {
         width: 120px;
     }
