@@ -23,10 +23,125 @@
     </div>
 
     <div id="container">
-        <p>All user support related things goes here</p>
+        <div class="support-wrapper">
+            <div class="support-header">
+                <h1>Support & Issues</h1>
+                <p>Have a question or found a bug? Let us know and we'll get back to you as soon as possible.</p>
+            </div>
+
+            <div class="support-content">
+                <div class="faq-section">
+                    <h2>Frequently Asked Questions</h2>
+                    <div class="faq-items">
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>How do I report a bug?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Fill out the form below with a detailed description of the issue, including steps to reproduce it. We'll investigate and respond to your email within 24-48 hours.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>How long does it take to get a response?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>We typically respond to support requests within 24-48 hours during business days. Critical issues may be prioritized and addressed sooner.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>What information should I include in my report?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Please include: device type, operating system, app version, clear description of the issue, steps to reproduce, and screenshots if applicable. The more details, the faster we can help!</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>Can I request a feature?</span>
+                                <span class="faq-icon">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Absolutely! Use the form below and select "Feature Request" as the category. We'd love to hear your suggestions for improving Takbuff!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Submit an Issue or Request</h2>
+                    <form id="supportForm" class="support-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Your Name *</label>
+                                <input type="text" id="name" name="name" required placeholder="John Doe" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required placeholder="your.email@example.com" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">Category *</label>
+                                <select id="category" name="category" required>
+                                    <option value="">Select a category</option>
+                                    <option value="bug">Bug Report</option>
+                                    <option value="feature">Feature Request</option>
+                                    <option value="performance">Performance Issue</option>
+                                    <option value="gameplay">Gameplay Question</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="device">Device Type</label>
+                                <select id="device" name="device">
+                                    <option value="">Select device (optional)</option>
+                                    <option value="ios">iOS</option>
+                                    <option value="android">Android</option>
+                                    <option value="web">Web</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <input type="text" id="subject" name="subject" required placeholder="Brief description of your issue" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" required placeholder="Please provide detailed information about your issue or request..." rows="8"></textarea>
+                        </div>
+
+                        <div class="form-group checkbox">
+                            <input type="checkbox" id="updates" name="updates" />
+                            <label for="updates" style="display: inline; margin-left: 0.5rem;">I'd like to receive updates about this issue</label>
+                        </div>
+
+                        <div class="form-trap" aria-hidden="true">
+                            <label for="website">Website</label>
+                            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+                        </div>
+
+                        <div id="formMessage" class="form-message"></div>
+
+                        <button type="submit" class="submit-btn">Send Support Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Footer -->
     <div class="container">
         <footer class="footer">
             <div class="fContainer">
@@ -53,8 +168,11 @@
                         </div>
                     </div>
 
-                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank"
-                            rel="noopener noreferrer">Aburv</a> | © <span id="year"></span> Takbuff</div>
+                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank" rel="noopener noreferrer">
+                        Aburv</a> | © 
+                        <span id="year"></span> 
+                        Takbuff
+                    </div>
                     <div class="spacer"></div>
                     <div id="scrollTopBtn" style="cursor: pointer; position: absolute; right: 0; bottom: 0;">
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">

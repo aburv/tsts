@@ -19,14 +19,66 @@
             <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
         </a>
 
-        <button id="theme-toggle">🌙</button>    
+        <button id="theme-toggle">🌙</button>
     </div>
 
-    <div id="container">
-        <p>Frequently Asked Questions goes here</p>
-    </div>
+    <main id="container">
+        <section class="faq-page" aria-labelledby="page-title">
+            <header class="faq-intro">
+                <p class="eyebrow">Need a hand?</p>
+                <h1 id="page-title">Questions,<br><span>meet answers.</span></h1>
+                <p class="intro-copy">A quick guide to getting started with Takbuff, playing sepak takraw, and keeping your account in good shape.</p>
+                <a class="jump-link" href="#getting-started">Browse answers <span aria-hidden="true">↓</span></a>
+            </header>
 
-    <!-- Footer -->
+            <div class="faq-layout">
+                <aside class="faq-aside">
+                    <p class="aside-label">On this page</p>
+                    <a href="#getting-started">Getting started</a>
+                    <a href="#the-game">The game</a>
+                    <a href="#account-support">Account &amp; support</a>
+                </aside>
+
+                <div class="faq-sections">
+                    <section class="faq-section" id="getting-started" aria-labelledby="getting-started-title">
+                        <div class="section-heading"><p class="eyebrow">01 / First steps</p><h2 id="getting-started-title">Getting started</h2></div>
+                        <div class="questions">
+                            <details class="question" open><summary>What is Takbuff?</summary><p>Takbuff is a digital home for sepak takraw. Explore the game, follow its stories, and use the app to keep track of the ways you play.</p></details>
+                            <details class="question"><summary>How do I get started?</summary><p>Visit the Takbuff app, create an account with Google Sign-In, and follow the prompts. You can also browse the game guide without an account.</p></details>
+                            <details class="question"><summary>Do I need an account to use Takbuff?</summary><p>No. You can read the guides and learn the basics without signing in. An account is helpful when a feature needs to save your preferences or sync your activity.</p></details>
+                        </div>
+                    </section>
+
+                    <section class="faq-section" id="the-game" aria-labelledby="the-game-title">
+                        <div class="section-heading"><p class="eyebrow">02 / Read the court</p><h2 id="the-game-title">The game</h2></div>
+                        <div class="questions">
+                            <details class="question"><summary>What is sepak takraw?</summary><p>Sepak takraw is a fast-paced sport played over a net with a woven ball. Players use their feet, legs, torso, and head to keep the ball in the air; hands are off-limits.</p></details>
+                            <details class="question"><summary>How many players are on a team?</summary><p>It depends on the format. Regu is played with three players, doubles with two, and quad with four. Each format gives the rally a different rhythm.</p></details>
+                            <details class="question"><summary>How does scoring work?</summary><p>Every rally earns a point. A set is usually won by the first side to reach 15 points with a two-point advantage, subject to the match rules in use.</p></details>
+                        </div>
+                    </section>
+
+                    <section class="faq-section" id="account-support" aria-labelledby="account-support-title">
+                        <div class="section-heading"><p class="eyebrow">03 / We are listening</p><h2 id="account-support-title">Account &amp; support</h2></div>
+                        <div class="questions">
+                            <details class="question"><summary>How do I change or delete my account?</summary><p>Send us a request through the <a href="../contact/">contact page</a> using the email connected to your account. We may ask you to verify ownership before making changes.</p></details>
+                            <details class="question"><summary>I found a bug. Where should I report it?</summary><p>Open a <a href="https://github.com/aburv/tsts/issues/new?template=bug_report.md" target="_blank" rel="noopener noreferrer">bug report on GitHub</a> with what happened, what you expected, and the device or browser you were using.</p></details>
+                            <details class="question"><summary>How can I suggest a new feature?</summary><p>We would love to hear it. Share the idea in a <a href="https://github.com/aburv/tsts/issues/new?template=feature_request.md" target="_blank" rel="noopener noreferrer">feature request</a>, including the problem it would solve for players.</p></details>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <section class="faq-cta spt" aria-labelledby="cta-title">
+                <div><p class="eyebrow">Your question not listed?</p><h2 id="cta-title">Shot your doubts/Question<br>We are here answer</h2></div>
+                <a class="cta-link" href="../support/">Support<span aria-hidden="true">↗</span></a>
+            </section>
+            <section class="faq-cta" aria-labelledby="cta-title">
+                <div><p class="eyebrow">Still curious?</p><h2 id="cta-title">Ask the people<br>behind the ball.</h2></div>
+                <a class="cta-link" href="../contact/">Contact us <span aria-hidden="true">↗</span></a>
+            </section>
+        </section>
+    </main>
+
     <div class="container">
         <footer class="footer">
             <div class="fContainer">
@@ -53,8 +105,11 @@
                         </div>
                     </div>
 
-                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank"
-                            rel="noopener noreferrer">Aburv</a> | © <span id="year"></span> Takbuff</div>
+                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank" rel="noopener noreferrer">
+                            Aburv</a> | © 
+                            <span id="year"></span> 
+                            Takbuff
+                        </div>
                     <div class="spacer"></div>
                     <div id="scrollTopBtn" style="cursor: pointer; position: absolute; right: 0; bottom: 0;">
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
