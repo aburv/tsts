@@ -364,7 +364,6 @@ li a {
     border-bottom: 1px solid transparent;
     display: inline-flex;
     margin: 5px;
-    /* width: max-content; */
     cursor: pointer;
 }
 
