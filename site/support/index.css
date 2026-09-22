@@ -150,6 +150,10 @@ body.dark {
     transition: all 0.3s ease;
 }
 
+.form-trap{
+    display: none;
+}
+
 body.dark .faq-item {
     border-color: rgba(0, 255, 245, 0.2);
     background: rgba(0, 255, 245, 0.05);
