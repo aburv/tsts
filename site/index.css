@@ -15,7 +15,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    overscroll-behavior: none;
+    /* overscroll-behavior: none; */
 }
 
 html,
@@ -30,7 +30,8 @@ body {
     background-attachment: fixed;
     background: var(--bg);
     color: var(--ink);
-    overflow-x: hidden;
+    /* overflow-x: hidden;
+    overscroll-behavior: contain; */
 }
 
 .layout {
@@ -164,6 +165,9 @@ body.dark {
     opacity: 0;
     visibility: hidden;
     user-select: none;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
     z-index: 998;
     will-change: opacity;
     transition: opacity 0.5s ease, filter 0.5s ease;
