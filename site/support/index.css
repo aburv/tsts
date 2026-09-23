@@ -295,6 +295,14 @@ body.dark .form-group textarea:focus {
     accent-color: var(--accent);
 }
 
+.form-trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 .form-message {
     padding: 1rem;
     border-radius: 6px;
