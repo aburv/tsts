@@ -23,6 +23,7 @@ body {
     margin: 0;
     padding: 0;
     height: fit-content;
+    overflow-x: clip;
     scroll-behavior: smooth;
     font-family: 'Nunito', 'Nunito Fallback';
     background-image: radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 28rem),
@@ -92,7 +93,6 @@ body.dark {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    z-index: 1000;
     color: var(--accent);
     transition: transform 0.3s;
 }
@@ -100,6 +100,20 @@ body.dark {
 #theme-toggle:hover {
     background: var(--toggle-bg);
     transform: scale(1.2);
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    background-color: var(--bg);
+    z-index: 1000;
 }
 
 #intro-wrapper {
@@ -125,6 +139,30 @@ body.dark {
     height: 4rem;
     width: 30rem;
     text-shadow: 0 8px 28px var(--shadow);
+}
+
+.scroll-cue {
+    position: fixed;
+    font-size: 1rem;
+    opacity: 0.8;
+    animation: pulse 1.5s infinite;
+    bottom: 80px;
+    left: 47%;
+    color: var(--text);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(5px);
+    }
 }
 
 #text-current,
@@ -164,10 +202,6 @@ body.dark {
     object-fit: cover;
     opacity: 0;
     visibility: hidden;
-    user-select: none;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-drag: none;
     z-index: 998;
     will-change: opacity;
     transition: opacity 0.5s ease, filter 0.5s ease;
@@ -280,8 +314,10 @@ a:hover {
 
 .device {
     position: absolute;
-    z-index: 2;
+    z-index: 200;
     user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
 }
 
 .device.mobile {
@@ -330,6 +366,8 @@ a:hover {
 
 .logo {
     user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
     transition: height 0.45s cubic-bezier(.2, .8, .2, 1), filter 0.45s ease;
 }
 
@@ -367,6 +405,7 @@ a:hover {
     width: 60px;
     height: 116px;
     z-index: 3;
+    border-radius: 12%;
 }
 
 .deviceLayout.monitor:hover {
@@ -517,7 +556,7 @@ a:hover {
     letter-spacing: 0;
 }
 
-.feature-panel > p:not(.feature-kicker) {
+.feature-panel>p:not(.feature-kicker) {
     max-width: 28rem;
     color: var(--muted);
     line-height: 1.55;
@@ -582,7 +621,9 @@ a:hover {
 }
 
 @keyframes orbit-spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .mode-section {
@@ -646,7 +687,7 @@ a:hover {
     letter-spacing: 0;
 }
 
-.mode-panel > div > p:last-child {
+.mode-panel>div>p:last-child {
     max-width: 32rem;
     color: var(--muted);
     line-height: 1.6;
@@ -864,6 +905,7 @@ a:focus-visible,
     }
 
     .screen.monitor {
+        left: 6px;
         width: 219px;
         height: 110px;
         border-radius: 2px;
@@ -1013,6 +1055,7 @@ a:focus-visible,
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {

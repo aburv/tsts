@@ -20,16 +20,13 @@ prefersDark.addEventListener('change', e => {
     setTheme(e.matches ? 'dark' : 'light');
 });
 
-// ✅ Disable automatic scroll restoration (most important)
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
-// ✅ Force scroll to top before leaving or reloading the page
 window.addEventListener('beforeunload', () => {
     window.scrollTo(0, 0);
 });
 
-// Animation constants
 const SCREEN_WITH_CHANGE = 1000
 const BALL_ROTATION_DEGREES = 720;
 const BALL_ROTATION_DURATION = 2;
@@ -41,7 +38,6 @@ const TEXT_FADE_DELAY = 0.3;
 const TEXT_SLIDE_DISTANCE = 300;
 const TEXT_SLIDE_DURATION = 2;
 
-// Elements
 const ball = document.getElementById('ball');
 const introWrapper = document.getElementById('intro-wrapper');
 const sideImage = document.getElementById('side-image');
@@ -51,11 +47,9 @@ const textCurrent = document.getElementById('text-current');
 const textNext = document.getElementById('text-next');
 const textNext1 = document.getElementById('text-next-1');
 
-// Lock scroll initially
 document.documentElement.style.overflowY = 'hidden';
 document.body.style.overflowY = 'hidden';
 
-// Timeline for intro animation
 const tl = gsap.timeline({
     onComplete: () => {
         // Unlock scroll after animation
@@ -90,6 +84,10 @@ tl.add(() => {
     });
 }, ">");
 
+tl
+    .from('#theme-toggle, .header', { opacity: 0, y: -16, duration: .7 }, '-=.15')
+    .from('.scroll-cue', { opacity: 0, y: 12, duration: .5 }, '-=.2');
+
 tl.to(introWrapper, {
     opacity: 1,
     duration: TEXT_FADE_DURATION,
@@ -98,7 +96,6 @@ tl.to(introWrapper, {
 });
 
 if (window.innerWidth > SCREEN_WITH_CHANGE) {
-    // Move right for wide screens
     tl.to(introWrapper, {
         x: TEXT_SLIDE_DISTANCE,
         duration: TEXT_SLIDE_DURATION,
@@ -112,7 +109,6 @@ if (window.innerWidth > SCREEN_WITH_CHANGE) {
         }
     });
 } else {
-    // Move down for narrow screens
     tl.to(introWrapper, {
         y: TEXT_SLIDE_DISTANCE / 2,
         duration: TEXT_SLIDE_DURATION,
@@ -127,7 +123,6 @@ if (window.innerWidth > SCREEN_WITH_CHANGE) {
     });
 }
 
-// Setup scroll controlled animations for Scene 2
 function setupScrollAnimations() {
     gsap.registerPlugin(ScrollTrigger);
 
@@ -209,7 +204,7 @@ window.addEventListener('scroll', () => {
     const startScroll = zoneTop;
     const endScroll = zoneTop + zoneHeight - window.innerHeight;
 
-    const topOffset = window.innerWidth > SCREEN_WITH_CHANGE ? '50%' : '40%'; // Adjust as needed
+    const topOffset = window.innerWidth > SCREEN_WITH_CHANGE ? '50%' : '40%';
 
     if (scrollY >= startScroll && scrollY <= endScroll) {
         sideImage.style.position = 'fixed';
