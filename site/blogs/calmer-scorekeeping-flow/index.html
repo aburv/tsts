@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Designing a calmer scorekeeping flow | Takbuff</title>
+    <link rel="icon" href="../../assets/logo_takbuff_24.png">
+    <link rel="stylesheet" href="../../blogs/blog.css">
+</head>
+
+<body>
+    <div class="header">
+        <div style="width:73px"></div>
+        
+        <a href="../../">
+            <img id="ball" src="../../assets/logo_takbuff_164.png"alt="ball">
+        </a>
+        
+        <button id="theme-toggle" aria-label="Toggle color theme">🌙</button>
+    </div>
+
+    <main id="container">
+        <article class="article-shell">
+            <p class="article-breadcrumb"><a href="../">Blogs</a> / Engineering</p>
+            <header class="article-header">
+                <p class="article-label">Engineering</p>
+                <h1>Designing a calmer scorekeeping flow</h1>
+                <p class="article-dek">Notes on reducing taps without hiding the details players care about.</p>
+                <div class="article-meta"><span>22 August 2026</span><span>Gurunathan Ramalingam</span><span>7 min read</span>
+                </div>
+            </header>
+            <div class="article-body">
+                <p>Scorekeeping happens in the middle of play. That means the interface has to be quick enough for a
+                    busy hand and clear enough for a distracted eye. Our first version tried to show everything at once,
+                    and players told us it felt like work.</p>
+                <h2>Less choice at the right moment</h2>
+                <p>We mapped the common flow from the first serve to the end of a set. Most actions repeat, while only a
+                    few moments need detail. The new design makes the repeated actions obvious and keeps advanced
+                    controls one step away.</p>
+                <div class="article-callout">
+                    <p><strong>Design test:</strong> can a player record the next point without looking away from the
+                        court?</p>
+                </div>
+                <p>We also gave each state a stronger rhythm: confirm the point, show the new score, and return the
+                    focus to the next action. That rhythm made the experience feel quieter without making it less
+                    capable.</p>
+                <h2>A foundation for contributors</h2>
+                <p>The flow is now made from smaller, understandable pieces. Contributors can improve a score state, add
+                    an accessibility detail, or test a new shortcut without needing to redraw the whole experience.</p>
+            </div>
+            <nav class="article-footer">
+                <a href="../../blogs">← Back to all blogs</a>
+                <a href="../../blogs/pick-up-your-first-issue">
+                    Next article: How to pick up your first issue →
+                </a>
+            </nav>
+        </article>
+    </main>
+    <div class="container">
+        <footer class="footer">
+            <div class="fContainer">
+                <div class="footerInner">
+                    <div class="layout footer-columns">
+                        <div><a href="https://www.aburv.com"><img alt="Company Logo" src="../../assets/logo_company.svg"
+                                    class="company-logo"></a></div>
+                        <div class="spacer"></div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list1"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list2"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list3"></ul>
+                        </div>
+                    </div>
+                    <div class="footer-text">Powered by <a href="https://www.aburv.com">Aburv</a> | © <span
+                            id="year"></span> Takbuff</div>
+                    <div id="scrollTopBtn" style="cursor:pointer;position:absolute;right:0;bottom:0"><svg class="svg"
+                            viewBox="0 0 24 24" width="40" height="40">
+                            <path
+                                d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1 10h3l-4-4-4 4h3v4h2v-4z" />
+                        </svg></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="../../blogs/blog.js"></script>
+</body>
+
+</html>

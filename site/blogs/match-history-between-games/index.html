@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Making match history useful between games | Takbuff</title>
+    <link rel="icon" type="image/x-icon" href="../../assets/logo_takbuff_24.png">
+    <link rel="stylesheet" href="../../blogs/blog.css">
+</head>
+
+<body>
+    <div class="header">
+        <div style="width:73px"></div>
+        
+        <a href="../../">
+            <img id="ball" src="../../assets/logo_takbuff_164.png"alt="ball">
+        </a>
+        
+        <button id="theme-toggle" aria-label="Toggle color theme">🌙</button>
+    </div>
+
+    <main id="container">
+        <article class="article-shell">
+            <p class="article-breadcrumb"><a href="../">Blogs</a> / Feature update</p>
+            <header class="article-header">
+                <p class="article-label">Feature update</p>
+                <h1>Making match history useful between games</h1>
+                <p class="article-dek">How the community shaped a faster way to revisit rallies, scores, and turning
+                    points.</p>
+                <div class="article-meta"><span>18 September 2026</span><span>Gurunathan Ramalingam</span><span>6 min read</span>
+                </div>
+            </header>
+            <div class="article-body">
+                <p>A match does not end when the final point lands. Players remember the run that changed the set, the
+                    rally they want to study again, and the moment a teammate found a new rhythm. Our first match
+                    history prototype treated all of that as a single scorecard.</p>
+                <p>This month, we rebuilt it around the questions players actually ask after a game: When did the
+                    momentum shift? Which rallies did we save? What should we try differently next time?</p>
+                <div class="article-callout">
+                    <p><strong>The small change:</strong> match history now puts the shape of a game before its raw
+                        numbers, so a player can understand the story in a few seconds.</p>
+                </div>
+                <h2>From scorecard to story</h2>
+                <p>We started by making the timeline scannable. Set breaks, score changes, and saved rallies now sit on
+                    one quiet line instead of competing across separate screens. The visual hierarchy keeps the latest
+                    match close at hand while leaving older games easy to find.</p>
+                <p>That structure also gives contributors a useful place to add features. A future rally note or player
+                    tag can join the timeline without asking us to redesign the whole screen.</p>
+                <h2>What we learned in the open</h2>
+                <ul>
+                    <li>People wanted context before detail.</li>
+                    <li>Fast loading mattered more than an elaborate animation.</li>
+                    <li>The best feature requests included a real match and a real frustration.</li>
+                </ul>
+                <p>Match history is still growing, but its direction is clearer now. Thanks to everyone who shared a
+                    score, opened an issue, or simply told us where the experience felt slow.</p>
+            </div>
+            <nav class="article-footer" aria-label="More articles">
+                <a href="../../blogs">← Back to all blogs</a>
+                <a href="../../blogs/first-open-beta">
+                    Next article: What changed in our first open beta →
+                </a>
+            </nav>
+        </article>
+    </main>
+    <div class="container">
+        <footer class="footer">
+            <div class="fContainer">
+                <div class="footerInner">
+                    <div class="layout footer-columns">
+                        <div><a href="https://www.aburv.com" target="_blank" rel="noopener noreferrer"><img
+                                    alt="Company Logo" src="../../assets/logo_company.svg" class="company-logo" /></a>
+                        </div>
+                        <div class="spacer"></div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list"></ul>
+                        </div>
+                        <div class="footer-column" style="min-width: 90px;">
+                            <ul class="ul" id="list1"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list2"></ul>
+                        </div>
+                        <div class="footer-column">
+                            <ul class="ul" id="list3"></ul>
+                        </div>
+                    </div>
+                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank"
+                            rel="noopener noreferrer">Aburv</a> | © <span id="year"></span> Takbuff</div>
+                    <div class="spacer"></div>
+                    <div id="scrollTopBtn" style="cursor: pointer; position: absolute; right: 0; bottom: 0;"><svg
+                            class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
+                            <path
+                                d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1 10h3l-4-4-4 4h3v4h2v-4z" />
+                        </svg></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="../../blogs/blog.js"></script>
+</body>
+
+</html>

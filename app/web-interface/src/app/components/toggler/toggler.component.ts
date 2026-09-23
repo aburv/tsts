@@ -10,6 +10,6 @@ import { CommonModule } from '@angular/common';
 })
 export class TogglerComponent {
   selected = input.required<string>();
-  options = input.required<Array<string>>();
+  options = input.required<string[]>();
   childEmitter = output<string>();
 }

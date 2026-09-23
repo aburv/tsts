@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ButtonComponent } from './button.component';
+import { IconComponent } from '../icon/icon.component';
 
 
 describe('ButtonComponent', () => {
@@ -34,7 +35,7 @@ describe('ButtonComponent', () => {
 
   it('View: Should set the parent tag with input type css class', () => {
     componentRef.setInput("type", "type");
-    
+
     fixture.detectChanges();
 
     const parent = fixture.debugElement.query(By.css('.content'));
@@ -53,23 +54,23 @@ describe('ButtonComponent', () => {
   });
 
   it('View: Should set button icon and its properties without text', () => {
-    componentRef.setInput("icon", { name: 'iconName' });
+    componentRef.setInput("icon", 'iconName');
     componentRef.setInput("iconColor", "color");
     componentRef.setInput("iconSize", 2);
 
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.debugElement.query(By.css('app-icon'));
+    const icon = fixture.debugElement.query(By.directive(IconComponent)).componentInstance;
 
-    expect(icon.componentInstance.name()).toEqual({ name: 'iconName' });
-    expect(icon.componentInstance.size()).toBe(2);
-    expect(icon.componentInstance.fill()).toBe('color');
+    expect(icon.name()).toBe('iconName');
+    expect(icon.size()).toBe(2);
+    expect(icon.fill()).toBe('color');
     expect(title).toBe(null);
   });
 
   it('View: Should set button text with icon and its properties', () => {
-    componentRef.setInput("icon", { name: 'iconName' });
+    componentRef.setInput("icon", 'iconName');
     componentRef.setInput("iconColor", "color");
     componentRef.setInput("iconSize", 2);
     componentRef.setInput("text", "text");
@@ -77,11 +78,11 @@ describe('ButtonComponent', () => {
     fixture.detectChanges();
 
     const title = fixture.nativeElement.querySelector('.text');
-    const icon = fixture.debugElement.query(By.css('app-icon'));
+    const icon = fixture.debugElement.query(By.directive(IconComponent)).componentInstance;
 
     expect(title.textContent).toEqual("text");
-    expect(icon.componentInstance.name()).toEqual({ name: 'iconName' });
-    expect(icon.componentInstance.size()).toBe(2);
-    expect(icon.componentInstance.fill()).toBe('color');
+    expect(icon.name()).toBe('iconName');
+    expect(icon.size()).toBe(2);
+    expect(icon.fill()).toBe('color');
   });
 });

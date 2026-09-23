@@ -12,15 +12,162 @@
 </head>
 
 <body>
-    <button id="theme-toggle">🌙</button>
+    <div class="header">
+        <div style="width: 73px;"></div>
 
-    <a href="/">
-        <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
-    </a>
+        <a href="/">
+            <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
+        </a>
 
-    <div id="container">
-        <p>About Sepak takraw content goes here</p>
+        <button id="theme-toggle">🌙</button>    
     </div>
+
+        <button id="theme-toggle" type="button" aria-label="Switch to dark theme"
+            title="Switch to dark theme">🌙</button>
+    </div>
+
+    <main id="container">
+        <section class="game-hero" aria-labelledby="page-title">
+            <div class="hero-copy">
+                <p class="eyebrow">The art of the kick</p>
+                <h1 id="page-title">Meet <span>Sepaktakraw.</span></h1>
+                <p class="hero-lede">A kick-volleyball styled sport, badminton-sized court, a woven rattan ball, and
+                    three players who are not
+                    allowed to use their hands.</p>
+                <a class="hero-link" href="#learn">Start exploring <span aria-hidden="true">↓</span></a>
+            </div>
+            <div class="hero-ball" aria-hidden="true">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+                <img src="../assets/logo_takbuff_164.png" alt="" />
+                <span class="hero-note note-one">footwork</span><span class="hero-note note-two">focus</span>
+                <span class="hero-note note-three">flow</span>
+            </div>
+            <div class="hero-stats" aria-label="Sepaktakraw highlights">
+                <div><strong>3</strong><span>players / side</span></div>
+                <div><strong>15</strong><span>points to win</span></div>
+                <div><strong>0</strong><span>hands allowed</span></div>
+            </div>
+        </section>
+
+        <section class="content-section" id="learn" aria-labelledby="learn-title">
+            <div class="section-heading">
+                <p class="eyebrow">01 / The rhythm</p>
+                <h2 id="learn-title">One rally,<br><em>three touches.</em></h2>
+            </div>
+            <div class="rally-layout">
+                <div class="rally-steps" role="tablist" aria-label="Rally steps">
+                    <button class="rally-step is-active" role="tab" aria-selected="true" data-step="0">
+                        <span>01</span><b>Receive</b>
+                        <small>Control the serve with your feet, thigh, or head.</small>
+                    </button>
+                    <button class="rally-step" role="tab" aria-selected="false" data-step="1">
+                        <span>02</span><b>Set</b>
+                        <small>Lift the ball into the perfect window for your striker.</small>
+                    </button>
+                    <button class="rally-step" role="tab" aria-selected="false" data-step="2">
+                        <span>03</span><b>Strike</b>
+                        <small>Finish the point with speed, shape, and a fearless kick.</small>
+                    </button>
+                </div>
+                <div class="rally-stage" aria-live="polite">
+                    <div class="stage-grid"></div>
+                    <div class="stage-ball">●</div>
+                    <div class="stage-copy"><span id="step-number">01</span>
+                        <strong id="step-title">Receive</strong>
+                        <p id="step-description">Take the serve and keep the rally alive.</p>
+                    </div>
+                    <div class="stage-line"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section events-section" aria-labelledby="events-title">
+            <div class="section-heading compact-heading">
+                <p class="eyebrow">02 / Choose your format</p>
+                <h2 id="events-title">Three ways<br><em>to play.</em></h2>
+            </div>
+            <div class="events-layout">
+                <div class="event-list" role="tablist" aria-label="Sepaktakraw events">
+                    <button class="event-card is-active" role="tab" aria-selected="true" data-event="quad">
+                        <span class="event-number">01</span>
+                        <span><b>Quad</b><small>Four players</small></span>
+                        <span class="event-arrow">↗</span>
+                    </button>
+                    <button class="event-card" role="tab" aria-selected="false" data-event="doubles">
+                        <span class="event-number">02</span>
+                        <span><b>Doubles</b><small>Two players</small></span>
+                        <span class="event-arrow">↗</span>
+                    </button>
+                    <button class="event-card" role="tab" aria-selected="false" data-event="regu">
+                        <span class="event-number">03</span>
+                        <span><b>Regu</b><small>Three players</small></span>
+                        <span class="event-arrow">↗</span>
+                    </button>
+                </div>
+                <div class="event-detail" aria-live="polite"><span class="event-detail-number"
+                        id="event-number">01</span>
+                    <h3 id="event-name">Quad</h3>
+                    <p id="event-description">Four players share the court. One or more players can attack as strikers
+                        while the remaining players feed and build the rally.</p>
+                    <div class="role-pills" id="event-roles"><span>1+ strikers</span><span>feeders</span><span>fast
+                            rotations</span></div>
+                    <div class="player-dots" id="player-dots" aria-label="Four players"><i></i><i></i><i></i><i></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section rules-section" aria-labelledby="rules-title">
+            <div class="section-heading compact-heading">
+                <p class="eyebrow">02 / Read the court</p>
+                <h2 id="rules-title">Small court.<br><em>Big decisions.</em></h2>
+            </div>
+            <div class="rules-layout">
+                <div class="court-card">
+                    <div class="court" aria-label="Sepaktakraw court diagram">
+                        <span class="court-net">NET</span>
+                        <span class="court-center semi-cirlce top"> </span>
+                        <span class="court-center cirlce left"> </span>
+                        <span class="court-center cirlce right"> </span>
+                        <span class="court-center semi-cirlce bottom"> </span>
+                    </div>
+                    <div class="court-labels">
+                        <span><b>Tekong</b> serve specialist</span>
+                        <span><b>Feeder</b> sets the ball</span>
+                        <span><b>Striker</b> attacks the net</span>
+                    </div>
+                </div>
+                <div class="rule-tabs">
+                    <div class="tab-list" role="tablist" aria-label="Game rules">
+                        <button class="rule-tab is-active" role="tab" aria-selected="true"
+                            data-rule="scoring">Scoring</button>
+                        <button class="rule-tab" role="tab" aria-selected="false" data-rule="faults">Faults</button>
+                        <button class="rule-tab" role="tab" aria-selected="false" data-rule="roles">Roles</button>
+                    </div>
+                    <div class="rule-panel" id="rule-panel"><span class="rule-index">01</span>
+                        <h3>Every rally counts.</h3>
+                        <p>Rally point scoring means someone scores on every play. A set goes to 15 points, but you must
+                            win by two. At 14-17, the set continues until one side reaches 17.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quiz-section" aria-labelledby="quiz-title">
+            <div>
+                <p class="eyebrow">03 / Your turn</p>
+                <h2 id="quiz-title">Could you<br><em>read the rally?</em></h2>
+            </div>
+            <div class="quiz-card">
+                <p class="quiz-label">Quick check</p>
+                <h3>Which body part is off-limits?</h3>
+                <div class="quiz-options"><button data-answer="wrong">Head</button><button
+                        data-answer="correct">Hands</button><button data-answer="wrong">Feet</button></div>
+                <p class="quiz-feedback" aria-live="polite"></p>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
     <div class="container">

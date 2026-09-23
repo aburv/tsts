@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 
-export type option = { id: string, text: string }
+export interface option { id: string, text: string }
 
 @Component({
   selector: 'app-chip-set',
@@ -10,7 +10,7 @@ export type option = { id: string, text: string }
   imports: []
 })
 export class ChipSetComponent {
-  selected = input.required<Array<string>>();
-  options = input.required<Array<option>>();
+  selected = input.required<string[]>();
+  options = input.required<option[]>();
   childEmitter = output<string>();
 }

@@ -12,17 +12,72 @@
 </head>
 
 <body>
-    <button id="theme-toggle">🌙</button>
+    <div class="header">
+        <div style="width: 73px;"></div>
 
-    <a href="/">
-        <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
-    </a>
+        <a href="/">
+            <img id="ball" src="../assets/logo_takbuff_164.png" alt="ball" draggable="false" />
+        </a>
 
-    <div id="container">
-        <p>Terms and conditions content goes here.</p>
+        <button id="theme-toggle">🌙</button>    
     </div>
 
-    <!-- Footer -->
+    <div id="container">
+        <article class="policy">
+            <h1>Terms of Use</h1>
+            <p class="updated"><strong>Last updated:</strong> 13 September 2026</p>
+
+            <p>These Terms of Use ("Terms") govern your access to and use of the Takbuff mobile application, website, and related services (together, the "Service"). The Service is provided by Aburv ("Aburv," "we," "us," or "our"). By using the Service, you agree to these Terms and our <a href="../privacy/">Privacy Policy</a>.</p>
+
+            <p>If you do not agree to these Terms, do not access or use the Service. If you use the Service on behalf of another person or organization, you confirm that you have authority to accept these Terms on their behalf.</p>
+
+            <h2>1. The Service</h2>
+            <p>Takbuff is a digital service related to Sepak Takraw. Features may include game information, account features, community or interactive features, and other content that we make available from time to time. We may change, suspend, or discontinue any part of the Service, including features and content, at any time.</p>
+
+            <h2>2. Eligibility and accounts</h2>
+            <p>You must be legally able to enter into these Terms to use the Service. If you use the Service through Google Sign-In or another supported provider, you are responsible for keeping your account credentials secure and for all activity under your account. You must provide accurate information and tell us promptly if you believe your account has been accessed without permission.</p>
+
+            <h2>3. Acceptable use</h2>
+            <p>You agree to use the Service lawfully and respectfully. You must not:</p>
+            <ul>
+                <li>break any applicable law or regulation;</li>
+                <li>interfere with, disrupt, or attempt to gain unauthorized access to the Service or its systems;</li>
+                <li>copy, scrape, reverse engineer, modify, or redistribute the Service except where the law expressly permits it;</li>
+                <li>upload malware or other harmful code, or impersonate another person;</li>
+                <li>harass, threaten, abuse, or submit unlawful, deceptive, or infringing content; or</li>
+                <li>use the Service to send spam or to build a competing product without our written permission.</li>
+            </ul>
+
+            <h2>4. User content</h2>
+            <p>If the Service allows you to submit text, images, feedback, or other material ("User Content"), you retain ownership of your User Content. You grant us a worldwide, non-exclusive, royalty-free license to host, store, reproduce, and display it as necessary to operate, maintain, and improve the Service.</p>
+            <p>You are responsible for your User Content and confirm that you have the rights needed to submit it. We may remove User Content that we reasonably believe violates these Terms, applicable law, or the safety of the Service.</p>
+
+            <h2>5. Our intellectual property</h2>
+            <p>The Service and its content, including software, branding, logos, designs, and editorial material, belong to Aburv or its licensors and are protected by applicable intellectual property laws. We give you a limited, personal, non-exclusive, non-transferable, and revocable license to use the Service for its intended purpose. No ownership rights are transferred to you.</p>
+
+            <h2>6. Third-party services and links</h2>
+            <p>The Service may use or link to third-party services, including Google Sign-In, app stores, hosting providers, and external websites. Those services are governed by their own terms and privacy policies. We are not responsible for third-party services, content, availability, or practices.</p>
+
+            <h2>7. Availability and disclaimers</h2>
+            <p>We work to keep Takbuff useful and available, but the Service is provided on an "as is" and "as available" basis. To the extent permitted by law, we disclaim warranties that the Service will be uninterrupted, error-free, secure, or suitable for every purpose. Information about Sepak Takraw and other content is provided for general informational and entertainment purposes.</p>
+
+            <h2>8. Limitation of liability</h2>
+            <p>To the extent permitted by law, Aburv and its contributors will not be liable for indirect, incidental, special, consequential, or punitive damages, or for loss of data, profits, or goodwill, arising from or related to your use of the Service. Nothing in these Terms excludes or limits liability that cannot legally be excluded or limited.</p>
+
+            <h2>9. Suspension and termination</h2>
+            <p>You may stop using the Service at any time. We may suspend or terminate access if you violate these Terms, create risk for other users or the Service, or where needed to comply with law. Provisions that by their nature should continue after termination, including ownership, disclaimers, limitations of liability, and dispute-related provisions, will continue to apply.</p>
+
+            <h2>10. Changes to these Terms</h2>
+            <p>We may update these Terms when the Service or legal requirements change. We will post the updated Terms on this page and change the date above. Your continued use of the Service after an update means that you accept the revised Terms. If a change materially affects your rights, we will provide additional notice where appropriate.</p>
+
+            <h2>11. General terms</h2>
+            <p>If any part of these Terms is found to be unenforceable, the remaining provisions will remain in effect. Our failure to enforce a provision is not a waiver of our right to do so later. These Terms, together with the Privacy Policy and any terms presented for a particular feature, form the agreement between you and Aburv concerning the Service.</p>
+
+            <h2>12. Contact Us</h2>
+            <p>Questions about these Terms can be sent to <a class="cta-link" href="../contact/">Contact us <span aria-hidden="true">↗</span></a></p>
+        </article>
+    </div>
+
     <div class="container">
         <footer class="footer">
             <div class="fContainer">
@@ -49,8 +104,11 @@
                         </div>
                     </div>
 
-                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank"
-                            rel="noopener noreferrer">Aburv</a> | © <span id="year"></span> Takbuff</div>
+                    <div class="footer-text">Powered by <a href="https://www.aburv.com" target="_blank" rel="noopener noreferrer">
+                        Aburv</a> | © 
+                        <span id="year"></span> 
+                        Takbuff
+                    </div>
                     <div class="spacer"></div>
                     <div id="scrollTopBtn" style="cursor: pointer; position: absolute; right: 0; bottom: 0;">
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">

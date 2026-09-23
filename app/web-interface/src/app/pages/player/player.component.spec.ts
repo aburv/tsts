@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { PlayerComponent } from './player.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoaderService } from 'src/app/_services/loader.service';
-import { PlayerService } from 'src/app/_services/player.service';
+import { LoaderService } from '../../_services/loader.service';
+import { PlayerService } from '../../_services/player.service';
 import { of } from 'rxjs';
-import { UserDataService } from 'src/app/_services/UserData.service';
+import { UserDataService } from '../../_services/UserData.service';
 
 describe('PlayerComponent', () => {
   let component: PlayerComponent;
@@ -45,6 +45,11 @@ describe('PlayerComponent', () => {
     playerService.getInfo.calls.reset();
   });
 
+  afterEach(() => {
+    playerService.getInfo.and.stub();
+    userService.getMyPlayerId.and.stub();
+  });
+
   it('Should create the component', () => {
     expect(component).toBeTruthy();
   });
@@ -61,7 +66,7 @@ describe('PlayerComponent', () => {
         positions: []
       }
     }));
-    
+
     const generateTabSpy = spyOn(component, 'generateTab');
     const getMyPlayerIdSpy = spyOn(component, 'isMyPlayerProfile').and.returnValue(true);
 
@@ -137,7 +142,6 @@ describe('PlayerComponent', () => {
   });
 
   it('View: Should render player banner with correct info', () => {
-    fixture.detectChanges();
     component.player = {
       name: 'John Doe',
       dp: 'path/to/photo.jpg',
@@ -148,30 +152,31 @@ describe('PlayerComponent', () => {
       weight: "75"
     };
 
+    spyOn(component, 'ngOnInit').and.stub();
+
     fixture.detectChanges();
 
-    const nameEl = fixture.debugElement.query(By.css('.player-name')).nativeElement;
-    expect(nameEl.textContent).toContain('John Doe');
+    const nameEl = fixture.debugElement.query(By.css('.player-name'));
+    expect(nameEl.nativeElement.textContent).toContain('John Doe');
 
-    const imgEl = fixture.debugElement.query(By.css('img')).nativeElement;
-    expect(imgEl.src).toContain('path/to/photo.jpg');
+    const imgEl = fixture.debugElement.query(By.css('img'));
+    expect(imgEl.nativeElement.src).toContain('path/to/photo.jpg');
 
-    const positionsEl = fixture.debugElement.query(By.css('.sub')).nativeElement;
-    expect(positionsEl.textContent).toContain('Forward, Midfielder');
+    const positionsEl = fixture.debugElement.query(By.css('.sub'));
+    expect(positionsEl.nativeElement.textContent).toContain('Forward, Midfielder');
 
-    const locationEl = fixture.debugElement.query(By.css('.details div:nth-child(2)')).nativeElement;
-    expect(locationEl.textContent).toContain('New York');
+    const locationEl = fixture.debugElement.query(By.css('.details div:nth-child(2)'));
+    expect(locationEl.nativeElement.textContent).toContain('New York');
 
-    const ageEl = fixture.debugElement.query(By.css('.bio div:nth-child(1) b')).nativeElement;
-    expect(ageEl.textContent).toContain('25');
-    const heightEl = fixture.debugElement.query(By.css('.bio div:nth-child(2) b')).nativeElement;
-    expect(heightEl.textContent).toContain('180');
-    const weightEl = fixture.debugElement.query(By.css('.bio div:nth-child(3) b')).nativeElement;
-    expect(weightEl.textContent).toContain('75');
+    const ageEl = fixture.debugElement.query(By.css('.bio div:nth-child(1) b'));
+    expect(ageEl.nativeElement.textContent).toContain('25');
+    const heightEl = fixture.debugElement.query(By.css('.bio div:nth-child(2) b'));
+    expect(heightEl.nativeElement.textContent).toContain('180');
+    const weightEl = fixture.debugElement.query(By.css('.bio div:nth-child(3) b'));
+    expect(weightEl.nativeElement.textContent).toContain('75');
   });
 
   it('View: Should render tabs if multiple tabContent exists', () => {
-    fixture.detectChanges();
     component.player = {
       name: 'John Doe',
       dp: 'path/to/photo.jpg',
@@ -194,7 +199,6 @@ describe('PlayerComponent', () => {
   });
 
   it('View: Should call onTabSelect when tab clicked', () => {
-    fixture.detectChanges();
     component.player = {
       name: 'John Doe',
       dp: 'path/to/photo.jpg',
@@ -206,6 +210,7 @@ describe('PlayerComponent', () => {
     };;
     component.tabContent = ['Profile', 'Stats'];
     spyOn(component, 'onTabSelect');
+
     fixture.detectChanges();
 
     const tabs = fixture.debugElement.queryAll(By.css('.tab'));
@@ -234,7 +239,6 @@ describe('PlayerComponent', () => {
   });
 
   it('View: Should show warning if player not found', () => {
-    fixture.detectChanges();
     component.player = null;
 
     fixture.detectChanges();

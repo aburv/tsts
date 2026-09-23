@@ -15,6 +15,10 @@ export class DataService {
 
   get(path: string): Observable<any> {
     const url = Config.getDomain() + path;
+    if (PingService.isServerDown()) {
+      return of(null);
+    }
+
     return this.http.get(url, Config.getHeaders()).pipe(
       catchError((error: HttpErrorResponse) => {
         if (!(error.error instanceof ErrorEvent)) {

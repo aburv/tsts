@@ -167,19 +167,15 @@ function setupScrollAnimations() {
     });
 }
 
-// Select all deviceLayout divs and SVG icons
 const devices = document.querySelectorAll('.deviceLayout');
 const svgs = document.querySelectorAll('.psvg');
 
-// Track currently selected device
 let selectedDevice = null;
 
 function setSelected(deviceName) {
-    // Remove 'enlarge' from all SVGs
     svgs.forEach(svg => svg.classList.remove('enlarge'));
     selectedDevice = null;
 
-    // Add 'enlarge' to the SVG matching the selected device
     svgs.forEach(svg => {
         if (deviceName === 'Monitor' && svg.id === 'svg-browser') {
             svg.classList.add('enlarge');
@@ -250,7 +246,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Footer data
 const list = [
     { title: "Go to app", url: "https://www.takbuff.com", },
     { title: "Sepak takraw", url: "/about-game" },
@@ -301,7 +296,6 @@ function populateList(listId, items) {
         a.href = item.url;
         a.textContent = item.title;
 
-        // Check if the link is external
         const isExternal = /^https?:\/\//.test(item.url);
         if (isExternal) {
             a.target = "_blank";
@@ -318,10 +312,52 @@ populateList("list1", list1);
 populateList("list2", list2);
 populateList("list3", list3);
 
-// Set year dynamically
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Scroll to top button
 document.getElementById("scrollTopBtn").addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+const modeContent = {
+    players: {
+        number: "01",
+        label: "Players",
+        heading: "Stay in the flow.",
+        description: "Track the score, understand the rules, and return to the moments that changed the match."
+    },
+    organizers: {
+        number: "02",
+        label: "Organizers",
+        heading: "Keep the court moving.",
+        description: "Make match day easier with a shared view of fixtures, results, and the details everyone needs."
+    },
+    fans: {
+        number: "03",
+        label: "Fans",
+        heading: "See beyond the score.",
+        description: "Learn the rhythm of sepak takraw, follow the stories, and find a new reason to watch the next rally."
+    }
+};
+
+const modeTabs = document.querySelectorAll('.mode-tab');
+const modeNumber = document.getElementById('mode-number');
+const modeLabel = document.getElementById('mode-label');
+const modeHeading = document.getElementById('mode-heading');
+const modeDescription = document.getElementById('mode-description');
+
+modeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const content = modeContent[tab.dataset.mode];
+
+        modeTabs.forEach(item => {
+            const isActive = item === tab;
+            item.classList.toggle('is-active', isActive);
+            item.setAttribute('aria-selected', String(isActive));
+        });
+
+        modeNumber.textContent = content.number;
+        modeLabel.textContent = content.label;
+        modeHeading.textContent = content.heading;
+        modeDescription.textContent = content.description;
+    });
 });

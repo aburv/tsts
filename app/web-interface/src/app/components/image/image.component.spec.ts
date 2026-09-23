@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImageComponent } from './image.component';
 import { ComponentRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ImageService } from 'src/app/_services/image.service';
+import { ImageService } from '../../_services/image.service';
+import { ButtonComponent, ButtonType } from '../button/button.component';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
@@ -25,7 +26,7 @@ describe('ImageComponent', () => {
           useValue: imageService
         },
       ],
-      schemas:[CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   });
@@ -68,11 +69,11 @@ describe('ImageComponent', () => {
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
+
     expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
-    const buttonElement = fixture.debugElement.query(By.css('app-button'));
+    const buttonElement = fixture.debugElement.query(By.directive(ButtonComponent));
     const imageElement = fixture.debugElement.query(By.css('img'));
 
     expect(imageElement.attributes['referrerpolicy']).toBe('no-referrer');
@@ -89,14 +90,14 @@ describe('ImageComponent', () => {
 
   it('View: Should set content on no id', () => {
     componentRef.setInput("id", "");
-    componentRef.setInput("icon", { name: 'iconname' });
+    componentRef.setInput("icon", 'iconname');
     componentRef.setInput("size", "50");
     componentRef.setInput("alt", "alt");
 
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
+
     expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
@@ -105,9 +106,10 @@ describe('ImageComponent', () => {
 
     expect(imageElement).toBeNull();
 
-    expect(buttonElement.componentInstance.type()).toBe('secondary icon');
-    expect(buttonElement.componentInstance.icon()).toEqual({ name: 'iconname' });
-    expect(buttonElement.componentInstance.iconSize()).toBe(43.75);
+    const button = buttonElement.componentInstance as ButtonComponent;
+    expect(button.type()).toBe(ButtonType.SECONDARY_ICON);
+    expect(button.icon()).toBe('iconname' as never);
+    expect(button.iconSize()).toBe(43.75);
 
     expect(component.fetch).not.toHaveBeenCalled();
   });

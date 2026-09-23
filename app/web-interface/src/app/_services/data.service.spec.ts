@@ -14,8 +14,9 @@ describe('DataService', () => {
 
     beforeEach(() => {
         httpSpy = jasmine.createSpyObj('HttpClient', ['post', 'get']);
-        pingSpy = jasmine.createSpyObj('PingService', ['ping']);
+        pingSpy = jasmine.createSpyObj('PingService', ['ping', 'is']);
         userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
+        PingService.isServerDown.set(false);
 
         TestBed.configureTestingModule({
             providers: [
@@ -244,6 +245,29 @@ describe('DataService', () => {
 
         actual.subscribe(res => {
             expect(res).toBe(null);
+        })
+    });
+
+    it('Should return null when the server is done on get call', () => {
+        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
+
+        PingService.isServerDown.set(true);
+
+        const responseData = null;
+        httpSpy.get.and.returnValue(of(responseData));
+
+        const actual = service.get('url/path');
+
+        expect(httpSpy.get).not.toHaveBeenCalledOnceWith(
+            'https://localhost/api/url/path',
+            {
+                headers: { header: 'header' }
+            }
+        );
+
+        actual.subscribe(res => {
+            expect(res).toBe(responseData);
         })
     });
 });

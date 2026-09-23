@@ -24,8 +24,6 @@ describe('DialogComponent', () => {
   });
 
   it('View: Should set the dialog content on dialog frame', () => {
-    fixture.detectChanges();
-
     const frame = fixture.nativeElement.querySelector('.dialog-frame');
     expect(frame).not.toBe(null);
 

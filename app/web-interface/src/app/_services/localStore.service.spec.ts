@@ -69,6 +69,14 @@ describe('LocalDataService', () => {
     const service = new LocalDataService('key');
     service.setValues({ broken: true });
 
-    expect(errSpy).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith(
+      'Error encoding localStorage value for key "key":',
+      jasmine.any(Error)
+    );
+
+    const errorArg = (console.error as jasmine.Spy).calls.mostRecent().args[1];
+
+    expect(errorArg.message).toBe('fail');
+    errSpy.calls.reset();
   });
 });

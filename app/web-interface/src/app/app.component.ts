@@ -1,10 +1,11 @@
-import { Component, computed, ElementRef, Signal, signal, ViewChild, inject } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, Signal, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Observable, Observer, fromEvent, merge, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ThemeService } from './_services/theme.service';
 import { UserService } from './_services/user.service';
@@ -42,6 +43,10 @@ export class AppComponent {
 
   @ViewChild('searchInput') searchInput!: ElementRef;
 
+  private initTimeout?: ReturnType<typeof setTimeout>;
+  private searchTimeout?: ReturnType<typeof setTimeout>;
+  private readonly destroyRef = inject(DestroyRef);
+
   readonly Icon = Icon
   isInInit = true;
   isLoading = computed(() => {
@@ -57,7 +62,7 @@ export class AppComponent {
 
   searchText = signal<string>('');
 
-  searchResult = signal<{ [key: string]: any[] } | null>(null);
+  searchResult = signal<Record<string, any[]> | null>(null);
 
   thisyear = new Date().getFullYear();
 
@@ -100,6 +105,15 @@ export class AppComponent {
     const userService = this.userService;
     const deviceService = this.deviceService;
 
+    this.destroyRef.onDestroy(() => {
+      if (this.initTimeout) {
+        clearTimeout(this.initTimeout);
+      }
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+    });
+
     const isThemeDark = window.matchMedia("(prefers-color-scheme: dark)");
     this.themeService.initTheme(isThemeDark.matches);
     isThemeDark.addEventListener("change", (e: MediaQueryListEvent) => {
@@ -113,20 +127,20 @@ export class AppComponent {
         sub.next(navigator.onLine);
         sub.complete();
       })
-    ).subscribe((isOnline: boolean) => {
+    ).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((isOnline: boolean) => {
       this.isInternetDown.set(!isOnline)
     });
 
     deviceService.sendDeviceDetails()
 
-    userService.getUserData().subscribe({
+    userService.getUserData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        setTimeout(() => {
+        this.initTimeout = setTimeout(() => {
           this.isInInit = false;
         }, 1000);
       },
       error: () => {
-        setTimeout(() => {
+        this.initTimeout = setTimeout(() => {
           this.isInInit = false;
         }, 500);
       }
@@ -147,7 +161,7 @@ export class AppComponent {
   turnToSearching(): void {
     if (!this.isSearching()) {
       this.isSearching.set(true);
-      setTimeout(() => {
+      this.searchTimeout = setTimeout(() => {
         this.searchInput.nativeElement.focus();
       }, 500)
     }
