@@ -18,7 +18,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    overscroll-behavior: none;
+    /* overscroll-behavior: none; */
 }
 
 html,
@@ -30,7 +30,8 @@ body {
     font-family: 'Nunito', 'Nunito Fallback';
     background: var(--paper);
     color: var(--ink);
-    overflow-x: hidden;
+    /* overflow-x: hidden;
+    overscroll-behavior: contain; */
 }
 
 .layout {

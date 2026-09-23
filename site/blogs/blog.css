@@ -27,7 +27,7 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Nunito', 'Nunito Fallback';
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
 }
 
 body.light {
