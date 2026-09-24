@@ -26,7 +26,7 @@ describe('ImageComponent', () => {
           useValue: imageService
         },
       ],
-      schemas:[CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   });
@@ -69,15 +69,15 @@ describe('ImageComponent', () => {
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
-    expect(root.classes['user']).toBe(true);
+
+    expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
     const buttonElement = fixture.debugElement.query(By.directive(ButtonComponent));
     const imageElement = fixture.debugElement.query(By.css('img'));
 
     expect(imageElement.attributes['referrerpolicy']).toBe('no-referrer');
-    expect(imageElement.classes['user-img']).toBe(true);
+    expect(imageElement.classes['img']).toBe(true);
     expect(imageElement.attributes['src']).toBe('');
     expect(imageElement.attributes['width']).toBe('50');
     expect(imageElement.attributes['height']).toBe('50');
@@ -90,15 +90,15 @@ describe('ImageComponent', () => {
 
   it('View: Should set content on no id', () => {
     componentRef.setInput("id", "");
-    componentRef.setInput("icon", "iconname");
+    componentRef.setInput("icon", 'iconname');
     componentRef.setInput("size", "50");
     componentRef.setInput("alt", "alt");
 
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
-    expect(root.classes['user']).toBe(true);
+
+    expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
     const buttonElement = fixture.debugElement.query(By.css('app-button'));

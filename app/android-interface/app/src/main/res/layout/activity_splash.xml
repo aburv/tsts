@@ -150,7 +150,7 @@
             android:paddingEnd="25dp"
             android:paddingBottom="15dp"
             android:text="@string/text_retry"
-            android:textColor="@color/black"
+            android:textColor="?attr/dark"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

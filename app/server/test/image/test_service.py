@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 from werkzeug.datastructures import FileStorage
 
 from src.db_duo import PostgresDbDuo
-from src.image.data import ImageData
+from src.image.data import ImageData, ImageSize
 from src.image.service import ImageServices
 from src.responses import RuntimeException
 
@@ -124,7 +124,9 @@ class ImageServiceTest(unittest.TestCase):
     @mock.patch.object(PostgresDbDuo, 'get_records')
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
     @mock.patch.object(ImageData, '__init__', return_value=None)
+    @mock.patch.object(ImageSize, 'to_enum', return_value=ImageSize.DEFAULT)
     def test_should_return_c_original_image_str_on_get(self,
+                                                       mock_image_size,
                                                        mock_data,
                                                        mock_db,
                                                        mock_get_records,
@@ -141,7 +143,9 @@ class ImageServiceTest(unittest.TestCase):
         actual = service.get("img_id", None)
 
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'img_id'}, None)
+        mock_data.on_select.assert_called_once_with({'id': 'img_id'}, ImageSize.DEFAULT)
+
+        mock_image_size.assert_called_once_with(None)
 
         mock_data.get_filtering_fields.assert_called_once_with()
         mock_decompress.assert_called_once_with(b"image_compressed_bytes")
@@ -151,7 +155,9 @@ class ImageServiceTest(unittest.TestCase):
     @mock.patch.object(PostgresDbDuo, 'get_records', return_value=[])
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
     @mock.patch.object(ImageData, '__init__', return_value=None)
+    @mock.patch.object(ImageSize, 'to_enum', return_value=ImageSize.DEFAULT)
     def test_should_return_empty_image_str_when_no_data_from_db_on_get(self,
+                                                                       mock_image_size,
                                                                        mock_data,
                                                                        mock_db,
                                                                        mock_get_records,
@@ -165,7 +171,9 @@ class ImageServiceTest(unittest.TestCase):
         actual = service.get("img_id", "")
 
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'img_id'}, "")
+        mock_data.on_select.assert_called_once_with({'id': 'img_id'}, ImageSize.DEFAULT)
+
+        mock_image_size.assert_called_once_with('')
 
         assert not mock_data.get_filtering_fields.called
         assert not mock_decompress.called

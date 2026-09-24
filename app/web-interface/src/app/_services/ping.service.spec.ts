@@ -1,22 +1,38 @@
 import { of, throwError } from "rxjs";
 import { Config } from "../config";
 import { PingService } from "./ping.service";
+import { TestBed } from "@angular/core/testing";
+import { HttpClient } from "@angular/common/http";
 
 describe('PingService', () => {
+    let service: PingService;
+    let httpSpy: jasmine.SpyObj<HttpClient>;
+
+    beforeEach(() => {
+        httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
+
+        TestBed.configureTestingModule({
+            providers: [
+                PingService,
+                { provide: HttpClient, useValue: httpSpy },
+            ],
+        });
+
+        service = TestBed.inject(PingService);
+    });
+
     it('Should emit false on isServerDown 200 status on ping call', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(of(responseData));
-
-        const service = new PingService(httpSpy);
 
         service.ping();
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }
@@ -29,15 +45,13 @@ describe('PingService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(throwError(() => { return { status: 404, statusText: "Not Found" } }));
-
-        const service = new PingService(httpSpy);
 
         service.ping();
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }
@@ -50,15 +64,13 @@ describe('PingService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(throwError(() => { return { status: 0, statusText: "Not Found" } }));
-
-        const service = new PingService(httpSpy);
 
         service.ping();
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }
@@ -71,15 +83,13 @@ describe('PingService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(throwError(() => { return { status: 401, statusText: "Not Found" } }));
-
-        const service = new PingService(httpSpy);
 
         service.ping();
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/ping/',
+            {},
             {
                 headers: { header: 'header' }
             }

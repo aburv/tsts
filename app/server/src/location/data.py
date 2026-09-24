@@ -1,8 +1,22 @@
 """
 Location Data
 """
+from enum import Enum
+
 from src.config import Relation
-from src.data import DataModel
+from src.data import DataModel, FilterMeta
+
+
+class LocationFilterType(Enum):
+    """
+    Location Filter Type
+    """
+    ID = FilterMeta(querying_fields=['id'], filtering_fields=['l_name', 'lat', 'long'], record_count=1)
+    POINT = FilterMeta(querying_fields=['long', 'lat'], filtering_fields=['id'], record_count=1)
+    DEFAULT = FilterMeta(
+        querying_fields=['id'],
+        filtering_fields=['l_name', 'locality', 'l_city', 'l_state', 'l_country', 'l_pin', 'lat', 'long'],
+        record_count=1)
 
 
 class LocationData(DataModel):
@@ -34,24 +48,9 @@ class LocationData(DataModel):
         self.add_field('long', "long", str)
         self.add_field('lat', "lat", str)
 
-    def get_querying_fields(self) -> list:
-        if self._filter_type == "point":
-            return ['long', 'lat']
-        return ['id']
-
-    def get_record_count(self) -> int | None:
-        return 1
-
-    def on_select(self, data: dict, _filter_type: str):
+    def on_select(self, data: dict, _filter_type: LocationFilterType):
         """
         sets on select data
         """
         self.set_data(data, False)
         self._filter_type = _filter_type
-
-    def get_filtering_fields(self) -> list:
-        if self._filter_type == "id":
-            return ['l_name', 'lat', 'long']
-        if self._filter_type == "point":
-            return ['id']
-        return ['l_name', 'locality', 'l_city', 'l_state', 'l_country', 'l_pin', 'lat', 'long']

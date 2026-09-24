@@ -2,7 +2,7 @@
 Location Service
 """
 from src.db_duo import PostgresDbDuo
-from src.location.data import LocationData
+from src.location.data import LocationData, LocationFilterType
 from src.responses import RecordNotFoundException
 
 
@@ -27,7 +27,7 @@ class LocationServices:
         """
         Get location by id
         """
-        self._data.on_select({"id": location_id}, 'id')
+        self._data.on_select({"id": location_id}, LocationFilterType.ID)
         data = self._db.get_records()
         if len(data) > 0:
             return data[0]
@@ -37,5 +37,5 @@ class LocationServices:
         """
         Get location id by longitude and latitude
         """
-        self._data.on_select({"long": long, "lat": lat}, "point")
+        self._data.on_select({"long": long, "lat": lat}, LocationFilterType.POINT)
         return self._db.get_record_field_value()

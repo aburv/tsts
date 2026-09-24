@@ -2,23 +2,41 @@ import { of, throwError } from "rxjs";
 import { Config } from "../config";
 import { DataService } from "./data.service";
 import { PingService } from "./ping.service";
+import { HttpClient } from "@angular/common/http";
+import { UserDataService } from "./UserData.service";
+import { TestBed } from "@angular/core/testing";
 
 describe('DataService', () => {
+    let service: DataService;
+    let httpSpy: jasmine.SpyObj<HttpClient>;
+    let pingSpy: jasmine.SpyObj<PingService>;
+    let userDataSpy: jasmine.SpyObj<UserDataService>;
+
+    beforeEach(() => {
+        httpSpy = jasmine.createSpyObj('HttpClient', ['post', 'get']);
+        pingSpy = jasmine.createSpyObj('PingService', ['ping', 'is']);
+        userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
+        PingService.isServerDown.set(false);
+
+        TestBed.configureTestingModule({
+            providers: [
+                DataService,
+                { provide: HttpClient, useValue: httpSpy },
+                { provide: PingService, useValue: pingSpy },
+                { provide: UserDataService, useValue: userDataSpy },
+            ],
+        });
+
+        service = TestBed.inject(DataService);
+    });
+
     it('Should return the response data on 200 on get call', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(of(responseData));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
-        PingService.isServerDown.set(false);
-
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
-        
         const actual = service.get('url/path');
 
         expect(httpSpy.get).toHaveBeenCalledOnceWith(
@@ -33,19 +51,43 @@ describe('DataService', () => {
         })
     });
 
+    it('Should not call ping the server on 404 RecordNotFoundException on get call', () => {
+        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
+
+        httpSpy.get.and.returnValue(throwError(() => {
+            return {
+                status: 404,
+                statusText: 'Not Found',
+                error: {
+                    error: {
+                        type: 'RecordNotFoundException'
+                    }
+                }
+            }
+        }));
+
+        const actual = service.get('url/path');
+
+        expect(httpSpy.get).toHaveBeenCalledOnceWith(
+            'https://localhost/api/url/path',
+            {
+                headers: { header: 'header' }
+            }
+        );
+
+        actual.subscribe(res => {
+            expect(res).toBe('');
+        })
+
+        expect(pingSpy.ping).not.toHaveBeenCalledOnceWith();
+    });
+
     it('Should call ping the server on 404 on get call', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 404, statusText: "Not Found" } }));
-
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
-        PingService.isServerDown.set(false);
-
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
 
         const actual = service.get('url/path');
 
@@ -67,15 +109,7 @@ describe('DataService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 0, statusText: "Not Found" } }));
-
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
-        PingService.isServerDown.set(false);
-        
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
 
         const actual = service.get('url/path');
 
@@ -98,19 +132,12 @@ describe('DataService', () => {
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValues(
             throwError(() => { return { status: 401, statusText: "UnAuthenticated" } }),
             of(responseData)
         );
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
-        PingService.isServerDown.set(false);
-
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
         userDataSpy.refreshUserToken.and.returnValue(of(true))
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
 
         const actual = service.get('url/path');
 
@@ -132,16 +159,9 @@ describe('DataService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 401, statusText: "UnAuthenticated" } }));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
-        PingService.isServerDown.set(false);
-
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
         userDataSpy.refreshUserToken.and.returnValue(of(false))
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
 
         const actual = service.get('url/path');
 
@@ -163,15 +183,7 @@ describe('DataService', () => {
         spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
         httpSpy.get.and.returnValue(throwError(() => { return { status: 305, statusText: "Not Found" } }));
-
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping', 'isServerDown']);
-        PingService.isServerDown.set(false);
-        
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
 
         const actual = service.get('url/path');
 
@@ -195,22 +207,17 @@ describe('DataService', () => {
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(of(responseData));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
         PingService.isServerDown.set(false);
 
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
-        userDataSpy.refreshUserToken.and.returnValue(of(''))
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
+        userDataSpy.refreshUserToken.and.returnValue(of(true))
 
         const actual = service.post('url/path', {});
 
         expect(httpSpy.post).toHaveBeenCalledOnceWith(
             'https://localhost/api/url/path',
-            {data: {}},
+            { data: {} },
             {
                 headers: { header: 'header' }
             }
@@ -226,16 +233,11 @@ describe('DataService', () => {
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
-        const httpSpy = jasmine.createSpyObj('HttpClient', ['post']);
         httpSpy.post.and.returnValue(of(responseData));
 
-        const pingSpy = jasmine.createSpyObj('PingService', ['ping']);
         PingService.isServerDown.set(true);
 
-        const userDataSpy = jasmine.createSpyObj('UserDataService', ['refreshUserToken']);
-        userDataSpy.refreshUserToken.and.returnValue(of(''))
-
-        const service = new DataService(httpSpy, pingSpy, userDataSpy);
+        userDataSpy.refreshUserToken.and.returnValue(of(true))
 
         const actual = service.post('url/path', {});
 
@@ -243,6 +245,29 @@ describe('DataService', () => {
 
         actual.subscribe(res => {
             expect(res).toBe(null);
+        })
+    });
+
+    it('Should return null when the server is done on get call', () => {
+        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
+
+        PingService.isServerDown.set(true);
+
+        const responseData = null;
+        httpSpy.get.and.returnValue(of(responseData));
+
+        const actual = service.get('url/path');
+
+        expect(httpSpy.get).not.toHaveBeenCalledOnceWith(
+            'https://localhost/api/url/path',
+            {
+                headers: { header: 'header' }
+            }
+        );
+
+        actual.subscribe(res => {
+            expect(res).toBe(responseData);
         })
     });
 });

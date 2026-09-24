@@ -1,0 +1,10 @@
+name: Web App - Lint, Test
+
+on:
+  pull_request:
+    paths:
+      - "app/web-interface/**"
+
+jobs:
+  lint-and-test:
+    uses: ./.github/workflows/web-app-lint-test.yml

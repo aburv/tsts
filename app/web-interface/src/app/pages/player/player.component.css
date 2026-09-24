@@ -1,0 +1,87 @@
+.warning-layout{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.banner {
+    background-color: var(--bg);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    margin: 5px;
+}
+
+.player-name {
+    width: inherit;
+    margin: 5px;
+    padding: 5px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.center {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.space-around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.bio {
+    width: stretch;
+    font-size: medium;
+}
+
+.details {
+    margin-top: 10px;
+    text-align: center;
+}
+
+
+.sub {
+    font-size: 18px;
+}
+
+
+.container {
+    height: calc(100% - 260px);
+}
+
+.scrollable {
+    overflow-y: scroll;
+}
+
+.tab-container {
+    display: flex;
+    margin: 3px;
+    justify-content: center;
+    background-color: var(--bright);
+    border-radius: 20px;
+}
+
+.tab {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tab.full {
+    width: calc(100%)
+}
+
+.tab.selected {
+    font-weight: bold;
+    background-color: var(--primary);
+    color: var(--bright);
+    cursor: default;
+}

@@ -3,6 +3,7 @@ import { Component, Input, output, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'app-dialog',
+  standalone: true,
   imports: [
     CommonModule
   ],
@@ -15,9 +16,15 @@ export class DialogComponent {
 
   closeEmitter = output<boolean>();
 
-  onBackgroundClick(event: MouseEvent): void {
-    if (event.target === event.currentTarget) {
-      this.closeEmitter.emit(true);
+  onBackgroundClick(event: Event): void {
+    if (event instanceof MouseEvent) {
+      if (event.target === event.currentTarget) {
+        this.closeEmitter.emit(true);
+      }
+    } else if (event instanceof KeyboardEvent) {
+      if (event.key === 'Escape') {
+        this.closeEmitter.emit(true);
+      }
     }
   }
 }

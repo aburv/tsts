@@ -23,7 +23,7 @@ class AuthServices:
 
         self.client = AuthenticationServiceStub(channel)
 
-    def login(self, user_id: str) -> (str, str):
+    def login(self, user_id: str) -> tuple[str, str]:
         """
         Login call
         """
@@ -59,7 +59,7 @@ class AuthServices:
     def check_for_is_unauthenticated(e):
         return e.code() == grpc.StatusCode.UNAUTHENTICATED  # pragma: no cover
 
-    def refresh_token(self, id_token: str, access_token: str) -> (str, str):
+    def refresh_token(self, id_token: str, access_token: str) -> tuple[str, str]:
         """
         Refresh Token
         """
