@@ -5,39 +5,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>About | Takbuff</title>
-    <link rel="icon" type="image/x-icon" href="./assets/logo_takbuff_24.png">
+    <link rel="icon" type="image/x-icon" href="./assets/logo_app_24.png">
     <link rel="stylesheet" href="index.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
 <body>
-    <button id="theme-toggle">🌙</button>
+    <div class="header">
+        <button id="theme-toggle">🌙</button>
+    </div>
 
     <div style="height: 300vh; position: relative;" id="scrollZone">
         <div id="container">
-            <img id="ball" src="./assets/logo_takbuff.png" alt="ball" draggable="false" />
+            <img id="ball" src="./assets/logo_app_512.png" alt="ball" draggable="false" />
 
             <div id="side-image">
                 <div class="dLayout devices">
                     <div class="deviceLayout mobile" data-device="Mobile">
                         <img class="device mobile" src="./assets/phone.png" alt="Mobile Device" />
                         <div class="screen mobile">
-                            <img class="logo mobile" src="./assets/logo_takbuff_84.png" alt="Logo Mobile" />
+                            <img class="logo mobile" src="./assets/logo_app_80.png" alt="Logo Mobile" />
                         </div>
                     </div>
 
                     <div class="deviceLayout monitor" data-device="Monitor">
                         <img class="device monitor" src="./assets/monitor.png" alt="Monitor Device" />
                         <div class="screen monitor">
-                            <img class="logo monitor" src="./assets/logo_takbuff_84.png" alt="Logo Monitor" />
+                            <img class="logo monitor" src="./assets/logo_app_80.png" alt="Logo Monitor" />
                         </div>
                     </div>
 
                     <div class="deviceLayout tab" data-device="Tab">
                         <img class="device tab" src="./assets/tab.png" alt="Tablet Device" />
                         <div class="screen tab">
-                            <img class="logo tab" src="./assets/logo_takbuff_84.png" alt="Logo Tab" />
+                            <img class="logo tab" src="./assets/logo_app_80.png" alt="Logo Tab" />
                         </div>
                     </div>
                 </div>
@@ -65,6 +67,8 @@
                     </div>
                 </div>
             </div>
+
+             <div class="scroll-cue">Scroll ↓</div>
 
             <div class="platforms" id="platforms">
                 <svg class="psvg" id="svg-browser" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -108,6 +112,13 @@
         </section>
 
         <section class="feature-grid" aria-label="Takbuff features">
+            <article class="feature-panel feature-panel-warm">
+                <span class="feature-index">02</span>
+                <p class="feature-kicker">Learn the rhythm</p>
+                <h2>Start with<br>the basics.</h2>
+                <p>Understand the roles, the formats, and the decisions that make a rally feel like a conversation.</p>
+                <a href="/about-game" class="feature-link">Explore the game <span aria-hidden="true">↗</span></a>
+            </article>
             <article class="feature-panel feature-panel-main">
                 <span class="feature-index">01</span>
                 <div>
@@ -123,13 +134,6 @@
                 <div class="score-orbit" aria-hidden="true">
                     <span>15</span><small>POINTS</small><i></i>
                 </div>
-            </article>
-            <article class="feature-panel feature-panel-warm">
-                <span class="feature-index">02</span>
-                <p class="feature-kicker">Learn the rhythm</p>
-                <h2>Start with<br>the basics.</h2>
-                <p>Understand the roles, the formats, and the decisions that make a rally feel like a conversation.</p>
-                <a href="/about-game" class="feature-link">Explore the game <span aria-hidden="true">↗</span></a>
             </article>
             <article class="feature-panel feature-panel-outline">
                 <span class="feature-index">03</span>
@@ -177,7 +181,6 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <div class="container">
         <footer class="footer">
             <div class="fContainer">
