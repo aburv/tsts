@@ -19,16 +19,23 @@ struct SubScreenLayout: View {
     
     var body: some View{
         switch subScreen {
-        case .Dashboard: DashboardScreen(
-            isLoading: $isLoading,
-            screen: $screen,
-            subScreen: $subScreen,
-            dimen: layout.dashboardDimen
-        )
+            case .Dashboard: DashboardScreen(
+                isLoading: $isLoading,
+                screen: $screen,
+                subScreen: $subScreen,
+                dimen: layout.dashboardDimen
+            )
+            case .PLAYER: PlayerScreen(
+                // isLoading: $isLoading,
+                // screen: $screen,
+                subScreen: $subScreen,
+                dimen: layout.dashboardDimen
+//                isLoading: $isLoading, screen: $screen
+            )
         }
     }
 }
 
 enum SubScreen {
-    case Dashboard
+    case Dashboard, PLAYER
 }

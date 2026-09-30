@@ -26,7 +26,7 @@ struct HomeScreen: View {
     
     let layout: LayoutProperties
     
-    @State public var subScreen: SubScreen = .Dashboard
+    @State public var subScreen: SubScreen = .PLAYER
     
     @State private var isSearching = false
     @State private var searchText = ""
