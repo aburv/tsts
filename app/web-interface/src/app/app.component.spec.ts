@@ -40,7 +40,11 @@ describe('AppComponent', () => {
   ]);
   pingService.ping.and.returnValue(of(''));
 
-  const loaderService = jasmine.createSpyObj('LoaderService', ['getIsLoading']);
+  const loaderService = jasmine.createSpyObj('LoaderService', [
+    'getIsLoading',
+    'loadingOn',
+    'loadingOff',
+  ]);
 
   const themeService = jasmine.createSpyObj('ThemeService', [
     'initTheme',
@@ -64,6 +68,8 @@ describe('AppComponent', () => {
       }
     }
     
+    loaderService.loadingOn.calls.reset();
+    loaderService.loadingOff.calls.reset();
     userService.getUserData.calls.reset();
     deviceService.sendDeviceDetails.calls.reset();
     deviceService.getDeviceId.calls.reset();
@@ -139,7 +145,7 @@ describe('AppComponent', () => {
 
     expect(app).toBeTruthy();
 
-    expect(app.isInInit).toBe(true);
+    expect(app.isInInit()).toBe(true);
     expect(userService.getUserData).toHaveBeenCalledOnceWith();
     expect(deviceService.sendDeviceDetails).toHaveBeenCalledOnceWith();
     expect(themeService.initTheme).toHaveBeenCalledOnceWith(true);
@@ -149,7 +155,7 @@ describe('AppComponent', () => {
 
     tick(1100);
 
-    expect(app.isInInit).toBe(false);
+    expect(app.isInInit()).toBe(false);
 
     expect(media.addEventListener).toHaveBeenCalledWith('change', jasmine.any(Function))
   }));
@@ -210,13 +216,13 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
 
     expect(app).toBeTruthy();
-    expect(app.isInInit).toBe(true);
+    expect(app.isInInit()).toBe(true);
     expect(userService.getUserData).toHaveBeenCalledTimes(1);
 
     tick(500);
     fixture.detectChanges();
 
-    expect(app.isInInit).toBe(false);
+    expect(app.isInInit()).toBe(false);
   }));
 
   it('Should handle search text changes correctly', fakeAsync(() => {
@@ -327,7 +333,7 @@ describe('AppComponent', () => {
     expect(text.styles['text-align']).toBe('center');
     expect(text.styles['font-size']).toBe('30px');
 
-    expect(app.isInInit).toBe(true);
+    expect(app.isInInit()).toBe(true);
 
     const icon = root.children[1].queryAll(By.css('app-icon'));
     const breakLine = root.children[1].query(By.css('br'));

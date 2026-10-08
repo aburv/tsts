@@ -129,4 +129,9 @@ export class UserButtonComponent implements OnInit {
   setCurrentUser(): void {
     this.user.set(this.serviceData.getUser());
   }
+
+  onDialogClose(): void {
+    console.log('Dialog close event received');
+    this.isDialogOn = false;
+  }
 }

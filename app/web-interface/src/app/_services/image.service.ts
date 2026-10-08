@@ -37,7 +37,7 @@ export class ImageService {
     return of(null)
   }
 
-  getAndCachedImage(url: string): Observable<any> {
+  getAndCachedImage(url: string): Observable<ArrayBuffer> {
     const data = this.getFromCache(url);
     if (data) {
       return of(data);
@@ -47,13 +47,12 @@ export class ImageService {
         responseType: 'blob',
         ...Config.getHeaders(),
       }
-    ).pipe(tap(res => {
+    ).pipe(tap((res: ArrayBuffer) => {
       this.setCache(url, res);
-      return res;
     }));
   }
 
-  get(id: string, size: string): Observable<any> {
+  get(id: string, size: string): Observable<ArrayBuffer> {
     const url = Config.getDomain() + 'image/' + id + "/" + size;
 
     return this.getAndCachedImage(url);

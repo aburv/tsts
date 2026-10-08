@@ -9,9 +9,10 @@ from authentication_pb2 import LoginRequest, ValidateTokenRequest, RefreshTokenR
 from authentication_pb2_grpc import AuthenticationServiceStub
 from src.config import Config
 from src.responses import RuntimeException, SecurityException
+from src.services.contracts import AuthService
 
 
-class AuthServices:
+class AuthServices(AuthService):
     """
     Calls to Auth Service
     """

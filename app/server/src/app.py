@@ -2,11 +2,14 @@
 Data api wrapped under flask
 """
 import logging
+import os
 import time
 import uuid
 
 from flask import Flask, g, request
 
+from src.secret_manager import SecretStore
+from src.config import Config, SECRET_KEYS
 from src.app_check import PING_BLUEPRINT
 from src.caching import Caching
 from src.device.controller import DEVICE_BLUEPRINT
@@ -49,12 +52,27 @@ class App:
         logging.getLogger('flask').setLevel(logging.ERROR)  # pragma: no cover
         logging.getLogger('werkzeug').setLevel(logging.ERROR)  # pragma: no cover
 
+        LoggerAPI().info_entry("Logger initialized and setting request id before all request")  # pragma: no cover
+
         self._app.before_request(assign_request_id)  # pragma: no cover
 
-        Caching.init_cache(self._app)  # pragma: no cover
+        LoggerAPI().info_entry("Secret store are setting")  # pragma: no cover
 
-        from src.migrate_db import run_migrate  # pragma: no cover  # pylint: disable=import-outside-toplevel
-        run_migrate()  # pragma: no cover
+        provider = Config.create_secret_provider()  # pragma: no cover
+        secret_names = [name.strip() for name in os.getenv("SECRET_NAMES", "").split(",") if
+                        name.strip()]  # pragma: no cover
+        if not secret_names:  # pragma: no cover
+            if os.getenv("SECRET_PROVIDER", "").strip().lower() != "env":  # pragma: no cover
+                raise ValueError("SECRET_NAMES must list the configured JSON secrets")  # pragma: no cover
+            secret_names = list(SECRET_KEYS)  # pragma: no cover
+        secret_store = SecretStore(provider, secret_names=secret_names)  # pragma: no cover
+        Config.set_secret_store(secret_store)  # pragma: no cover
+        Config.validate_secret_store()  # pragma: no cover
+        self._app.config["SECRET_STORE"] = secret_store  # pragma: no cover
+
+        LoggerAPI().info_entry("Initializing cache")  # pragma: no cover
+
+        Caching.init_cache(self._app)  # pragma: no cover
 
     def _set_routes(self):
         """

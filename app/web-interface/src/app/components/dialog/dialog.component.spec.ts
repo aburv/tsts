@@ -31,6 +31,15 @@ describe('DialogComponent', () => {
     expect(content).not.toBe(null);
   });
 
+  it('View: Should focus the dialog frame when opened', () => {
+    fixture.detectChanges();
+
+    const frame = fixture.nativeElement.querySelector('.dialog-frame');
+
+    expect(frame.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(frame);
+  });
+
   it('Should emit close when background clicked (target === currentTarget)', () => {
     const spy = spyOn((component as any).closeEmitter, 'emit');
 

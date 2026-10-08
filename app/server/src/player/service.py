@@ -69,7 +69,7 @@ class PlayerServices:
             location_str = ""
             if location_id is not None:
                 location_data = LocationServices().get_location_by_id(location_id)
-                location_str = f"{location_data['city']}, {location_data['state']}, {location_data['country']}"
+                location_str = f"{location_data['l_city']}, {location_data['l_state']}, {location_data['l_country']}"
             player = {
                 "name": record["p_call_name"],
                 "dp": dp,

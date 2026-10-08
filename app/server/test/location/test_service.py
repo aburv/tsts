@@ -63,7 +63,7 @@ class LocationServiceTest(unittest.TestCase):
         actual = service.get_location_by_id("location_id")
 
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, LocationFilterType.ID)
+        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, LocationFilterType.DEFAULT)
 
         self.assertEqual(actual, {"data": "location_data"})
 
@@ -87,7 +87,7 @@ class LocationServiceTest(unittest.TestCase):
 
         mock_exception.assert_called_once_with('Location', 'location_id')
         mock_get_records.assert_called_once_with()
-        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, LocationFilterType.ID)
+        mock_data.on_select.assert_called_once_with({'id': 'location_id'}, LocationFilterType.DEFAULT)
 
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
     @mock.patch.object(LocationData, '__init__', return_value=None)

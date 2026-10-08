@@ -1,5 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Title } from '@angular/platform-browser';
+import { ImageComponent } from '../../components/image/image.component';
+import { Icon } from '../../components/icon/icon.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoaderService } from '../../_services/loader.service';
 import { PlayerService } from '../../_services/player.service';
@@ -21,10 +24,14 @@ interface Player {
   styleUrls: ['./player.component.css'],
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    ImageComponent,
   ]
 })
-export class PlayerComponent implements OnInit{
+export class PlayerComponent implements OnDestroy, OnInit {
+  readonly Icon = Icon;
+
+  title = inject(Title);
   router = inject(Router);
   route = inject(ActivatedRoute);
   loadingService = inject(LoaderService);
@@ -33,7 +40,7 @@ export class PlayerComponent implements OnInit{
 
   id = "";
 
-  player: Player | null = null
+  player: WritableSignal<Player | null> = signal(null);
 
   tabContent: string[] = ["Overview"];
   selectedTabIndex = signal(0)
@@ -43,14 +50,21 @@ export class PlayerComponent implements OnInit{
       this.id = param['id'];
 
       this.loadingService.loadingOn();
-      this.service.getInfo(this.id).subscribe((res) => {
-        if (res['data']) {
-          this.player = res['data']
+      this.service.getInfo(this.id).subscribe({
+        next: (res) => {
+          if (res?.data) {
+            this.player.set(res.data);
+          } else {
+            this.player.set(null);
+          }
+          this.title.setTitle((this.player()?.name || 'Player') + ' | Takbuff');
+          this.loadingService.loadingOff();
+        },
+        error: (error) => {
+          this.player.set(null);
+          this.loadingService.loadingOff();
         }
-        this.loadingService.loadingOff();
-      })
-
-      this.generateTab();
+      });
 
       if (this.isMyPlayerProfile()) {
         this.loadingService.loadingOn();

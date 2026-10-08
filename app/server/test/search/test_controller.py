@@ -62,6 +62,58 @@ class SearchControllerTest(unittest.TestCase):
         self.assertEqual(expected_response_data, actual_response.data)
 
     @mock.patch.object(APIResponse, 'get_response_json', return_value=[])
+    @mock.patch.object(ValidResponse, '__init__', return_value=None)
+    @mock.patch.object(ValidResponse, 'get_data', return_value=[])
+    @mock.patch.object(SearchServices, '__init__', return_value=None)
+    @mock.patch.object(SearchServices, 'search', return_value=[])
+    @mock.patch.object(AuthServices, '__init__', return_value=None)
+    @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
+    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
+    @mock.patch('flask_caching.Cache.get')
+    @mock.patch('flask_caching.Cache.set')
+    def test_should_return_list_of_result_response_and_not_cache_on_search_by_text(self,
+                                                                                   mock_cache_set,
+                                                                                   mock_cache_get,
+                                                                                   mock_get_tokens,
+                                                                                   mock_secret_config,
+                                                                                   mock_validate_token,
+                                                                                   mock_auth_service,
+                                                                                   mock_search,
+                                                                                   mock_service_init,
+                                                                                   mock_response_get_data,
+                                                                                   mock_response_init,
+                                                                                   mock_response
+                                                                                   ):
+        mock_cache_get.side_effect = Exception("Cache get error")
+        mock_cache_set.side_effect = Exception("Cache get error")
+
+        mock_secret_config.return_value = ['test_key']
+        expected_response_data = b'[]\n'
+
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/search/text",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                        'x-access-key': 'token',
+                                    },
+                                    )
+
+        mock_cache_get.assert_called_once_with('myapp:search/text:text/user_id:user_id')
+        mock_cache_set.assert_called_once_with('myapp:search/text:text/user_id:user_id', [], timeout=60)
+        mock_search.assert_called_once_with('text', 'user_id')
+        mock_service_init.assert_called_once_with()
+        mock_secret_config.assert_called_once_with()
+        mock_get_tokens.assert_called_once_with('token')
+        mock_auth_service.assert_called_once_with()
+        mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
+        mock_response_init.assert_called_once_with(domain='Search Results', detail='text', data=[])
+        mock_response_get_data.assert_called_once_with()
+        mock_response.assert_called_once_with()
+        self.assertEqual(expected_response_data, actual_response.data)
+
+    @mock.patch.object(APIResponse, 'get_response_json', return_value=[])
     @mock.patch.object(CachedResponse, '__init__', return_value=None)
     @mock.patch.object(SearchServices, '__init__', return_value=None)
     @mock.patch.object(SearchServices, 'search')

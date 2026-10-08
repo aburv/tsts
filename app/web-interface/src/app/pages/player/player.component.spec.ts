@@ -6,6 +6,8 @@ import { LoaderService } from '../../_services/loader.service';
 import { PlayerService } from '../../_services/player.service';
 import { of } from 'rxjs';
 import { UserDataService } from '../../_services/UserData.service';
+import { Icon } from '../../components/icon/icon.component';
+import { ImageComponent } from '../../components/image/image.component';
 
 describe('PlayerComponent', () => {
   let component: PlayerComponent;
@@ -142,7 +144,7 @@ describe('PlayerComponent', () => {
   });
 
   it('View: Should render player banner with correct info', () => {
-    component.player = {
+    component.player.set({
       name: 'John Doe',
       dp: 'path/to/photo.jpg',
       positions: ['Forward', 'Midfielder'],
@@ -150,34 +152,36 @@ describe('PlayerComponent', () => {
       age: "25",
       height: "180",
       weight: "75"
-    };
-
-    spyOn(component, 'ngOnInit').and.stub();
+    });
 
     fixture.detectChanges();
 
-    const nameEl = fixture.debugElement.query(By.css('.player-name'));
-    expect(nameEl.nativeElement.textContent).toContain('John Doe');
+    const nameEl = fixture.debugElement.query(By.css('.player-name')).nativeElement;
+    expect(nameEl.textContent).toContain('John Doe');
 
-    const imgEl = fixture.debugElement.query(By.css('img'));
-    expect(imgEl.nativeElement.src).toContain('path/to/photo.jpg');
+    const appImage = fixture.debugElement.query(By.directive(ImageComponent));
+    const imgEl = appImage.componentInstance as ImageComponent;
+    expect(imgEl.id()).toContain('path/to/photo.jpg');
+    expect(imgEl.icon()).toContain(Icon.PERSON);
+    expect(imgEl.size()).toBe(80);
+    expect(imgEl.alt()).toBe('John Doe-display-picture');
 
-    const positionsEl = fixture.debugElement.query(By.css('.sub'));
-    expect(positionsEl.nativeElement.textContent).toContain('Forward, Midfielder');
+    const positionsEl = fixture.debugElement.query(By.css('.sub')).nativeElement;
+    expect(positionsEl.textContent).toContain('Forward, Midfielder');
 
-    const locationEl = fixture.debugElement.query(By.css('.details div:nth-child(2)'));
-    expect(locationEl.nativeElement.textContent).toContain('New York');
+    const locationEl = fixture.debugElement.query(By.css('.details div:nth-child(2)')).nativeElement;
+    expect(locationEl.textContent).toContain('New York');
 
-    const ageEl = fixture.debugElement.query(By.css('.bio div:nth-child(1) b'));
-    expect(ageEl.nativeElement.textContent).toContain('25');
-    const heightEl = fixture.debugElement.query(By.css('.bio div:nth-child(2) b'));
-    expect(heightEl.nativeElement.textContent).toContain('180');
-    const weightEl = fixture.debugElement.query(By.css('.bio div:nth-child(3) b'));
-    expect(weightEl.nativeElement.textContent).toContain('75');
+    const ageEl = fixture.debugElement.query(By.css('.bio div:nth-child(1) b')).nativeElement;
+    expect(ageEl.textContent).toContain('25');
+    const heightEl = fixture.debugElement.query(By.css('.bio div:nth-child(2) b')).nativeElement;
+    expect(heightEl.textContent).toContain('180');
+    const weightEl = fixture.debugElement.query(By.css('.bio div:nth-child(3) b')).nativeElement;
+    expect(weightEl.textContent).toContain('75');
   });
 
   it('View: Should render tabs if multiple tabContent exists', () => {
-    component.player = {
+    component.player.set({
       name: 'John Doe',
       dp: 'path/to/photo.jpg',
       positions: ['Forward', 'Midfielder'],
@@ -185,7 +189,7 @@ describe('PlayerComponent', () => {
       age: "25",
       height: "180",
       weight: "75"
-    };
+    });
 
     component.tabContent = ['Profile', 'Stats', 'Tournaments'];
 
@@ -199,7 +203,7 @@ describe('PlayerComponent', () => {
   });
 
   it('View: Should call onTabSelect when tab clicked', () => {
-    component.player = {
+    component.player.set({
       name: 'John Doe',
       dp: 'path/to/photo.jpg',
       positions: ['Forward', 'Midfielder'],
@@ -207,7 +211,7 @@ describe('PlayerComponent', () => {
       age: "25",
       height: "180",
       weight: "75"
-    };;
+    });
     component.tabContent = ['Profile', 'Stats'];
     spyOn(component, 'onTabSelect');
 
@@ -221,7 +225,7 @@ describe('PlayerComponent', () => {
   });
 
   it('View: Should render empty container for tab 0', () => {
-    component.player = {
+    component.player.set({
       name: 'John Doe',
       dp: 'path/to/photo.jpg',
       positions: ['Forward', 'Midfielder'],
@@ -229,7 +233,7 @@ describe('PlayerComponent', () => {
       age: "25",
       height: "180",
       weight: "75"
-    };
+    });
     component.selectedTabIndex.set(0);
 
     fixture.detectChanges();
@@ -239,11 +243,28 @@ describe('PlayerComponent', () => {
   });
 
   it('View: Should show warning if player not found', () => {
-    component.player = null;
+    component.player.set(null);
 
     fixture.detectChanges();
 
-    const warningEl = fixture.debugElement.query(By.css('.warning-layout p')).nativeElement.textContent;
-    expect(warningEl).toContain('Player not found');
+    const warningLayout = fixture.debugElement.query(By.css('.warning-layout'));
+    const profileMark = warningLayout.query(By.css('.profile-mark'));
+    const profileHead = profileMark.query(By.css('.profile-head'));
+    const profileShoulders = profileMark.query(By.css('.profile-shoulders'));
+    const eyebrow = warningLayout.query(By.css('.eyebrow')).nativeElement;
+    const heading = warningLayout.query(By.css('h1')).nativeElement;
+    const description = warningLayout.query(By.css('.description')).nativeElement;
+
+    expect(warningLayout).toBeTruthy();
+
+    expect(profileMark).toBeTruthy();
+    expect(profileHead).toBeTruthy();
+    expect(profileShoulders).toBeTruthy();
+
+    expect(eyebrow.textContent.trim()).toBe('PLAYER PROFILE');
+    expect(heading.textContent.trim()).toBe('Player not found');
+    expect(description.textContent.trim()).toBe(
+      "We couldn't find a profile matching this page."
+    );
   });
 });
