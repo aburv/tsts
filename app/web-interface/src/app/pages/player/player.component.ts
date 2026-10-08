@@ -60,7 +60,7 @@ export class PlayerComponent implements OnDestroy, OnInit {
           this.title.setTitle((this.player()?.name || 'Player') + ' | Takbuff');
           this.loadingService.loadingOff();
         },
-        error: (error) => {
+        error: () => {
           this.player.set(null);
           this.loadingService.loadingOff();
         }
