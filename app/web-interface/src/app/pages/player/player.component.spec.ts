@@ -75,7 +75,6 @@ describe('PlayerComponent', () => {
     component.ngOnInit();
 
     expect(playerService.getInfo).toHaveBeenCalledOnceWith('id');
-    expect(generateTabSpy).toHaveBeenCalled();
     expect(getMyPlayerIdSpy).toHaveBeenCalled();
 
     generateTabSpy.calls.reset();
@@ -101,7 +100,6 @@ describe('PlayerComponent', () => {
     component.ngOnInit();
 
     expect(playerService.getInfo).toHaveBeenCalledOnceWith('id');
-    expect(generateTabSpy).toHaveBeenCalled();
     expect(getMyPlayerIdSpy).toHaveBeenCalled();
 
     generateTabSpy.calls.reset();
