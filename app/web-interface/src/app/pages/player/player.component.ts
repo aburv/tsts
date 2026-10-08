@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { ImageComponent } from '../../components/image/image.component';
@@ -28,7 +28,7 @@ interface Player {
     ImageComponent,
   ]
 })
-export class PlayerComponent implements OnDestroy, OnInit {
+export class PlayerComponent implements OnInit {
   readonly Icon = Icon;
 
   title = inject(Title);
