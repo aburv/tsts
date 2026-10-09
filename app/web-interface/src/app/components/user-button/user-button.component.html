@@ -8,6 +8,7 @@
     (keydown.space)="isDialogOn = true"
     tabindex="0"
     role="button"
+    style="cursor: pointer;"
     [attr.aria-label]="'Open profile dialog for ' + user()!.name"
     alt="{{ user()!.name }}-display-picture">
   </app-image>
@@ -18,28 +19,24 @@
 
 <ng-template #dialogContent>
   @if (user()) {
-    <div class="image-holder" 
-         (click)="isDialogOn = false"
-         (keydown.escape)="isDialogOn = false"
-         tabindex="0"
-         role="button"
-         aria-label="Close profile dialog">
-      <div class="center" style="flex-direction: column;">
-        <div class="center" style="margin-bottom: 25px;">
+    <div class="image-holder" aria-label="Close profile dialog">
+      <div class="profile-card">
+        <div class="profile-kicker">User PROFILE</div>
+        <div class="avatar-frame">
           <app-image 
             [size]="150" 
             [id]="user()!.dp" 
             [icon]="Icon.PERSON" 
-            [alt]="'{{ user()!.name }}-display-picture'">
+            [alt]="user()!.name + '-display-picture'">
           </app-image>
         </div>
-        <div class="center title"> {{ user()!.name }} </div>
-        <div class="center sub"> {{ user()!.email }} </div>
+        <div class="profile-name">{{ user()!.name }}</div>
+        <div class="profile-email">{{ user()!.email }}</div>
       </div>
     </div>
   }
 </ng-template>
 
 @if (user() && isDialogOn) {
-  <app-dialog [content]="dialogContent"></app-dialog>
+  <app-dialog [content]="dialogContent" (closeEmitter)="onDialogClose()"></app-dialog>
 }

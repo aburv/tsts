@@ -1,24 +1,24 @@
-@if (player) {
+@if (player(); as currentPlayer) {
 
 <div class="banner">
-  <div class="player-name">{{ player.name }}</div>
+  <div class="player-name">{{ currentPlayer.name }}</div>
 
-  <img 
-    height="80"
-    width="80"
-    [src]="player.dp"
-    [alt]="'{{ player.name }}-display-picture'" 
-  />
+  <app-image
+    [id]="currentPlayer.dp"
+    [icon]="Icon.PERSON"
+    [size]="80"
+    [alt]="currentPlayer.name + '-display-picture'">
+  </app-image>
 
   <div class="details">
-    <div class="sub">{{ player.positions.join(', ') }}</div>
-    <div>{{ player.location }}</div>
+    <div class="sub">{{ currentPlayer.positions.join(', ') }}</div>
+    <div>{{ currentPlayer.location }}</div>
   </div>
 
   <div class="bio space-around">
-    <div><b>{{ player.age }}</b> yrs</div>
-    <div><b>{{ player.height }}</b> in cm</div>
-    <div><b>{{ player.weight }}</b> in kg</div>
+    <div><b>{{ currentPlayer.age }}</b> yrs</div>
+    <div><b>{{ currentPlayer.height }}</b> in cm</div>
+    <div><b>{{ currentPlayer.weight }}</b> in kg</div>
   </div>
 </div>
 
@@ -66,7 +66,18 @@
 } @else {
 
 <div class="warning-layout">
-  <p>Player not found</p>
+  <div class="warning-panel">
+    <div class="profile-mark" aria-hidden="true">
+      <span class="profile-head"></span>
+      <span class="profile-shoulders"></span>
+    </div>
+
+    <div class="warning-copy">
+      <p class="eyebrow">PLAYER PROFILE</p>
+      <h1>Player not found</h1>
+      <p class="description">We couldn't find a profile matching this page.</p>
+    </div>
+  </div>
 </div>
 
 }

@@ -1,14 +1,12 @@
 <div class="screen">
-  @if (isInInit) {
+  @if (isInInit()) {
     <div class="splash-layout">
       <div>
-        <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
+        <img class="loader" src="../assets/logo_app_160.png" alt="logo" />
         <div style="text-align: center; font-size: 30px;">Takbuff</div>
       </div>
     </div>
-  }
-
-  @if (!isInInit) {
+  } @else  {
     <div class="content">
       <div class="header-layout">
         <div class="title" 
@@ -18,7 +16,7 @@
           tabindex="0"
           role="button"
           aria-label="Go to dashboard">
-          <img src="../assets/logo_app_164.png" alt="logo" />
+          <img src="../assets/logo_app_160.png" alt="logo" />
           <b style="color: #EEE;">Takbuff</b>
         </div>
 
@@ -57,41 +55,49 @@
       <div class="content-layout">
         <div class="side-bar-layout"></div>
 
-        @if (!isSearching()) {
-          <div class="main-layout">
-            <router-outlet></router-outlet>
-          </div>
-        }
-
         @if (isSearching()) {
           <div class="main-layout">
-            @if (searchResult(); as results) {
-              @if (results !== null) {
-                @for (key of objectKeys(results); track key) {
-                  @for (data of results[key]; track data) {
-                    <div class="search-result-item player"
-                      role="button" tabindex="0"
-                      (click)="navigate(key, data['player'])"
-                      (keyup.enter)="navigate(key, data['player'])" 
-                      (keyup.space)="navigate(key, data['player'])"
-                    >
+            @if (!isLoading()) {
+              @if (searchResult(); as results) {
+                @if (isResultsNonEmpty()) {
+                  @for (key of objectKeys(results); track key) {
+                    @for (data of results[key]; track data) {
+                      <div class="search-result-item player"
+                        role="button" tabindex="0"
+                        (click)="navigate(key, data['player'])"
+                        (keyup.enter)="navigate(key, data['player'])" 
+                        (keyup.space)="navigate(key, data['player'])"
+                      >
 
-                      <app-image
-                        [size]="80"
-                        [id]="data.dp"
-                        [icon]="Icon.PERSON"
-                        alt="{{ data.name }}-display-picture">
-                      </app-image>
+                        <app-image
+                          [size]="80"
+                          [id]="data.dp"
+                          [icon]="Icon.PERSON"
+                          alt="{{ data.name }}-display-picture">
+                        </app-image>
 
-                      <div class="center title">
-                        {{ data['u_name'] }}
+                        <div class="center title">
+                          {{ data['u_name'] }}
+                        </div>
+
                       </div>
-
-                    </div>
+                    }
                   }
+                } @else {
+                <div class="search-empty-state" role="status">
+                  <div class="search-empty-icon">
+                    <app-icon [name]="Icon.SEARCH" [size]="34"></app-icon>
+                  </div>
+                  <div class="search-empty-title">No results found</div>
+                  <div class="search-empty-copy">Try searching for another player.</div>
+                </div>
                 }
               }
             }
+          </div>
+        } @else {
+          <div class="main-layout">
+            <router-outlet></router-outlet>
           </div>
         }
 
@@ -148,7 +154,7 @@
 
   @if (isLoading()) {
     <div class="loader-layout">
-      <img class="loader" src="../assets/logo_app_164.png" alt="logo" />
+      <img class="loader" src="../assets/logo_app_160.png" alt="logo" />
     </div>
   }
 

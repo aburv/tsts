@@ -1,4 +1,16 @@
 .gitignore
+__pycache__/
+**/__pycache__/
+*.py[cod]
+**/*.py[cod]
+*.egg-info/
+*.log
+test/
+tests/
+venv/
+.venv/
+htmlcov/
+.coverage
 env/
 
 broker_pb2.py

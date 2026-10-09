@@ -40,7 +40,11 @@ describe('AppComponent', () => {
   ]);
   pingService.ping.and.returnValue(of(''));
 
-  const loaderService = jasmine.createSpyObj('LoaderService', ['getIsLoading']);
+  const loaderService = jasmine.createSpyObj('LoaderService', [
+    'getIsLoading',
+    'loadingOn',
+    'loadingOff',
+  ]);
 
   const themeService = jasmine.createSpyObj('ThemeService', [
     'initTheme',
@@ -64,6 +68,8 @@ describe('AppComponent', () => {
       }
     }
     
+    loaderService.loadingOn.calls.reset();
+    loaderService.loadingOff.calls.reset();
     userService.getUserData.calls.reset();
     deviceService.sendDeviceDetails.calls.reset();
     deviceService.getDeviceId.calls.reset();
@@ -139,7 +145,7 @@ describe('AppComponent', () => {
 
     expect(app).toBeTruthy();
 
-    expect(app.isInInit).toBe(true);
+    expect(app.isInInit()).toBe(true);
     expect(userService.getUserData).toHaveBeenCalledOnceWith();
     expect(deviceService.sendDeviceDetails).toHaveBeenCalledOnceWith();
     expect(themeService.initTheme).toHaveBeenCalledOnceWith(true);
@@ -149,7 +155,7 @@ describe('AppComponent', () => {
 
     tick(1100);
 
-    expect(app.isInInit).toBe(false);
+    expect(app.isInInit()).toBe(false);
 
     expect(media.addEventListener).toHaveBeenCalledWith('change', jasmine.any(Function))
   }));
@@ -210,13 +216,13 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
 
     expect(app).toBeTruthy();
-    expect(app.isInInit).toBe(true);
+    expect(app.isInInit()).toBe(true);
     expect(userService.getUserData).toHaveBeenCalledTimes(1);
 
     tick(500);
     fixture.detectChanges();
 
-    expect(app.isInInit).toBe(false);
+    expect(app.isInInit()).toBe(false);
   }));
 
   it('Should handle search text changes correctly', fakeAsync(() => {
@@ -322,12 +328,12 @@ describe('AppComponent', () => {
     const text = splashInner.children[1];
 
     expect(img.classes['loader']).toBe(true);
-    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_160.png');
     expect(text.nativeElement.textContent).toBe('Takbuff');
     expect(text.styles['text-align']).toBe('center');
     expect(text.styles['font-size']).toBe('30px');
 
-    expect(app.isInInit).toBe(true);
+    expect(app.isInInit()).toBe(true);
 
     const icon = root.children[1].queryAll(By.css('app-icon'));
     const breakLine = root.children[1].query(By.css('br'));
@@ -422,7 +428,7 @@ describe('AppComponent', () => {
     const img = root.children[0].children[0].children[0].query(By.css('img'));
     const bold = root.children[0].children[0].children[0].query(By.css('b'));
     expect(root.children[0].children[0].children[0].children[0]).toBe(img);
-    expect(img.attributes['src']).toBe('../assets/logo_app_164.png');
+    expect(img.attributes['src']).toBe('../assets/logo_app_160.png');
     expect(root.children[0].children[0].children[0].children[1]).toBe(bold);
     expect(bold.nativeElement.textContent).toBe('Takbuff');
 
@@ -539,7 +545,7 @@ describe('AppComponent', () => {
     const loaderLayout = root.children[3];
     const loaderImg = loaderLayout.query(By.css('img'));
     expect(loaderImg.classes['loader']).toBe(true);
-    expect(loaderImg.attributes['src']).toBe('../assets/logo_app_164.png');
+    expect(loaderImg.attributes['src']).toBe('../assets/logo_app_160.png');
   }));
 
   it('View: Should show links in the right sidebar', fakeAsync(() => {

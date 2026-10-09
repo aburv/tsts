@@ -4,10 +4,14 @@ import { PlayerComponent } from './pages/player/player.component';
 
 export const routes: Routes = [
   {
-    path: 'home', component: DashboardComponent,
+    path: 'home', 
+    component: DashboardComponent,
+    title: 'Home | Takbuff',
   },
   {
-    path: 'player/:id', component: PlayerComponent,
+    path: 'player/:id',
+    component: PlayerComponent,
+    title: 'Player | Takbuff',
   },
   { path: '**', redirectTo: 'home' },
 ];

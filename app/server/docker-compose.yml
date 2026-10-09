@@ -16,16 +16,6 @@ services:
       - postgresDb
       - redisCaching
       - auth
-  init:
-    build:
-      context: .
-      dockerfile: ./init/Dockerfile
-    container_name: init
-    env_file: server.env
-    links:
-      - "postgresDb:postgresDb"
-    depends_on:
-      - postgresDb
   postgresDb:
     image: postgres:latest
     container_name: postgresDb

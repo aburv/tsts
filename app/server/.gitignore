@@ -6,6 +6,7 @@
 .pytest_cache/
 node_modules/
 *.pyc
+__pycache__
 
 # ENV
 .env
