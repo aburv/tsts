@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataService } from './data.service';
 
@@ -6,9 +6,11 @@ import { DataService } from './data.service';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private api: DataService) { }
+  private api = inject(DataService);
+
 
   getUserData(): Observable<any> {
     return this.api.get('user/app')
   }
+
 }

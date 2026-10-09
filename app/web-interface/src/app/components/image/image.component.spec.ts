@@ -26,7 +26,7 @@ describe('ImageComponent', () => {
           useValue: imageService
         },
       ],
-      schemas:[CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
   });
@@ -65,20 +65,21 @@ describe('ImageComponent', () => {
     componentRef.setInput("icon", "icon");
     componentRef.setInput("size", 50);
     componentRef.setInput("alt", "alt");
+    component.imageData.set("data:image/png;base64,abc");
 
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
-    expect(root.classes['user']).toBe(true);
+
+    expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
     const buttonElement = fixture.debugElement.query(By.directive(ButtonComponent));
     const imageElement = fixture.debugElement.query(By.css('img'));
 
     expect(imageElement.attributes['referrerpolicy']).toBe('no-referrer');
-    expect(imageElement.classes['user-img']).toBe(true);
-    expect(imageElement.attributes['src']).toBe('');
+    expect(imageElement.classes['img']).toBe(true);
+    expect(imageElement.attributes['src']).toBe('data:image/png;base64,abc');
     expect(imageElement.attributes['width']).toBe('50');
     expect(imageElement.attributes['height']).toBe('50');
     expect(imageElement.attributes['alt']).toBe('alt');
@@ -90,15 +91,15 @@ describe('ImageComponent', () => {
 
   it('View: Should set content on no id', () => {
     componentRef.setInput("id", "");
-    componentRef.setInput("icon", "iconname");
+    componentRef.setInput("icon", 'iconname');
     componentRef.setInput("size", "50");
     componentRef.setInput("alt", "alt");
 
     fixture.detectChanges();
 
     const root = fixture.debugElement.query(By.css('div'));
-   
-    expect(root.classes['user']).toBe(true);
+
+    expect(root.classes['content']).toBe(true);
     expect(root.children.length).toBe(1);
 
     const buttonElement = fixture.debugElement.query(By.css('app-button'));
@@ -112,6 +113,38 @@ describe('ImageComponent', () => {
     expect(button.iconSize()).toBe(43.75);
 
     expect(component.fetch).not.toHaveBeenCalled();
+  });
+
+  it('View: Should set loading layout on id and no imageData', () => {
+    componentRef.setInput("id", "id");
+    componentRef.setInput("icon", 'iconname');
+    componentRef.setInput("size", 50);
+    componentRef.setInput("alt", "alt");
+    component.imageData.set(null);
+
+    fixture.detectChanges();
+
+    const root = fixture.debugElement.query(By.css('div'));
+
+    expect(root.classes['content']).toBe(true);
+    expect(root.children.length).toBe(1);
+
+    const buttonElement = fixture.debugElement.query(By.css('app-button'));
+    const imageElement = fixture.debugElement.query(By.css('img'));
+
+    const loadingElement = root.query(By.css('div'));
+
+    expect(imageElement).toBeNull();
+    expect(buttonElement).toBeNull();
+
+    expect(loadingElement.classes["loading-spinner"]).toBe(true);
+    expect(loadingElement.styles["width"]).toBe("70px");
+    expect(loadingElement.styles["height"]).toBe("70px");
+
+    const spinnerElement = loadingElement.query(By.css('div'));
+    expect(spinnerElement.classes["spinner"]).toBe(true);
+
+    expect(component.fetch).toHaveBeenCalledOnceWith("id", 50);
   });
 });
 

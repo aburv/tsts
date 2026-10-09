@@ -1,4 +1,4 @@
-export type GAuthUser = {
+export interface GAuthUser {
   sub: string;
   email: string;
   name: string;
@@ -7,6 +7,6 @@ export type GAuthUser = {
   lastName: string;
 }
 
-export type AppUser = {
+export interface AppUser {
   dp: string, name: string, email: string
 }

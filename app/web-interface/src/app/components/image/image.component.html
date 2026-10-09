@@ -1,11 +1,17 @@
-<div class="user">
-  @if (!id()) {
+<div class="content">
+  @if (id()) {
+    @if (imageData()) {
+    <img class="img" [attr.width]="size()" [attr.height]="size()" [src]="imageData()" referrerpolicy="no-referrer"
+      [attr.alt]="alt()" />
+    }
+    @else {
+    <div class="loading-spinner" [style.width.px]="size() + 20" [style.height.px]="size()+ 20">
+      <div class="spinner"></div>
+    </div>
+    }
+  }
+  @else {
   <app-button [type]="ButtonType.SECONDARY_ICON" [icon]="icon()" [iconSize]="size() - size()/8">
   </app-button>
-  }
-
-  @if (id()) {
-  <img class="user-img" [attr.width]="size()" [attr.height]="size()" [src]="imageData" referrerpolicy="no-referrer"
-    [attr.alt]="alt()" />
   }
 </div>

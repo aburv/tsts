@@ -2,11 +2,48 @@ import os
 import unittest
 from unittest import mock
 
-from src.config import Config, Table, Relation
+from src.config import Config, SECRET_KEYS, Table, Relation, Join
 from src.responses import DataValidationException
+from src.secret_manager import SecretStore
 
 
 class ConfigTest(unittest.TestCase):
+
+    def test_set_secret_store_marks_store_as_explicit(self):
+        secret_store = mock.Mock(spec=SecretStore)
+
+        with mock.patch.object(Config, "_secret_store", None), \
+                mock.patch.object(Config, "_secret_store_is_explicit", False):
+            Config.set_secret_store(secret_store)
+
+            self.assertIs(Config._secret_store, secret_store)
+            self.assertTrue(Config._secret_store_is_explicit)
+
+    def test_validate_secret_store_rejects_unconfigured_store(self):
+        with mock.patch.object(Config, "_secret_store", None):
+            with self.assertRaisesRegex(RuntimeError, "not been configured"):
+                Config.validate_secret_store()
+
+    def test_validate_secret_store_accepts_store_with_all_required_keys(self):
+        secret_store = mock.Mock(spec=SecretStore)
+        secret_store.contains.return_value = True
+
+        with mock.patch.object(Config, "_secret_store", secret_store):
+            Config.validate_secret_store()
+
+        self.assertEqual(len(SECRET_KEYS), secret_store.contains.call_count)
+        secret_store.contains.assert_has_calls([mock.call(key) for key in SECRET_KEYS])
+
+    def test_validate_secret_store_reports_missing_keys(self):
+        secret_store = mock.Mock(spec=SecretStore)
+        secret_store.contains.side_effect = lambda key: key == SECRET_KEYS[0]
+
+        with mock.patch.object(Config, "_secret_store", secret_store):
+            with self.assertRaisesRegex(ValueError, "Missing required secret keys") as context:
+                Config.validate_secret_store()
+
+        self.assertNotIn(SECRET_KEYS[0], str(context.exception))
+        self.assertIn(SECRET_KEYS[1], str(context.exception))
 
     @mock.patch.dict(os.environ, {
         "POSTGRES_DB": 'DB',
@@ -70,10 +107,10 @@ class ConfigTest(unittest.TestCase):
 
     @mock.patch.object(Config, "get_separator", return_value="separator_str")
     def test_should_return_tokens_on_get_tokens(self, mock_get_separator):
-        actual = Config.get_tokens("token1separator_strtoken2")
+        actual = Config.get_tokens("token1separator_strToken2")
 
         mock_get_separator.assert_called_once_with()
-        self.assertEqual(('token1', 'token2'), actual)
+        self.assertEqual(('token1', 'Token2'), actual)
 
     @mock.patch.object(DataValidationException, "__init__", return_value=None)
     @mock.patch.object(Config, "get_separator", return_value="separator_str")
@@ -81,7 +118,7 @@ class ConfigTest(unittest.TestCase):
                                                                                     mock_get_separator,
                                                                                     mock_exception):
         with self.assertRaises(DataValidationException):
-            actual = Config.get_tokens("token1token2")
+            Config.get_tokens("token1token2")
 
         mock_exception.assert_called_once_with('Invalid Tokens ', 'token1token2 list index out of range')
         mock_get_separator.assert_called_once_with()
@@ -102,7 +139,19 @@ class TableTest(unittest.TestCase):
         table = Table(expected, False)
         actual = table.get_name()
         self.assertEqual(expected, actual)
-        self.assertEqual(False, table.schema_type)
+        self.assertFalse(table.schema_type)
+
+
+class JoinTest(unittest.TestCase):
+    def test_should_return_join_table_name_on_get_name(self):
+        expected = "table_1 AS a INNER JOIN table_2 AS b ON a.id = b.id"
+        table = Join(Table("table_1", True),
+                     Table("table_2", True),
+                     "id",
+                     "id")
+        actual = table.get_name()
+        self.assertEqual(expected, actual)
+        self.assertTrue(table.schema_type)
 
 
 class RelationTest(unittest.TestCase):
@@ -119,13 +168,13 @@ class RelationTest(unittest.TestCase):
         self.assertEqual(Relation.DEVICE.value.get_name(), 'device')
         self.assertTrue(isinstance(Relation.IMAGE, Relation))
         self.assertEqual(Relation.IMAGE.value.get_name(), 't_image')
-        self.assertTrue(isinstance(Relation.LOCATION, Relation))
-        self.assertEqual(Relation.LOCATION.value.get_name(), 't_location')
-        self.assertTrue(isinstance(Relation.USER, Relation))
-        self.assertEqual(Relation.USER.value.get_name(), 't_user')
-        self.assertTrue(isinstance(Relation.UID, Relation))
-        self.assertEqual(Relation.UID.value.get_name(), 'user_identifier')
-        self.assertTrue(isinstance(Relation.ROLE, Relation))
-        self.assertEqual(Relation.ROLE.value.get_name(), 't_role')
-        self.assertTrue(isinstance(Relation.LOGIN, Relation))
-        self.assertEqual(Relation.LOGIN.value.get_name(), 't_login')
+        self.assertTrue(isinstance(Relation.FORM_FIELD, Relation))
+        self.assertEqual(Relation.FORM_FIELD.value.get_name(), 'form_field')
+        self.assertTrue(isinstance(Relation.OPTION_DATA, Relation))
+        self.assertEqual(Relation.OPTION_DATA.value.get_name(), 'data_option')
+        self.assertTrue(isinstance(Relation.OPTION, Relation))
+        self.assertTrue(isinstance(Relation.OPTION.value, Join))
+        self.assertTrue(isinstance(Relation.OPTION.value.table1, Table))
+        self.assertTrue(isinstance(Relation.OPTION.value.table2, Table))
+        self.assertTrue(isinstance(Relation.PLAYER, Relation))
+        self.assertEqual(Relation.PLAYER.value.get_name(), 'player')

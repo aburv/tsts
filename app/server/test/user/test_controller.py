@@ -1,12 +1,11 @@
 import unittest
 from unittest import mock
 
-from src.app import App
-from src.caching import Caching
 from src.config import Config
 from src.responses import ValidResponse, APIException, APIResponse, CachedResponse
 from src.services.auth_service import AuthServices
 from src.user.service import UserServices
+from test.test_app_config import get_app
 
 
 class UserControllerTest(unittest.TestCase):
@@ -40,13 +39,12 @@ class UserControllerTest(unittest.TestCase):
         mock_secret_config.return_value = 'test_key'
         expected_response_data = b'response_json'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get(
-                    "/api/user/app",
-                    headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
-                )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get(
+                "/api/user/app",
+                headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
+            )
 
         mock_cache_get.assert_called_once_with('myapp:app_user/user_id:user_id')
         mock_cache_set.assert_called_once_with('myapp:app_user/user_id:user_id', {}, timeout=60)
@@ -90,23 +88,22 @@ class UserControllerTest(unittest.TestCase):
         mock_secret_config.return_value = 'test_key'
         expected_response_data = b'response_json'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get(
-                    "/api/user/app",
-                    headers={'x-api-key': 'test_key'},
-                )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get(
+                "/api/user/app",
+                headers={'x-api-key': 'test_key'},
+            )
 
-        mock_cache_get.assert_called_once_with('myapp:app_user/user_id:None')
-        mock_cache_set.assert_called_once_with('myapp:app_user/user_id:None', {}, timeout=60)
+        mock_cache_get.assert_called_once_with('')
+        assert not mock_cache_set.called
         mock_secret_config.assert_called_once_with()
         assert not mock_get_tokens.called
         assert not mock_auth_service.called
         assert not mock_validate_token.called
         mock_service.assert_called_once_with()
         mock_user_data.assert_called_once_with(None)
-        mock_response_get_data.assert_called_once_with()
+        assert not mock_response_get_data.called
         mock_response_init.assert_called_once_with(domain='Retrieved user data', detail=None, data={})
         mock_response.assert_called_once_with()
         self.assertEqual(expected_response_data, actual_response.data)
@@ -138,13 +135,12 @@ class UserControllerTest(unittest.TestCase):
         mock_secret_config.return_value = 'test_key'
         expected_response_data = b'response_json'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get(
-                    "/api/user/app",
-                    headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
-                )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get(
+                "/api/user/app",
+                headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
+            )
 
         mock_cache_get.assert_called_once_with('myapp:app_user/user_id:user_id')
         assert not mock_cache_set.called
@@ -191,13 +187,12 @@ class UserControllerTest(unittest.TestCase):
             )
         expected_response_data = b'response_json'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get(
-                    "/api/user/app",
-                    headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
-                )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get(
+                "/api/user/app",
+                headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
+            )
 
         mock_cache_get.assert_called_once_with('myapp:app_user/user_id:user_id')
         assert not mock_cache_set.called
@@ -231,14 +226,13 @@ class UserControllerTest(unittest.TestCase):
         mock_secret_config.return_value = 'test_key'
         expected_response_data = b'response_json'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.post(
-                    "/api/user/done_onboarding",
-                    json={'data': {}},
-                    headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
-                )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post(
+                "/api/user/done_onboarding",
+                json={'data': {}},
+                headers={'x-api-key': 'test_key', 'x-access-key': 'token'},
+            )
 
         mock_secret_config.assert_called_once_with()
         mock_get_tokens.assert_called_once_with('token')

@@ -1,4 +1,4 @@
-import {Injectable, signal} from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -6,11 +6,11 @@ import {Injectable, signal} from '@angular/core';
 export class LoaderService {
   static status = signal<boolean>(false);
 
-  loadingOn(): void{
+  loadingOn(): void {
     LoaderService.status.set(true);
   }
 
-  loadingOff(): void{
+  loadingOff(): void {
     LoaderService.status.set(false);
   }
 }

@@ -9,9 +9,10 @@ from authentication_pb2 import LoginRequest, ValidateTokenRequest, RefreshTokenR
 from authentication_pb2_grpc import AuthenticationServiceStub
 from src.config import Config
 from src.responses import RuntimeException, SecurityException
+from src.services.contracts import AuthService
 
 
-class AuthServices:
+class AuthServices(AuthService):
     """
     Calls to Auth Service
     """
@@ -23,7 +24,7 @@ class AuthServices:
 
         self.client = AuthenticationServiceStub(channel)
 
-    def login(self, user_id: str) -> (str, str):
+    def login(self, user_id: str) -> tuple[str, str]:
         """
         Login call
         """
@@ -59,7 +60,7 @@ class AuthServices:
     def check_for_is_unauthenticated(e):
         return e.code() == grpc.StatusCode.UNAUTHENTICATED  # pragma: no cover
 
-    def refresh_token(self, id_token: str, access_token: str) -> (str, str):
+    def refresh_token(self, id_token: str, access_token: str) -> tuple[str, str]:
         """
         Refresh Token
         """

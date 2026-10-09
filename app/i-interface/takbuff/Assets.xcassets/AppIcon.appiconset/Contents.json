@@ -1,7 +1,31 @@
 {
   "images" : [
     {
-      "filename" : "logo_app.png",
+      "filename" : "logo_app_1024.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "logo_app_dark_1024.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "tinted"
+        }
+      ],
+      "filename" : "logo_app_mono.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

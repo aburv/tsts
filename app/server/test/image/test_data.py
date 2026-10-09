@@ -4,7 +4,30 @@ from unittest.mock import call, MagicMock
 
 from src.config import Relation
 from src.data import DataModel
-from src.image.data import ImageData
+from src.image.data import ImageData, ImageSize
+
+
+class ImageSizeTest(unittest.TestCase):
+
+    def test_should_return_image_size_80_from_str_80(self):
+        actual = ImageSize.to_enum("80")
+
+        self.assertEqual(actual, ImageSize._80)
+
+    def test_should_return_image_size_default_from_str_none(self):
+        actual = ImageSize.to_enum(None)
+
+        self.assertEqual(actual, ImageSize.DEFAULT)
+
+    def test_should_return_image_size_default_from_empty_str(self):
+        actual = ImageSize.to_enum("")
+
+        self.assertEqual(actual, ImageSize.DEFAULT)
+
+    def test_should_return_image_size_default_when_key_error(self):
+        actual = ImageSize.to_enum("30")
+
+        self.assertEqual(actual, ImageSize.DEFAULT)
 
 
 class ImageDataTest(unittest.TestCase):
@@ -65,10 +88,10 @@ class ImageDataTest(unittest.TestCase):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = ImageData()
 
-        image_data.on_select({}, "")
+        image_data.on_select({}, ImageSize.DEFAULT)
 
         mock_set.assert_called_once_with({}, False)
-        self.assertEqual(image_data._filter_type, "")
+        self.assertEqual(image_data._filter_type, ImageSize.DEFAULT)
 
     @mock.patch.object(DataModel, 'add_field')
     def test_should_add_image_fields_on_add_insert_fields(self, mock_add_field):
@@ -148,6 +171,7 @@ class ImageDataTest(unittest.TestCase):
     def test_should_return_one_on_get_record_count(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = ImageData()
+            image_data._filter_type = ImageSize._80
 
         actual = image_data.get_record_count()
 
@@ -156,6 +180,7 @@ class ImageDataTest(unittest.TestCase):
     def test_should_return_query_fields_on_get_querying_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = ImageData()
+            image_data._filter_type = ImageSize.DEFAULT
 
         actual = image_data.get_querying_fields()
 
@@ -164,7 +189,7 @@ class ImageDataTest(unittest.TestCase):
     def test_should_return_one_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = ImageData()
-            image_data._filter_type = "80"
+            image_data._filter_type = ImageSize._80
 
         actual = image_data.get_filtering_fields()
 
@@ -173,7 +198,7 @@ class ImageDataTest(unittest.TestCase):
     def test_should_return_two_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = ImageData()
-            image_data._filter_type = "160"
+            image_data._filter_type = ImageSize._160
 
         actual = image_data.get_filtering_fields()
 
@@ -182,7 +207,7 @@ class ImageDataTest(unittest.TestCase):
     def test_should_return_three_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = ImageData()
-            image_data._filter_type = "320"
+            image_data._filter_type = ImageSize._320
 
         actual = image_data.get_filtering_fields()
 
@@ -191,7 +216,7 @@ class ImageDataTest(unittest.TestCase):
     def test_should_return_c_original_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = ImageData()
-            image_data._filter_type = None
+            image_data._filter_type = ImageSize.DEFAULT
 
         actual = image_data.get_filtering_fields()
 

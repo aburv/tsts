@@ -5,7 +5,8 @@ import { Icon, IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'app-input-date',
-  imports:[
+  standalone: true,
+  imports: [
     IconComponent
   ],
   templateUrl: './input-date.component.html',

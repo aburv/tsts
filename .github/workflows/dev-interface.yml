@@ -1,4 +1,4 @@
-name: Deploy dev interface
+name: Web App - Lint, Test, Deploy dev
 
 on:
   push:
@@ -8,7 +8,11 @@ on:
       - 'app/web-interface/**'
 
 jobs:
+  lint-and-test:
+    uses: ./.github/workflows/web-app-lint-test.yml
+
   deploy:
+    needs: lint-and-test
     uses: ./.github/workflows/build-deploy-interface.yml
     with:
       BUILD_ENV: preprod

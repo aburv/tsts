@@ -35,7 +35,7 @@ describe('ButtonComponent', () => {
 
   it('View: Should set the parent tag with input type css class', () => {
     componentRef.setInput("type", "type");
-    
+
     fixture.detectChanges();
 
     const parent = fixture.debugElement.query(By.css('.content'));
@@ -54,7 +54,7 @@ describe('ButtonComponent', () => {
   });
 
   it('View: Should set button icon and its properties without text', () => {
-    componentRef.setInput("icon", "iconName");
+    componentRef.setInput("icon", 'iconName');
     componentRef.setInput("iconColor", "color");
     componentRef.setInput("iconSize", 2);
 
@@ -70,7 +70,7 @@ describe('ButtonComponent', () => {
   });
 
   it('View: Should set button text with icon and its properties', () => {
-    componentRef.setInput("icon", "iconName");
+    componentRef.setInput("icon", 'iconName');
     componentRef.setInput("iconColor", "color");
     componentRef.setInput("iconSize", 2);
     componentRef.setInput("text", "text");

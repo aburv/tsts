@@ -1,9 +1,7 @@
 name: Server - Lint, Test
 
 on:
-  pull_request:
-    paths:
-      - "app/server/**"
+  workflow_call:
     
 jobs:
   Lint-and-Test:

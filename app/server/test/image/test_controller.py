@@ -4,12 +4,12 @@ from unittest import mock
 
 from werkzeug.datastructures.file_storage import FileStorage
 
-from src.app import App
-from src.caching import Caching
 from src.config import Config
 from src.image.service import ImageServices
 from src.responses import ValidResponse, APIException, APIResponse, SecurityException
 from src.services.auth_service import AuthServices
+
+from test.test_app_config import get_app
 
 
 class ImageControllerTest(unittest.TestCase):
@@ -39,16 +39,15 @@ class ImageControllerTest(unittest.TestCase):
         data.seek(0)
         file = (data, 'name.png', 'image/png')
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.post("/api/image/add",
-                                         headers={
-                                             'x-api-key': 'test_key',
-                                             'x-access-key': 'token'
-                                         },
-                                         data={'file': file}
-                                         )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post("/api/image/add",
+                                     headers={
+                                         'x-api-key': 'test_key',
+                                         'x-access-key': 'token'
+                                     },
+                                     data={'file': file}
+                                     )
 
         mock_secret_config.assert_called_once_with()
         mock_get_tokens.assert_called_once_with('token')
@@ -88,15 +87,14 @@ class ImageControllerTest(unittest.TestCase):
         data.seek(0)
         file = (data, 'name.png', 'image/png')
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.post("/api/image/add",
-                                         headers={
-                                             'x-api-key': 'test_key',
-                                         },
-                                         data={'file': file}
-                                         )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post("/api/image/add",
+                                     headers={
+                                         'x-api-key': 'test_key',
+                                     },
+                                     data={'file': file}
+                                     )
 
         mock_secret_config.assert_called_once_with()
         assert not mock_get_tokens.called
@@ -138,16 +136,15 @@ class ImageControllerTest(unittest.TestCase):
         data.seek(0)
         file = (data, 'name.png', 'image/png')
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.post("/api/image/add",
-                                         headers={
-                                             'x-api-key': 'test_key',
-                                             'x-access-key': 'token'
-                                         },
-                                         data={'file': file}
-                                         )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post("/api/image/add",
+                                     headers={
+                                         'x-api-key': 'test_key',
+                                         'x-access-key': 'token'
+                                     },
+                                     data={'file': file}
+                                     )
 
         mock_secret_config.assert_called_once_with()
         mock_get_tokens.assert_called_once_with('token')
@@ -178,14 +175,49 @@ class ImageControllerTest(unittest.TestCase):
         mock_secret_config.return_value = ['test_key']
         expected_response_data = b'image_str'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get("/api/image/image_id/size",
-                                        headers={
-                                            'x-api-key': 'test_key',
-                                        }
-                                        )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/size",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                    }
+                                    )
+
+        mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/size:size')
+        mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/size:size', b'image_str', timeout=60)
+        mock_service_init.assert_called_once_with()
+        mock_get.assert_called_once_with('image_id', 'size')
+        self.assertEqual(actual_response.status_code, 200)
+        self.assertEqual(actual_response.content_type, 'image/png')
+        self.assertIsInstance(actual_response.data, bytes)
+        self.assertGreater(len(actual_response.data), 0)
+        self.assertEqual(expected_response_data, actual_response.data)
+
+    @mock.patch.object(ImageServices, '__init__', return_value=None)
+    @mock.patch.object(ImageServices, 'get', return_value=b'image_str')
+    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch('flask_caching.Cache.get')
+    @mock.patch('flask_caching.Cache.set')
+    def test_should_return_valid_image_str_by_size_and_not_cache_response_on_get_image_by_size(self,
+                                                                                               mock_cache_set,
+                                                                                               mock_cache_get,
+                                                                                               mock_secret_config,
+                                                                                               mock_get,
+                                                                                               mock_service_init
+                                                                                               ):
+        mock_cache_get.side_effect = Exception("Cache error")
+        mock_cache_set.side_effect = Exception("Cache error")
+
+        mock_secret_config.return_value = ['test_key']
+        expected_response_data = b'image_str'
+
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/size",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                    }
+                                    )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/size:size')
         mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/size:size', b'image_str', timeout=60)
@@ -214,14 +246,13 @@ class ImageControllerTest(unittest.TestCase):
         mock_secret_config.return_value = ['test_key']
         expected_response_data = b'image_str'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get("/api/image/image_id/size",
-                                        headers={
-                                            'x-api-key': 'test_key',
-                                        }
-                                        )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/size",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                    }
+                                    )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/size:size')
         assert not mock_cache_set.called
@@ -257,17 +288,16 @@ class ImageControllerTest(unittest.TestCase):
             )
         expected_response_data = b''
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get("/api/image/image_id/size",
-                                        headers={
-                                            'x-api-key': 'test_key',
-                                        }
-                                        )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/size",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                    }
+                                    )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/size:size')
-        mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/size:size', b'', timeout=60)
+        assert not mock_cache_set.called
         mock_service_init.assert_called_once_with()
         mock_get.assert_called_once_with('image_id', 'size')
         self.assertEqual(expected_response_data, actual_response.data)
@@ -294,15 +324,14 @@ class ImageControllerTest(unittest.TestCase):
         mock_secret_config.return_value = ['test_key']
         expected_response_data = b'image_str'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get("/api/image/image_id/",
-                                        headers={
-                                            'x-api-key': 'test_key',
-                                            'x-access-key': 'token',
-                                        }
-                                        )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                        'x-access-key': 'token',
+                                    }
+                                    )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/user_id:user_id')
         mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/user_id:user_id', b'image_str', timeout=60)
@@ -341,15 +370,14 @@ class ImageControllerTest(unittest.TestCase):
         mock_secret_config.return_value = ['test_key']
         expected_response_data = b'image_str'
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get("/api/image/image_id/",
-                                        headers={
-                                            'x-api-key': 'test_key',
-                                            'x-access-key': 'token',
-                                        }
-                                        )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                        'x-access-key': 'token',
+                                    }
+                                    )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/user_id:user_id')
         mock_secret_config.assert_called_once_with()
@@ -395,18 +423,17 @@ class ImageControllerTest(unittest.TestCase):
             )
         expected_response_data = b''
 
-        with mock.patch.object(Caching, 'init_cache'):
-            app = App.create()
-            with app.test_client() as c:
-                actual_response = c.get("/api/image/image_id/",
-                                        headers={
-                                            'x-api-key': 'test_key',
-                                            'x-access-key': 'token',
-                                        }
-                                        )
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                        'x-access-key': 'token',
+                                    }
+                                    )
 
         mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/user_id:user_id')
-        mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/user_id:user_id', b'', timeout=60)
+        assert not mock_cache_set.called
         mock_secret_config.assert_called_once_with()
         mock_get_tokens.assert_called_once_with('token')
         mock_auth_service.assert_called_once_with()
