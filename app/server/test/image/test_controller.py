@@ -194,6 +194,42 @@ class ImageControllerTest(unittest.TestCase):
         self.assertEqual(expected_response_data, actual_response.data)
 
     @mock.patch.object(ImageServices, '__init__', return_value=None)
+    @mock.patch.object(ImageServices, 'get', return_value=b'image_str')
+    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch('flask_caching.Cache.get')
+    @mock.patch('flask_caching.Cache.set')
+    def test_should_return_valid_image_str_by_size_and_not_cache_response_on_get_image_by_size(self,
+                                                                                               mock_cache_set,
+                                                                                               mock_cache_get,
+                                                                                               mock_secret_config,
+                                                                                               mock_get,
+                                                                                               mock_service_init
+                                                                                               ):
+        mock_cache_get.side_effect = Exception("Cache error")
+        mock_cache_set.side_effect = Exception("Cache error")
+
+        mock_secret_config.return_value = ['test_key']
+        expected_response_data = b'image_str'
+
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get("/api/image/image_id/size",
+                                    headers={
+                                        'x-api-key': 'test_key',
+                                    }
+                                    )
+
+        mock_cache_get.assert_called_once_with('myapp:image/r_id:image_id/size:size')
+        mock_cache_set.assert_called_once_with('myapp:image/r_id:image_id/size:size', b'image_str', timeout=60)
+        mock_service_init.assert_called_once_with()
+        mock_get.assert_called_once_with('image_id', 'size')
+        self.assertEqual(actual_response.status_code, 200)
+        self.assertEqual(actual_response.content_type, 'image/png')
+        self.assertIsInstance(actual_response.data, bytes)
+        self.assertGreater(len(actual_response.data), 0)
+        self.assertEqual(expected_response_data, actual_response.data)
+
+    @mock.patch.object(ImageServices, '__init__', return_value=None)
     @mock.patch.object(ImageServices, 'get')
     @mock.patch.object(Config, 'get_api_keys')
     @mock.patch('flask_caching.Cache.get')

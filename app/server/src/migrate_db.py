@@ -20,9 +20,8 @@ def get_resources_path() -> str:
     """
     get resources path
     """
-    current_path = os.path.dirname(os.path.abspath(""))
-
-    return os.path.join(current_path, RESOURCES_FOLDER)
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(os.path.dirname(current_path), RESOURCES_FOLDER)
 
 
 def get_ddl_files() -> list:
@@ -215,9 +214,11 @@ def run_migrate():
     Run migration script
     """
     is_done = False  # pragma: no cover
-    while not is_done:  # pragma: no cover
-        try:  # pragma: no cover
-            Migrate().run()  # pragma: no cover
-            is_done = True  # pragma: no cover
-        except DBConnectionException as _:  # pragma: no cover
-            pass  # pragma: no cover
+    try:  # pragma: no cover
+        Migrate().run()  # pragma: no cover
+        is_done = True  # pragma: no cover
+    except DBConnectionException as _:  # pragma: no cover
+        pass  # pragma: no cover
+
+if __name__ == "__main__":
+    run_migrate() # pragma: no cover

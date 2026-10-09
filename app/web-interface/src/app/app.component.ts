@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, ElementRef, inject, Signal, signal, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -48,11 +48,11 @@ export class AppComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly Icon = Icon
-  isInInit = true;
+  isInInit = signal(true);
   isLoading = computed(() => {
     return LoaderService.status();
   });
-  isServerDown: Signal<boolean> = computed(() => {
+  isServerDown = computed(() => {
     return PingService.isServerDown();
   });
 
@@ -136,12 +136,12 @@ export class AppComponent {
     userService.getUserData().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.initTimeout = setTimeout(() => {
-          this.isInInit = false;
+          this.isInInit.set(false);
         }, 1000);
       },
       error: () => {
         this.initTimeout = setTimeout(() => {
-          this.isInInit = false;
+          this.isInInit.set(false);
         }, 500);
       }
     });
@@ -151,10 +151,12 @@ export class AppComponent {
       distinctUntilChanged(),
       switchMap(query => {
         if (!query.trim()) return of({});
+        this.loaderService.loadingOn();
         return this.searchService.get(this.searchText());
       })
     ).subscribe((data: any) => {
       this.searchResult.set(data["data"])
+      this.loaderService.loadingOff();
     });
   }
 
@@ -176,11 +178,18 @@ export class AppComponent {
     this.isSearching.set(false);
   }
 
+  isResultsNonEmpty(): boolean {
+    const results = this.searchResult();
+    if (!results) return false;
+    return Object.keys(results).some(key => results[key].length > 0);
+  }
+
   navigateToDashboard(): void {
     this.router.navigate(['home']);
   }
 
   navigate(domain: string, id: string): void {
     this.router.navigate([domain, id]);
+    this.isSearching.set(false);
   }
 }

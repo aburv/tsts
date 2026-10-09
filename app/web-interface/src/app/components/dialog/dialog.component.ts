@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, output, TemplateRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, output, TemplateRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-dialog',
@@ -10,11 +10,18 @@ import { Component, Input, output, TemplateRef } from '@angular/core';
   templateUrl: 'dialog.component.html',
   styleUrls: ['dialog.component.css'],
 })
-export class DialogComponent {
+export class DialogComponent implements AfterViewInit {
   @Input()
   content!: TemplateRef<any>;
 
+  @ViewChild('dialogFrame')
+  dialogFrame!: ElementRef<HTMLDivElement>;
+
   closeEmitter = output<boolean>();
+
+  ngAfterViewInit(): void {
+    this.dialogFrame.nativeElement.focus();
+  }
 
   onBackgroundClick(event: Event): void {
     if (event instanceof MouseEvent) {

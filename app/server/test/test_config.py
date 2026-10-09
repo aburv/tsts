@@ -2,11 +2,48 @@ import os
 import unittest
 from unittest import mock
 
-from src.config import Config, Table, Relation, Join
+from src.config import Config, SECRET_KEYS, Table, Relation, Join
 from src.responses import DataValidationException
+from src.secret_manager import SecretStore
 
 
 class ConfigTest(unittest.TestCase):
+
+    def test_set_secret_store_marks_store_as_explicit(self):
+        secret_store = mock.Mock(spec=SecretStore)
+
+        with mock.patch.object(Config, "_secret_store", None), \
+                mock.patch.object(Config, "_secret_store_is_explicit", False):
+            Config.set_secret_store(secret_store)
+
+            self.assertIs(Config._secret_store, secret_store)
+            self.assertTrue(Config._secret_store_is_explicit)
+
+    def test_validate_secret_store_rejects_unconfigured_store(self):
+        with mock.patch.object(Config, "_secret_store", None):
+            with self.assertRaisesRegex(RuntimeError, "not been configured"):
+                Config.validate_secret_store()
+
+    def test_validate_secret_store_accepts_store_with_all_required_keys(self):
+        secret_store = mock.Mock(spec=SecretStore)
+        secret_store.contains.return_value = True
+
+        with mock.patch.object(Config, "_secret_store", secret_store):
+            Config.validate_secret_store()
+
+        self.assertEqual(len(SECRET_KEYS), secret_store.contains.call_count)
+        secret_store.contains.assert_has_calls([mock.call(key) for key in SECRET_KEYS])
+
+    def test_validate_secret_store_reports_missing_keys(self):
+        secret_store = mock.Mock(spec=SecretStore)
+        secret_store.contains.side_effect = lambda key: key == SECRET_KEYS[0]
+
+        with mock.patch.object(Config, "_secret_store", secret_store):
+            with self.assertRaisesRegex(ValueError, "Missing required secret keys") as context:
+                Config.validate_secret_store()
+
+        self.assertNotIn(SECRET_KEYS[0], str(context.exception))
+        self.assertIn(SECRET_KEYS[1], str(context.exception))
 
     @mock.patch.dict(os.environ, {
         "POSTGRES_DB": 'DB',

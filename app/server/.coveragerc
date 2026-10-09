@@ -5,3 +5,4 @@ omit =
     broker_pb2_grpc.py
     authentication_pb2.py
     authentication_pb2_grpc.py
+    src/services/contracts.py

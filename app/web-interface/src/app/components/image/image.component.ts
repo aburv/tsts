@@ -1,4 +1,4 @@
-import { Component, effect, input, inject } from '@angular/core';
+import { Component, effect, input, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ImageService } from '../../_services/image.service';
@@ -15,7 +15,7 @@ import { Icon } from '../icon/icon.component';
   templateUrl: './image.component.html',
   styleUrl: './image.component.css'
 })
-export class ImageComponent {
+export class ImageComponent implements OnDestroy {
   private image = inject(ImageService);
 
   readonly ButtonType = ButtonType
@@ -25,7 +25,8 @@ export class ImageComponent {
   size = input.required<number>();
   alt = input.required<string>();
 
-  imageData: string | null = null;
+  imageData= signal<string | null>(null);
+  private objectUrl: string | null = null;
 
   constructor() {
     effect(() => {
@@ -39,18 +40,39 @@ export class ImageComponent {
   }
 
   fetch(id: string, size: number): void {
-    let imgRes = ""
-    if (size < 80) {
+    let imgRes = size.toString();
+    if (size <= 80) {
       imgRes = "80"
     }
-    this.image.get(id, imgRes).subscribe(data => {
-      const blob = new Blob([data], { type: 'image/jpeg' });
+    else if (size <= 160) {
+      imgRes = "160"
+    }
+    else if (size <= 320) {
+      imgRes = "320"
+    }
+    else {
+      imgRes = ""
+    }
+    this.image.get(id, imgRes).subscribe({
+      next: (data: any) => {
+        const blob = new Blob([data]);
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imageData = reader.result as string;
-      };
-      reader.readAsDataURL(blob);
+        if (this.objectUrl !== null) {
+          URL.revokeObjectURL(this.objectUrl);
+        }
+        this.objectUrl = URL.createObjectURL(blob);
+        this.imageData.set(this.objectUrl);
+      },
+      error: (error) => {
+        console.error(`Failed to load image '${id}' at size ${imgRes}:`, error);
+        this.imageData.set(null);
+      }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.objectUrl !== null) {
+      URL.revokeObjectURL(this.objectUrl);
+    }
   }
 }

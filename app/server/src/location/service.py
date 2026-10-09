@@ -27,7 +27,7 @@ class LocationServices:
         """
         Get location by id
         """
-        self._data.on_select({"id": location_id}, LocationFilterType.ID)
+        self._data.on_select({"id": location_id}, LocationFilterType.DEFAULT)
         data = self._db.get_records()
         if len(data) > 0:
             return data[0]

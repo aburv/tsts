@@ -9,9 +9,10 @@ from broker_pb2 import Message
 from broker_pb2_grpc import BrokerServiceStub
 from src.config import Config
 from src.responses import RuntimeException
+from src.services.contracts import ProducerService
 
 
-class ProducerServices:
+class ProducerServices(ProducerService):
     """
     Calls to Producer Services
     """

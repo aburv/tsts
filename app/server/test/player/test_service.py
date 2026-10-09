@@ -152,7 +152,7 @@ class PlayerServiceTest(unittest.TestCase):
     @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
     @mock.patch.object(PlayerData, '__init__', return_value=None)
     @mock.patch.object(LocationServices, 'get_location_by_id',
-                       return_value={'city': 'city', 'state': 'state', 'country': 'country'})
+                       return_value={'l_city': 'city', 'l_state': 'state', 'l_country': 'country'})
     @mock.patch.object(LocationServices, '__init__', return_value=None)
     @mock.patch.object(OptionValueService, 'get_option_value_by_ids')
     @mock.patch.object(OptionValueService, '__init__', return_value=None)

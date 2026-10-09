@@ -5,12 +5,62 @@ import enum
 import os
 
 from src.responses import DataValidationException
+from src.secret_manager import SecretProvider, SecretProviderFactory, SecretStore
+
+
+SECRET_KEYS = (
+    "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_HOST",
+    "POSTGRES_PORT", "POSTGRES_SCHEMA_META", "POSTGRES_SCHEMA", "REDIS_USER",
+    "REDIS_PASSWORD", "REDIS_HOST", "REDIS_PORT", "BROKER_HOST", "BROKER_PORT",
+    "AUTH_HOST", "AUTH_PORT", "SEPARATOR", "WEB_CLIENT_KEY", "ANDROID_CLIENT_KEY",
+    "IOS_CLIENT_KEY", "KEY",
+)
 
 
 class Config:
     """
     Config class to set all envs
     """
+
+    _secret_store: SecretStore | None = None
+    _secret_store_is_explicit = False
+
+    @staticmethod
+    def create_secret_provider() -> SecretProvider:
+        """
+        Create secret provider based on env
+        """
+        provider = SecretProviderFactory.create()
+        return provider
+
+    @classmethod
+    def set_secret_store(cls, secret_store: SecretStore) -> None:
+        cls._secret_store = secret_store
+        cls._secret_store_is_explicit = True
+
+    @classmethod
+    def _get_configured_store(cls) -> SecretStore | None:
+        secret_name = os.getenv("SECRET_NAME", "").strip()
+        if not secret_name and not cls._secret_store_is_explicit:
+            return None
+        if cls._secret_store is None and secret_name:
+            cls._secret_store = SecretStore(cls.create_secret_provider(), [secret_name])
+        return cls._secret_store
+
+    @classmethod
+    def validate_secret_store(cls) -> None:
+        if cls._secret_store is None:
+            raise RuntimeError("Secret store has not been configured")
+        missing = [key for key in SECRET_KEYS if not cls._secret_store.contains(key)]
+        if missing:
+            raise ValueError(f"Missing required secret keys: {', '.join(missing)}")
+
+    @classmethod
+    def _get_secret(cls, secret_name: str) -> str:
+        secret_store = cls._get_configured_store()
+        if secret_store is not None:
+            return secret_store.get(secret_name)
+        return os.environ[secret_name]
 
     @staticmethod
     def get_db_parameters() -> dict:
@@ -19,13 +69,13 @@ class Config:
         :rtype:
         """
         return {
-            "db": os.environ.get("POSTGRES_DB"),
-            "user": os.environ.get("POSTGRES_USER"),
-            "pass": os.environ.get("POSTGRES_PASSWORD"),
-            "host": os.environ.get("POSTGRES_HOST"),
-            "port": os.environ.get("POSTGRES_PORT"),
-            "meta_schema": os.environ.get("POSTGRES_SCHEMA_META"),
-            "schema": os.environ.get("POSTGRES_SCHEMA")
+            "db": Config._get_secret("POSTGRES_DB"),
+            "user": Config._get_secret("POSTGRES_USER"),
+            "pass": Config._get_secret("POSTGRES_PASSWORD"),
+            "host": Config._get_secret("POSTGRES_HOST"),
+            "port": Config._get_secret("POSTGRES_PORT"),
+            "meta_schema": Config._get_secret("POSTGRES_SCHEMA_META"),
+            "schema": Config._get_secret("POSTGRES_SCHEMA")
         }
 
     @staticmethod
@@ -35,10 +85,10 @@ class Config:
         :rtype:
         """
         return {
-            "user": os.environ.get("REDIS_USER"),
-            "pass": os.environ.get("REDIS_PASSWORD"),
-            "host": os.environ.get("REDIS_HOST"),
-            "port": os.environ.get("REDIS_PORT"),
+            "user": Config._get_secret("REDIS_USER"),
+            "pass": Config._get_secret("REDIS_PASSWORD"),
+            "host": Config._get_secret("REDIS_HOST"),
+            "port": Config._get_secret("REDIS_PORT"),
         }
 
     @staticmethod
@@ -47,7 +97,7 @@ class Config:
         :return:
         :rtype:
         """
-        return os.environ.get("BROKER_HOST") + ":" + os.environ.get("BROKER_PORT")
+        return Config._get_secret("BROKER_HOST") + ":" + Config._get_secret("BROKER_PORT")
 
     @staticmethod
     def get_auth_connection_string() -> str:
@@ -55,7 +105,7 @@ class Config:
         :return:
         :rtype:
         """
-        return os.environ.get("AUTH_HOST") + ":" + os.environ.get("AUTH_PORT")
+        return Config._get_secret("AUTH_HOST") + ":" + Config._get_secret("AUTH_PORT")
 
     @staticmethod
     def get_separator() -> str:
@@ -63,7 +113,7 @@ class Config:
         :return:
         :rtype:
         """
-        return os.environ.get("SEPARATOR")
+        return Config._get_secret("SEPARATOR")
 
     @staticmethod
     def get_tokens(token: str) -> tuple[str, str]:
@@ -83,10 +133,10 @@ class Config:
         :rtype:
         """
         return [
-            os.environ.get("WEB_CLIENT_KEY"),
-            os.environ.get("ANDROID_CLIENT_KEY"),
-            os.environ.get("IOS_CLIENT_KEY"),
-            os.environ.get("KEY")
+            Config._get_secret("WEB_CLIENT_KEY"),
+            Config._get_secret("ANDROID_CLIENT_KEY"),
+            Config._get_secret("IOS_CLIENT_KEY"),
+            Config._get_secret("KEY")
         ]
 
 
