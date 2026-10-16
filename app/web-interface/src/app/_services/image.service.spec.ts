@@ -25,7 +25,7 @@ describe('ImageService', () => {
     it('Should make a post call on new call', () => {
         const responseData = { 'data': [] };
 
-        spyOn(Config, 'getDomain').and.returnValue('https://host/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://host/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { 'content-type': 'header', header: 'header' } });
         httpSpy.post.and.returnValue(of(responseData));
         PingService.isServerDown.set(false);
@@ -50,7 +50,7 @@ describe('ImageService', () => {
 
     it('Should not make a post call when server is down on new call', () => {
         const responseData = {}
-        spyOn(Config, 'getDomain').and.returnValue('https://host/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://host/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { 'content-type': 'header', header: 'header' } });
         httpSpy.post.and.returnValue(of(responseData));
         PingService.isServerDown.set(true);
@@ -68,14 +68,14 @@ describe('ImageService', () => {
 
     it('Should make a getAndCachedImage with url call on get call', () => {
         const expectedResult: ArrayBuffer = new ArrayBuffer(8);
-        const getDomainSpy = spyOn(Config, 'getDomain').and.returnValue('https://host/api/');
+        const getNameSpaceSpy = spyOn(Config, 'getNameSpace').and.returnValue('https://host/api/');
 
         const getAndCachedImageSpy = spyOn(service, 'getAndCachedImage');
         getAndCachedImageSpy.and.returnValue(of(expectedResult));
 
         const actual = service.get('id', '320');
 
-        expect(getDomainSpy).toHaveBeenCalledOnceWith();
+        expect(getNameSpaceSpy).toHaveBeenCalledOnceWith();
 
         expect(getAndCachedImageSpy).toHaveBeenCalledOnceWith('https://host/api/image/id/320');
 
@@ -83,7 +83,7 @@ describe('ImageService', () => {
             expect(res).toEqual(expectedResult);
         })
 
-        getDomainSpy.calls.reset();
+        getNameSpaceSpy.calls.reset();
     });
 
     it('Should make a get call and set cache when no data in cache on getAndCachedImage call', () => {

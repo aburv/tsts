@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Config } from '../config';
 
 function getPingUrl(): string {
-  return Config.getDomain() + 'ping/';
+  return Config.getNameSpace() + 'ping/';
 }
 
 @Injectable({

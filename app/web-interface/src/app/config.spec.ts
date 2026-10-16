@@ -8,17 +8,15 @@ describe('Config', () => {
     });
 
     it('Should return domain url', () => {
-        expect(Config.getDomain()).toBe('/api/');
+        expect(Config.getNameSpace()).toBe('/api/');
     });
 
     it('Should return site domain', () => {
-        spyOn(Config, 'getEnv').and.returnValue({ siteDomain: 'http://localhost' } as any);
-
-        expect(Config.getSiteDomain()).toBe('http://localhost');
+        expect(Config.getSiteDomain()).toBe('https://about.takbuff.com');
     });
 
     it('Should return headers with no access token', () => {
-        const expected = { headers: { 'x-api-key': 'key', 'content-type': 'application/json', 'x-access-key': '' } };
+        const expected = { headers: {'content-type': 'application/json', 'x-access-key': '' } };
 
         const actual = Config.getHeaders();
 
@@ -36,8 +34,6 @@ describe('Config', () => {
     it('Should return env', () => {
         expect(Config.getEnv()).toEqual({
             production: false,
-            siteDomain: 'localhost',
-            key: 'key',
             authKey: 'aukk',
             separator: '***',
             googleServiceAccount: 'googleServiceAccount'

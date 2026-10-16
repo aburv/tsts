@@ -31,3 +31,18 @@ At Aburv, we believe
 `Lets be the part of something bigger`
 
 ## Lets build together.
+
+## Environment files
+
+Store configuration values in the root `.env`, then render one requested file
+from the templates in `envs/`:
+
+```sh
+./scripts/generate-env.sh --server
+./scripts/generate-env.sh --db
+./scripts/generate-env.sh --redis
+./scripts/generate-env.sh --auth
+```
+
+This reads the variables listed in `envs/server.env` from `.env` and writes
+`app/server/server.env`. Select another template when needed:s

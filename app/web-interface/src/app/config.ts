@@ -5,12 +5,13 @@ export class Config {
     static getEnv(): any {
         return environment;
     }
-    static getDomain(): string {
+
+    static getNameSpace(): string {
         return '/api/';
     }
 
     static getSiteDomain(): string {
-        return this.getEnv().siteDomain;
+        return "https://about.takbuff.com";
     }
 
     static getHeaders(): any {
@@ -20,7 +21,6 @@ export class Config {
             : '';
         return {
             headers: {
-                'x-api-key': this.getEnv().key,
                 'content-type': 'application/json',
                 'x-access-key': accessKey
             }

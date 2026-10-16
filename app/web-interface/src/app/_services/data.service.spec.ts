@@ -31,7 +31,7 @@ describe('DataService', () => {
     });
 
     it('Should return the response data on 200 on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
@@ -52,7 +52,7 @@ describe('DataService', () => {
     });
 
     it('Should not call ping the server on 404 RecordNotFoundException on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.get.and.returnValue(throwError(() => {
@@ -84,7 +84,7 @@ describe('DataService', () => {
     });
 
     it('Should call ping the server on 404 on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.get.and.returnValue(throwError(() => { return { status: 404, statusText: "Not Found" } }));
@@ -106,7 +106,7 @@ describe('DataService', () => {
     });
 
     it('Should call ping the server on 0 on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.get.and.returnValue(throwError(() => { return { status: 0, statusText: "Not Found" } }));
@@ -128,7 +128,7 @@ describe('DataService', () => {
     });
 
     it('Should call refresh token and retry on success get when 401 status on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
@@ -156,7 +156,7 @@ describe('DataService', () => {
     });
 
     it('Should call refresh token and no retry on failure get when 401 status on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.get.and.returnValue(throwError(() => { return { status: 401, statusText: "UnAuthenticated" } }));
@@ -180,7 +180,7 @@ describe('DataService', () => {
     });
 
     it('Should call ping the server on other statuses on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.get.and.returnValue(throwError(() => { return { status: 305, statusText: "Not Found" } }));
@@ -203,7 +203,7 @@ describe('DataService', () => {
     });
 
     it('Should send data and return response data if not isServerDown on post call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
@@ -229,7 +229,7 @@ describe('DataService', () => {
     });
 
     it('Should not send data and return null if isServerDown on post call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
@@ -249,7 +249,7 @@ describe('DataService', () => {
     });
 
     it('Should return null when the server is done on get call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         PingService.isServerDown.set(true);
