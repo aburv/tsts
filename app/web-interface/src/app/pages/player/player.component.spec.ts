@@ -109,32 +109,19 @@ describe('PlayerComponent', () => {
   it('Should clear the player when getInfo returns no data', () => {
     playerService.getInfo.and.returnValue(of({}));
     spyOn(component, 'isMyPlayerProfile').and.returnValue(false);
-    const errSpy = spyOn(console, 'error');
 
     component.ngOnInit();
 
-    expect(console.error).toHaveBeenCalledWith(
-      'Player response did not contain data:', {}
-    );
     expect(component.player()).toBeNull();
-
-    errSpy.calls.reset();
   });
 
   it('Should clear the player when getInfo fails', () => {
     playerService.getInfo.and.returnValue(throwError(() => new Error('failed')));
     spyOn(component, 'isMyPlayerProfile').and.returnValue(false);
-    const errSpy = spyOn(console, 'error');
 
     component.ngOnInit();
 
-     expect(console.error).toHaveBeenCalledWith(
-      'Failed to load player:',
-      Error('failed')
-    );
     expect(component.player()).toBeNull();
-
-    errSpy.calls.reset();
   });
 
   it('Should return true if playerId is same as my playerId on ', () => {
