@@ -290,6 +290,15 @@ describe('AppComponent', () => {
     expect(app.isSearching()).toBe(false);
   });
 
+  it('Should return false when there are no search results', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    app.searchResult.set(null);
+
+    expect(app.isResultsNonEmpty()).toBeFalse();
+  });
+
   it('Should navigate to dashboard', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;

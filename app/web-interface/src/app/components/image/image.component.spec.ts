@@ -5,7 +5,7 @@ import { ComponentRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ImageService } from '../../_services/image.service';
 import { ButtonComponent, ButtonType } from '../button/button.component';
 import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('ImageComponent', () => {
   let component: ImageComponent;
@@ -38,6 +38,8 @@ describe('ImageComponent', () => {
 
     const fetchSpy = spyOn(component, 'fetch');
 
+    imageService.get.calls.reset();
+    imageService.get.and.returnValue(of('image'));
     fetchSpy.calls.reset();
   });
 
@@ -45,7 +47,7 @@ describe('ImageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Should make the image get call on fetch', () => {
+  it('Should make the image get call on fetch with less 80', () => {
     const fixture = TestBed.createComponent(ImageComponent);
     const component = fixture.componentInstance;
     const componentRef = fixture.componentRef;
@@ -58,6 +60,94 @@ describe('ImageComponent', () => {
     component.fetch("id", 50);
 
     expect(imageService.get).toHaveBeenCalledOnceWith("id", "80");
+  });
+
+  it('Should make the image get call on fetch with >80 < 160', () => {
+    const fixture = TestBed.createComponent(ImageComponent);
+    const component = fixture.componentInstance;
+    const componentRef = fixture.componentRef;
+
+    componentRef.setInput("id", "id");
+    componentRef.setInput("icon", "icon");
+    componentRef.setInput("size", "120");
+    componentRef.setInput("alt", "alt");
+
+    component.fetch("id", 120);
+
+    expect(imageService.get).toHaveBeenCalledOnceWith("id", "160");
+  });
+
+
+  it('Should make the image get call on fetch with >160 < 320', () => {
+    const fixture = TestBed.createComponent(ImageComponent);
+    const component = fixture.componentInstance;
+    const componentRef = fixture.componentRef;
+
+    componentRef.setInput("id", "id");
+    componentRef.setInput("icon", "icon");
+    componentRef.setInput("size", "120");
+    componentRef.setInput("alt", "alt");
+
+    component.fetch("id", 220);
+
+    expect(imageService.get).toHaveBeenCalledOnceWith("id", "320");
+  });
+
+  it('Should make the image get call on fetch with >320', () => {
+    const fixture = TestBed.createComponent(ImageComponent);
+    const component = fixture.componentInstance;
+    const componentRef = fixture.componentRef;
+
+    componentRef.setInput("id", "id");
+    componentRef.setInput("icon", "icon");
+    componentRef.setInput("size", "120");
+    componentRef.setInput("alt", "alt");
+
+    component.fetch("id", 420);
+
+    expect(imageService.get).toHaveBeenCalledOnceWith("id", "");
+  });
+
+  it('Should revoke the previous object URL when fetching a new image', () => {
+    const imageFixture = TestBed.createComponent(ImageComponent);
+    const imageComponent = imageFixture.componentInstance;
+    const createObjectUrlSpy = spyOn(URL, 'createObjectURL').and.returnValues('first-url', 'second-url');
+    const revokeObjectUrlSpy = spyOn(URL, 'revokeObjectURL');
+
+    imageComponent.fetch('id', 80);
+    imageComponent.fetch('id', 80);
+
+    expect(createObjectUrlSpy).toHaveBeenCalledTimes(2);
+    expect(revokeObjectUrlSpy).toHaveBeenCalledOnceWith('first-url');
+  });
+
+  it('Should clear image data when fetching fails', () => {
+    const imageFixture = TestBed.createComponent(ImageComponent);
+    const imageComponent = imageFixture.componentInstance;
+    imageService.get.and.returnValue(throwError(() => new Error('failed')));
+    const errSpy = spyOn(console, 'error');
+
+    imageComponent.fetch('id', 80);
+
+    expect(console.error).toHaveBeenCalledWith(
+      'Failed to load image \'id\' at size 80:',
+      Error('failed')
+    );
+    expect(imageComponent.imageData()).toBeNull();
+
+    errSpy.calls.reset();
+  });
+
+  it('Should revoke the object URL on destroy', () => {
+    const imageFixture = TestBed.createComponent(ImageComponent);
+    const imageComponent = imageFixture.componentInstance;
+    spyOn(URL, 'createObjectURL').and.returnValue('image-url');
+    const revokeObjectUrlSpy = spyOn(URL, 'revokeObjectURL');
+
+    imageComponent.fetch('id', 80);
+    imageComponent.ngOnDestroy();
+
+    expect(revokeObjectUrlSpy).toHaveBeenCalledOnceWith('image-url');
   });
 
   it('View: Should set content on id', () => {

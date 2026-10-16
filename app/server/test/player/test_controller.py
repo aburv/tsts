@@ -3,6 +3,7 @@ from unittest import mock
 from unittest.mock import call
 
 from src.config import Config
+from src.client.service import ClientSessionService
 from src.option.data import FormType
 from src.option.service import OptionService
 from src.player.service import PlayerServices
@@ -25,7 +26,7 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(OptionService, 'get_options', return_value='player_data')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
@@ -33,7 +34,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                                                  mock_cache_set,
                                                                                  mock_cache_get,
                                                                                  mock_token,
-                                                                                 mock_api_keys,
+                                                                                 mock_authenticate_request,
                                                                                  mock_validate_token,
                                                                                  mock_auth_services,
                                                                                  mock_get_options,
@@ -43,13 +44,13 @@ class PlayerControllerTest(unittest.TestCase):
                                                                                  mock_response
                                                                                  ):
         mock_cache_get.return_value = None
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get(
                 "/api/player/form_data",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 }
             )
@@ -57,7 +58,6 @@ class PlayerControllerTest(unittest.TestCase):
         mock_cache_get.assert_called_once_with('myapp:form_player/user_id:user_id')
         mock_cache_set.assert_called_once_with('myapp:form_player/user_id:user_id', 'player_data', timeout=60)
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_service_init.assert_called_once_with(FormType.PLAYER)
@@ -76,11 +76,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_valid_player_data_response_on_get_actual_1(self,
                                                                       mock_token,
-                                                                      mock_api_keys,
+                                                                      mock_authenticate_request,
                                                                       mock_validate_token,
                                                                       mock_auth_services,
                                                                       mock_get_player_id,
@@ -90,19 +90,18 @@ class PlayerControllerTest(unittest.TestCase):
                                                                       mock_response_init,
                                                                       mock_response
                                                                       ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get(
                 "/api/player/actual/1",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 }
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_service_init.assert_called_once_with()
@@ -121,11 +120,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_APIException_response_on_get_actual_1(self,
                                                                  mock_token,
-                                                                 mock_api_keys,
+                                                                 mock_authenticate_request,
                                                                  mock_validate_token,
                                                                  mock_auth_services,
                                                                  mock_get_player_id,
@@ -134,7 +133,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                                  mock_service_init,
                                                                  mock_response
                                                                  ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         with mock.patch.object(APIException, '__init__', return_value=None):
             mock_get_user_data.side_effect = APIException(
                 "message",
@@ -148,13 +147,12 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.get(
                 "/api/player/actual/1",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 }
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_service_init.assert_called_once_with()
@@ -173,11 +171,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_valid_player_data_response_on_get_actual_2(self,
                                                                       mock_token,
-                                                                      mock_api_keys,
+                                                                      mock_authenticate_request,
                                                                       mock_validate_token,
                                                                       mock_auth_services,
                                                                       mock_get_player_id,
@@ -187,19 +185,18 @@ class PlayerControllerTest(unittest.TestCase):
                                                                       mock_response_init,
                                                                       mock_response
                                                                       ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get(
                 "/api/player/actual/2",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 }
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_service_init.assert_called_once_with()
@@ -218,11 +215,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_APIException_response_on_get_actual_2(self,
                                                                  mock_token,
-                                                                 mock_api_keys,
+                                                                 mock_authenticate_request,
                                                                  mock_validate_token,
                                                                  mock_auth_services,
                                                                  mock_get_player_id,
@@ -231,7 +228,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                                  mock_service_init,
                                                                  mock_response
                                                                  ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         with mock.patch.object(APIException, '__init__', return_value=None):
             mock_get_by_id.side_effect = APIException(
                 "message",
@@ -245,13 +242,12 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.get(
                 "/api/player/actual/2",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 }
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_service_init.assert_called_once_with()
@@ -274,11 +270,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_create_player_jersey_data_response_on_get_jersey_details(self,
                                                                              mock_token,
-                                                                             mock_api_keys,
+                                                                             mock_authenticate_request,
                                                                              mock_validate_token,
                                                                              mock_auth_services,
                                                                              mock_get_player_id,
@@ -292,20 +288,19 @@ class PlayerControllerTest(unittest.TestCase):
                                                                              mock_response_init,
                                                                              mock_response
                                                                              ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.post(
                 "/api/player/jersey_details",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={'data': {"positions": ["position1", "position2"]}}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_user_service.assert_called_once_with()
@@ -336,11 +331,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_runtime_exception_response_on_get_jersey_details(self,
                                                                      mock_token,
-                                                                     mock_api_keys,
+                                                                     mock_authenticate_request,
                                                                      mock_validate_token,
                                                                      mock_auth_services,
                                                                      mock_get_player_id,
@@ -354,20 +349,19 @@ class PlayerControllerTest(unittest.TestCase):
                                                                      mock_exception,
                                                                      mock_response
                                                                      ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.post(
                 "/api/player/jersey_details",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={'data': {"positions": ["position1", "position2"]}}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_user_service.assert_called_once_with()
@@ -398,11 +392,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_update_player_jersey_data_response_on_get_jersey_details(self,
                                                                              mock_token,
-                                                                             mock_api_keys,
+                                                                             mock_authenticate_request,
                                                                              mock_validate_token,
                                                                              mock_auth_services,
                                                                              mock_get_player_id,
@@ -416,20 +410,19 @@ class PlayerControllerTest(unittest.TestCase):
                                                                              mock_response_init,
                                                                              mock_response
                                                                              ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.post(
                 "/api/player/jersey_details",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={'data': {"positions": []}}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_user_service.assert_called_once_with()
@@ -455,11 +448,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_data_validation_response_on_get_jersey_details(self,
                                                                           mock_token,
-                                                                          mock_api_keys,
+                                                                          mock_authenticate_request,
                                                                           mock_validate_token,
                                                                           mock_auth_services,
                                                                           mock_get_player_id,
@@ -471,21 +464,20 @@ class PlayerControllerTest(unittest.TestCase):
                                                                           mock_exception,
                                                                           mock_response
                                                                           ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
 
         app = get_app()
         with app.test_client() as c:
             actual_response = c.post(
                 "/api/player/jersey_details",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         assert not mock_service_init.called
@@ -509,11 +501,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value=None)
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_record_not_found_response_on_get_jersey_details(self,
                                                                            mock_token,
-                                                                           mock_api_keys,
+                                                                           mock_authenticate_request,
                                                                            mock_validate_token,
                                                                            mock_auth_services,
                                                                            mock_get_player_id,
@@ -525,21 +517,20 @@ class PlayerControllerTest(unittest.TestCase):
                                                                            mock_exception,
                                                                            mock_response
                                                                            ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
 
         app = get_app()
         with app.test_client() as c:
             actual_response = c.post(
                 "/api/player/jersey_details",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={"data": {}}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_user_service.assert_called_once_with()
@@ -562,11 +553,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_APIException_response_on_get_jersey_details(self,
                                                                        mock_token,
-                                                                       mock_api_keys,
+                                                                       mock_authenticate_request,
                                                                        mock_validate_token,
                                                                        mock_auth_services,
                                                                        mock_get_player_id,
@@ -577,7 +568,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                                        mock_service_init,
                                                                        mock_response
                                                                        ):
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         with mock.patch.object(APIException, '__init__', return_value=None):
             mock_check_presence.side_effect = APIException(
                 "message",
@@ -591,14 +582,13 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.post(
                 "/api/player/jersey_details",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={'data': {}}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_api_keys.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_service_init.assert_called_once_with()
@@ -619,11 +609,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(PlayerServices, 'create', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_valid_player_id_response_on_create_player(self,
                                                                      mock_token,
-                                                                     mock_secret_config,
+                                                                     mock_authenticate_request,
                                                                      mock_validate_token,
                                                                      mock_auth_services,
                                                                      mock_create,
@@ -633,7 +623,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                                      mock_response_init,
                                                                      mock_response
                                                                      ):
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         expected_response_data = b'response_json'
 
         app = get_app()
@@ -641,14 +631,13 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.post(
                 "/api/player/",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={'data': {}}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_secret_config.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_user_service.assert_called_once_with()
@@ -667,11 +656,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(PlayerServices, 'update', return_value=None)
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_update_player_on_create_player(self,
                                                    mock_token,
-                                                   mock_secret_config,
+                                                   mock_authenticate_request,
                                                    mock_validate_token,
                                                    mock_auth_services,
                                                    mock_update,
@@ -681,7 +670,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                    mock_response_init,
                                                    mock_response
                                                    ):
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         expected_response_data = b'response_json'
 
         app = get_app()
@@ -689,14 +678,13 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.post(
                 "/api/player/",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={'data': {}}
             )
 
         mock_token.assert_called_once_with("token")
-        mock_secret_config.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_user_service.assert_called_once_with()
@@ -713,11 +701,11 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(PlayerServices, 'create')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_raise_data_validation_response_when_no_data_on_create_player(self,
                                                                                  mock_token,
-                                                                                 mock_secret_config,
+                                                                                 mock_authenticate_request,
                                                                                  mock_validate_token,
                                                                                  mock_auth_services,
                                                                                  mock_create,
@@ -725,7 +713,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                                                  mock_exception,
                                                                                  mock_response
                                                                                  ):
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         expected_response_data = b'response_json'
 
         app = get_app()
@@ -733,14 +721,13 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.post(
                 "/api/player/",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={}
             )
 
         mock_token.assert_called_once_with('token')
-        mock_secret_config.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         assert not mock_service_init.called
@@ -754,18 +741,18 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(UserServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     def test_should_return_api_error_response_on_create_player(self,
                                                                mock_token,
-                                                               mock_secret_config,
+                                                               mock_authenticate_request,
                                                                mock_validate_token,
                                                                mock_auth_services,
                                                                mock_service_init,
                                                                mock_get_player_id,
                                                                mock_response
                                                                ):
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         with mock.patch.object(APIException, '__init__', return_value=None):
             mock_get_player_id.side_effect = APIException(
                 "msg",
@@ -780,14 +767,13 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.post(
                 "/api/player/",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                     'x-access-key': "token"
                 },
                 json={'data': {}}
             )
 
         mock_token.assert_called_once_with("token")
-        mock_secret_config.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
         mock_service_init.assert_called_once_with()
@@ -800,13 +786,13 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(ValidResponse, '__init__', return_value=None)
     @mock.patch.object(PlayerServices, '__init__', return_value=None)
     @mock.patch.object(PlayerServices, 'get_player_info', return_value='player_data')
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
     def test_should_return_valid_player_data_response_on_get_player(self,
                                                                     mock_cache_set,
                                                                     mock_cache_get,
-                                                                    mock_api_keys,
+                                                                    mock_authenticate_request,
                                                                     mock_get_player_info,
                                                                     mock_service_init,
                                                                     mock_response_init,
@@ -814,13 +800,13 @@ class PlayerControllerTest(unittest.TestCase):
                                                                     mock_response
                                                                     ):
         mock_cache_get.return_value = None
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get(
                 "/api/player/player_id",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                 }
             )
 
@@ -838,26 +824,26 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(CachedResponse, '__init__', return_value=None)
     @mock.patch.object(PlayerServices, '__init__', return_value=None)
     @mock.patch.object(PlayerServices, 'get_player_info', return_value='player_data')
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
     def test_should_return_cached_player_data_response_on_get_player(self,
                                                                      mock_cache_set,
                                                                      mock_cache_get,
-                                                                     mock_api_keys,
+                                                                     mock_authenticate_request,
                                                                      mock_get_player_info,
                                                                      mock_service_init,
                                                                      mock_response_init,
                                                                      mock_response,
                                                                      ):
         mock_cache_get.return_value = {'data': 'player_data'}
-        mock_api_keys.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get(
                 "/api/player/player_id",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                 }
             )
 
@@ -873,19 +859,19 @@ class PlayerControllerTest(unittest.TestCase):
     @mock.patch.object(APIException, 'get_response_json', return_value='response_json')
     @mock.patch.object(PlayerServices, '__init__', return_value=None)
     @mock.patch.object(PlayerServices, 'get_player_info', return_value='player_data')
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
     def test_should_return_api_error_response_on_get_player(self,
                                                             mock_cache_set,
                                                             mock_cache_get,
-                                                            mock_secret_config,
+                                                            mock_authenticate_request,
                                                             mock_get_player_info,
                                                             mock_service_init,
                                                             mock_response
                                                             ):
         mock_cache_get.return_value = None
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
 
         with mock.patch.object(APIException, '__init__', return_value=None):
             mock_get_player_info.side_effect = APIException(
@@ -901,7 +887,7 @@ class PlayerControllerTest(unittest.TestCase):
             actual_response = c.get(
                 "/api/player/player_id",
                 headers={
-                    'x-api-key': 'test_key',
+                    'x-api-key': 'Client test_key',
                 }
             )
 

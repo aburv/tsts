@@ -123,15 +123,6 @@ class ConfigTest(unittest.TestCase):
         mock_exception.assert_called_once_with('Invalid Tokens ', 'token1token2 list index out of range')
         mock_get_separator.assert_called_once_with()
 
-    @mock.patch.dict(os.environ, {
-        "WEB_CLIENT_KEY": "test_web_key",
-        "ANDROID_CLIENT_KEY": "test_android_key",
-        "IOS_CLIENT_KEY": "test_ios_key",
-        "KEY": "test_dev_key"}, clear=True)
-    def test_should_get_api_key(self):
-        actual = Config.get_api_keys()
-        self.assertEqual(["test_web_key", "test_android_key", "test_ios_key", "test_dev_key"], actual)
-
 
 class TableTest(unittest.TestCase):
     def test_should_return_table_name_on_get_name(self):

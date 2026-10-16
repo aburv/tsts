@@ -24,7 +24,7 @@ describe('UserButtonComponent', () => {
     'handleGoogleResponse',
     'getLoggedUser'
   ]);
-  authUserService.getLoggedUser.and.returnValue(of());
+  authUserService.getLoggedUser.and.returnValue(of(null));
 
   const userDataService = jasmine.createSpyObj('UserDataService', [
     'signIn',
@@ -90,7 +90,7 @@ describe('UserButtonComponent', () => {
     deviceService.getValues.calls.reset();
     
     userDataService.autoSignIn.and.returnValue(of(false));
-    authUserService.getLoggedUser.and.returnValue(of());
+    authUserService.getLoggedUser.and.returnValue(of(null));
     deviceService.getDeviceId.and.returnValue('test-device-id');
     deviceService.getValues.and.returnValue({ id: 'test-device-id' });
   });
@@ -106,7 +106,7 @@ describe('UserButtonComponent', () => {
     deviceService.getValues.calls.reset();
     
     userDataService.autoSignIn.and.returnValue(of(false));
-    authUserService.getLoggedUser.and.returnValue(of());
+    authUserService.getLoggedUser.and.returnValue(of(null));
   });
 
   it('Should loadGoogleClient resolves when google appears after delay', fakeAsync(() => {
@@ -319,6 +319,41 @@ describe('UserButtonComponent', () => {
     expect(component.getLocation).toHaveBeenCalledOnceWith();
   });
 
+  it('Should not set the current user when userLogin fails', () => {
+    const fixture = TestBed.createComponent(UserButtonComponent);
+    const component = fixture.componentInstance;
+    const userMock = {
+      sub: 'id',
+      email: 'email',
+      name: 'name',
+      picture: 'photoUrl'
+    } as GAuthUser;
+
+    userDataService.signIn.and.returnValue(of(false));
+    spyOn(component, 'getLocation');
+    const setCurrentUserSpy = spyOn(component, 'setCurrentUser');
+
+    component.userLogin(userMock);
+
+    expect(setCurrentUserSpy).not.toHaveBeenCalled();
+  });
+
+  it('Should close the dialog on dialog close', () => {
+    const fixture = TestBed.createComponent(UserButtonComponent);
+    const component = fixture.componentInstance;
+    component.isDialogOn = true;
+    const logSpy = spyOn(console, 'log');
+
+    component.onDialogClose();
+
+    expect(console.log).toHaveBeenCalledWith(
+      'Dialog close event received'
+    );
+    expect(component.isDialogOn).toBeFalse();
+
+    logSpy.calls.reset();
+  });
+
   it('Should get and set user on setCurrentUser', () => {
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;
@@ -467,7 +502,7 @@ describe('UserButtonComponent', () => {
 
   it('View: Should turn dialog display when clicked on user with no dialog', () => {
     userDataService.autoSignIn.and.returnValue(of(""));
-    authUserService.getLoggedUser.and.returnValue(of());
+    authUserService.getLoggedUser.and.returnValue(of(null));
 
     const fixture = TestBed.createComponent(UserButtonComponent);
     const component = fixture.componentInstance;

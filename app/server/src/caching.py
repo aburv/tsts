@@ -30,7 +30,7 @@ def get_if_cached(api_key: str, timeout=60, user_specific=True, needs_user=True)
                 key = f"{RedisConfig.CACHE_KEY_PREFIX}{api_key}/{param}"
             try:
                 cached_data = Caching.CACHE.get(key)
-            except Exception as e:
+            except Exception as _:
                 cached_data = None
             if cached_data is not None:
                 if isinstance(cached_data, bytes):
@@ -48,14 +48,13 @@ def get_if_cached(api_key: str, timeout=60, user_specific=True, needs_user=True)
                     if result != b'':
                         try:
                             Caching.CACHE.set(key, result, timeout=timeout)
-                        except Exception as e:
+                        except Exception as _:
                             pass
                     return Response(result, mimetype='image/png')
-                else:
-                    try:
-                        Caching.CACHE.set(key, result.get_data(), timeout=timeout)
-                    except Exception as e:
-                        pass
+                try:
+                    Caching.CACHE.set(key, result.get_data(), timeout=timeout)
+                except Exception as _:
+                    pass
             return result.get_response_json()
 
         return wrapped
@@ -79,7 +78,7 @@ class Caching:
             if RedisConfig.CACHE_REDIS_URL is None:
                 app.config["CACHE_REDIS_URL"] = RedisConfig.get_cache_url()
             Caching.CACHE.init_app(app)
-        except Exception as e:
+        except Exception as _:
             pass
 
 

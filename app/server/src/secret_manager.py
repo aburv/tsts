@@ -20,6 +20,9 @@ class EnvironmentSecretProvider(SecretProvider):
     """Environment variable implementation for local and simple deployments."""
 
     def get_secret(self, secret_name: str) -> SecretValues:
+        """
+        Return the secret payload decoded as a JSON object.
+        """
         value = os.getenv(secret_name)
         if value is None:
             raise ValueError(f"Environment variable '{secret_name}' is not set")
@@ -27,6 +30,9 @@ class EnvironmentSecretProvider(SecretProvider):
 
 
 def _decode_secret(payload: str | bytes, secret_name: str) -> SecretValues:
+    """
+    Decode a secret payload into a JSON object.
+    """
     try:
         secret = json.loads(payload)
     except (TypeError, json.JSONDecodeError) as error:
@@ -45,13 +51,22 @@ class SecretProviderFactory:
 
     @staticmethod
     def create() -> SecretProvider:
+        """
+        Create a new secret provider.
+        """
         provider = os.getenv("SECRET_PROVIDER", "").strip().lower()
         if provider == "env":
             return EnvironmentSecretProvider()
         raise ValueError("SECRET_PROVIDER must be set to 'env', 'aws', or 'gcp'")
 
 class SecretStore:
+    """
+    Store a secret payload as a JSON object.
+    """
     def __init__(self, provider: SecretProvider, secret_names: list[str]):
+        """
+        Initialize the secret store
+        """
         self._secrets: SecretValues = {}
         for secret_name in secret_names:
             if not secret_name:
@@ -60,7 +75,13 @@ class SecretStore:
             self._secrets.update(secret)
 
     def get(self, secret_name: str) -> str:
+        """
+        Return the secret payload decoded as a JSON object.
+        """
         return self._secrets[secret_name]
 
     def contains(self, secret_name: str) -> bool:
+        """
+        Check if a secret exists in the store
+        """
         return secret_name in self._secrets

@@ -24,9 +24,21 @@ describe('LocalDataService', () => {
   it('Should return null when stored data is corrupted', () => {
     const service = new LocalDataService(KEY);
     localStorage.setItem(KEY, 'not-base64');
+    const errSpy = spyOn(console, 'error');
 
     const read = service.getValues();
+
     expect(read).toBeNull();
+
+    expect(console.error).toHaveBeenCalledWith(
+      'Error decoding localStorage value for key "TEST_KEY":',
+      jasmine.any(Error)
+    );
+
+    const errorArg = (console.error as jasmine.Spy).calls.mostRecent().args[1];
+
+    expect(errorArg.message).toBe('Failed to execute \'atob\' on \'Window\': The string to be decoded is not correctly encoded.');
+    errSpy.calls.reset();
   });
 
   it('Should clear data', () => {

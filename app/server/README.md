@@ -53,7 +53,7 @@ to view the postgresql data in the terminal
 ### Lint
 
 ```commandline
-pylint src ./migrate_db.py 
+pylint src
 ```
 
 Maintain 10.0

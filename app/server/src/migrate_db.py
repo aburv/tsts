@@ -213,10 +213,8 @@ def run_migrate():
     """
     Run migration script
     """
-    is_done = False  # pragma: no cover
     try:  # pragma: no cover
         Migrate().run()  # pragma: no cover
-        is_done = True  # pragma: no cover
     except DBConnectionException as _:  # pragma: no cover
         pass  # pragma: no cover
 
