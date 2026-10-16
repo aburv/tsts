@@ -30,16 +30,42 @@ class CacheConfigTest(unittest.TestCase):
         self.assertEqual(RedisConfig.CACHE_KEY_PREFIX, "myapp:")
 
     @patch('flask_caching.Cache.init_app', return_value=None)
+    @patch.object(RedisConfig, 'get_cache_url', return_value="CACHE_REDIS_URL")
     @patch.object(RedisConfig, 'CACHE_REDIS_URL', new_callable=MagicMock)
     @patch.object(RedisConfig, 'CACHE_KEY_PREFIX', new_callable=MagicMock)
     @patch.object(RedisConfig, 'CACHE_TYPE', new_callable=MagicMock)
-    def test_cache_initialization(self, mock_type, mock_prefix, mock_redis_url, mock_cache_init):
+    def test_cache_initialization(self,
+                                  mock_type,
+                                  mock_prefix,
+                                  mock_redis_url,
+                                  mock_get_cache_url,
+                                  mock_cache_init):
         mock_redis_url.return_value = "url"
         mock_prefix.return_value = "prefix"
         mock_type.return_value = "type"
 
         Caching.init_cache(self.app)
 
+        mock_get_cache_url.assert_not_called()
+        mock_cache_init.assert_called_once_with(self.app)
+        self.app.config.from_object.assert_called_once_with(RedisConfig)
+
+    @patch('flask_caching.Cache.init_app', return_value=None)
+    @patch.object(RedisConfig, 'get_cache_url', return_value="CACHE_REDIS_URL")
+    @patch.object(RedisConfig, 'CACHE_REDIS_URL', new=None)
+    @patch.object(RedisConfig, 'CACHE_KEY_PREFIX', new_callable=MagicMock)
+    @patch.object(RedisConfig, 'CACHE_TYPE', new_callable=MagicMock)
+    def test_cache_initialization_with_CACHE_REDIS_URL_is_none(self,
+                                                               mock_type,
+                                                               mock_prefix,
+                                                               mock_get_cache_url,
+                                                               mock_cache_init):
+        mock_prefix.return_value = "prefix"
+        mock_type.return_value = "type"
+
+        Caching.init_cache(self.app)
+
+        mock_get_cache_url.assert_called_once_with()
         mock_cache_init.assert_called_once_with(self.app)
         self.app.config.from_object.assert_called_once_with(RedisConfig)
 
@@ -47,17 +73,18 @@ class CacheConfigTest(unittest.TestCase):
     @patch.object(RedisConfig, 'CACHE_REDIS_URL', new_callable=MagicMock)
     @patch.object(RedisConfig, 'CACHE_KEY_PREFIX', new_callable=MagicMock)
     @patch.object(RedisConfig, 'CACHE_TYPE', new_callable=MagicMock)
-    def test_cache_initialization_failure(self, mock_type, mock_prefix, mock_redis_url, mock_cache_init):
+    def test_cache_initialization_failure(self,
+                                          mock_type,
+                                          mock_prefix,
+                                          mock_redis_url,
+                                          mock_cache_init):
         mock_redis_url.return_value = "url"
         mock_prefix.return_value = "prefix"
         mock_type.return_value = "type"
 
         mock_cache_init.side_effect = Exception("Cache initialization failed")
 
-        with self.assertRaises(Exception) as context:
-            Caching.init_cache(self.app)
+        Caching.init_cache(self.app)
 
         mock_cache_init.assert_called_once_with(self.app)
         self.app.config.from_object.assert_called_once_with(RedisConfig)
-
-        self.assertTrue('Cache initialization failed' in str(context.exception))

@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from src.db_duo import PostgresDbDuo
-from src.user_id.data import UserIDData
+from src.user_id.data import UserIDData, UserIDFilterType
 from src.user_id.service import UserIdServices
 
 
@@ -73,7 +73,7 @@ class UserIdServiceTest(unittest.TestCase):
 
         actual = service.get_user_id_by_id_value("user_mail_id")
 
-        mock_data.on_select.assert_called_once_with({'value': 'user_mail_id', 'is_verified': True}, 'id')
+        mock_data.on_select.assert_called_once_with({'value': 'user_mail_id', 'is_verified': True}, UserIDFilterType.ID)
         mock_db.get_record_field_value.assert_called_once_with()
 
         self.assertEqual(actual, "user_id")

@@ -4,6 +4,11 @@
       class="item"
       [class.selected]="selected().includes(option.id)"
       (click)="childEmitter.emit(option.id)"
+      (keydown.enter)="childEmitter.emit(option.id)"
+      (keydown.space)="childEmitter.emit(option.id)"
+      tabindex="0"
+      role="button"
+      [attr.aria-pressed]="selected().includes(option.id)"
     >
       {{ option.text }}
     </span>

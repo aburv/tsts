@@ -9,9 +9,10 @@ from broker_pb2 import Message
 from broker_pb2_grpc import BrokerServiceStub
 from src.config import Config
 from src.responses import RuntimeException
+from src.services.contracts import ProducerService
 
 
-class ProducerServices:
+class ProducerServices(ProducerService):
     """
     Calls to Producer Services
     """
@@ -21,7 +22,7 @@ class ProducerServices:
 
         self.client = BrokerServiceStub(channel)
 
-    def add_event(self, topic: str, key: str, content: str) -> (str, str):
+    def add_event(self, topic: str, key: str, content: str) -> tuple[str, str]:
         """
         Add event call
         """

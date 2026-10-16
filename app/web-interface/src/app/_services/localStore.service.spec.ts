@@ -1,47 +1,94 @@
-import { LocalDataService } from "./localStore.service";
+import { LocalDataService } from './localStore.service';
 
-describe('Local Data Services', () => {
-    it('Should call getItem and return data on getValues call', () => {
-        const getSpy = spyOn(localStorage, 'getItem');
-        getSpy.and.returnValue('ImRhdGEi');
+describe('LocalDataService', () => {
+  const KEY = 'TEST_KEY';
 
-        const services = new LocalDataService("key");
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
-        const value = services.getValues();
+  it('Should return null when no data present', () => {
+    const service = new LocalDataService(KEY);
+    expect(service.getValues()).toBeNull();
+  });
 
-        expect(getSpy).toHaveBeenCalledOnceWith('key');
-        expect(value).toBe('data');
-    });
+  it('Should set and get values correctly', () => {
+    const service = new LocalDataService(KEY);
+    const obj = { a: 1, b: 'two' };
+    service.setValues(obj);
 
-    it('Should return null if key is not in storage on getValues call', () => {
-        const getSpy = spyOn(localStorage, 'getItem');
-        getSpy.and.returnValue(null);
+    const read = service.getValues();
+    expect(read).toEqual(obj);
+  });
 
-        const services = new LocalDataService('key');
+  it('Should return null when stored data is corrupted', () => {
+    const service = new LocalDataService(KEY);
+    localStorage.setItem(KEY, 'not-base64');
+    const errSpy = spyOn(console, 'error');
 
-        const value = services.getValues();
+    const read = service.getValues();
 
-        expect(getSpy).toHaveBeenCalledOnceWith('key');
-        expect(value).toBe(null);
-    });
+    expect(read).toBeNull();
 
-    it('Should call setItem get on setValues call', () => {
-        const setSpy = spyOn(localStorage, 'setItem');
+    expect(console.error).toHaveBeenCalledWith(
+      'Error decoding localStorage value for key "TEST_KEY":',
+      jasmine.any(Error)
+    );
 
-        const services = new LocalDataService('key');
+    const errorArg = (console.error as jasmine.Spy).calls.mostRecent().args[1];
 
-        services.setValues('data');
+    expect(errorArg.message).toBe('Failed to execute \'atob\' on \'Window\': The string to be decoded is not correctly encoded.');
+    errSpy.calls.reset();
+  });
 
-        expect(setSpy).toHaveBeenCalledOnceWith('key', 'JTIyZGF0YSUyMg==');
-    });
+  it('Should clear data', () => {
+    const service = new LocalDataService(KEY);
+    service.setValues({ x: 1 });
+    expect(localStorage.getItem(KEY)).toBeTruthy();
+    service.clearData();
+    expect(localStorage.getItem(KEY)).toBeNull();
+  });
 
-    it('Should call removeItem get on clearData call', () => {
-        const removeSpy = spyOn(localStorage, 'removeItem');
+  it('Should decode base64 JSON when getItem returns encoded JSON', () => {
+    const encoded = btoa(encodeURIComponent(JSON.stringify('data'))); // produces ImRhdGEi-like
+    spyOn(localStorage, 'getItem').and.returnValue(encoded);
 
-        const services = new LocalDataService('key');
+    const service = new LocalDataService('key');
+    const value = service.getValues();
 
-        services.clearData();
+    expect(localStorage.getItem).toHaveBeenCalledOnceWith('key');
+    expect(value).toEqual('data');
+  });
 
-        expect(removeSpy).toHaveBeenCalledOnceWith('key');
-    });
+  it('should call setItem on setValues', () => {
+    const setSpy = spyOn(localStorage, 'setItem');
+    const service = new LocalDataService('key');
+    service.setValues({ foo: 'bar' });
+    expect(setSpy).toHaveBeenCalledOnceWith('key', jasmine.any(String));
+  });
+
+  it('Should call removeItem on clearData', () => {
+    const removeSpy = spyOn(localStorage, 'removeItem');
+    const service = new LocalDataService('key');
+    service.clearData();
+    expect(removeSpy).toHaveBeenCalledOnceWith('key');
+  });
+
+  it('Should handle errors during setValues and log them', () => {
+    spyOn(localStorage, 'setItem').and.callFake(() => { throw new Error('fail'); });
+    const errSpy = spyOn(console, 'error');
+
+    const service = new LocalDataService('key');
+    service.setValues({ broken: true });
+
+    expect(console.error).toHaveBeenCalledWith(
+      'Error encoding localStorage value for key "key":',
+      jasmine.any(Error)
+    );
+
+    const errorArg = (console.error as jasmine.Spy).calls.mostRecent().args[1];
+
+    expect(errorArg.message).toBe('fail');
+    errSpy.calls.reset();
+  });
 });

@@ -1,22 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Config } from '../config';
 import { Observable, of, tap } from 'rxjs';
 import { PingService } from './ping.service';
 
-export interface ImageCache {
-  [url: string]: ArrayBuffer;
-}
+export type ImageCache = Record<string, ArrayBuffer>;
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageService {
-  private static _cachedImages: ImageCache = {};
+  private http = inject(HttpClient);
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  private static _cachedImages: ImageCache = {};
 
   getFromCache(url: string): ArrayBuffer | undefined {
     return ImageService._cachedImages[url]
@@ -36,12 +32,12 @@ export class ImageService {
     delete headers.headers['content-type']
 
     if (!PingService.isServerDown()) {
-      return this.http.post((Config.getDomain() + "image/add"), formData, headers)
+      return this.http.post((Config.getNameSpace() + "image/add"), formData, headers)
     }
     return of(null)
   }
 
-  getAndCachedImage(url: string): Observable<any> {
+  getAndCachedImage(url: string): Observable<ArrayBuffer> {
     const data = this.getFromCache(url);
     if (data) {
       return of(data);
@@ -51,14 +47,13 @@ export class ImageService {
         responseType: 'blob',
         ...Config.getHeaders(),
       }
-    ).pipe(tap(res => {
+    ).pipe(tap((res: ArrayBuffer) => {
       this.setCache(url, res);
-      return res;
     }));
   }
 
-  get(id: string, size: string): Observable<any> {
-    const url = Config.getDomain() + 'image/' + id + "/" + size;
+  get(id: string, size: string): Observable<ArrayBuffer> {
+    const url = Config.getNameSpace() + 'image/' + id + "/" + size;
 
     return this.getAndCachedImage(url);
   }

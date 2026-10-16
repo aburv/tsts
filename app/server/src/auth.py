@@ -6,13 +6,21 @@ from functools import wraps
 from flask import request
 
 from src.config import Config
+from src.client.service import ClientSessionService
 from src.responses import SecurityException, APIException
 from src.services.auth_service import AuthServices
 
 
-def validate(is_auth_mandatory: bool = True, is_required: bool = True, resource: str = "", permission: str = ""):
+def validate(
+        is_auth_mandatory: bool = True,
+        is_required: bool = True,
+        resource: str = "",
+        permission: str = ""):
     """
     :param is_auth_mandatory:
+    :type is_auth_mandatory:
+    :param is_required:
+    :type is_required:
     :param resource:
     :type resource:
     :param permission:
@@ -24,14 +32,37 @@ def validate(is_auth_mandatory: bool = True, is_required: bool = True, resource:
     def check(func):
         @wraps(func)
         def decorated(*args, **kwargs):
-            client_key = request.headers.get('x-api-key')
             record_id = kwargs.get("r_id", "")
             try:
-                if client_key not in Config.get_api_keys():
+                client_header = request.headers.get("x-api-key", "")
+                client_token = (
+                    client_header.removeprefix("Client ").strip()
+                    if client_header.startswith("Client ") else ""
+                )
+                client_authenticated = bool(
+                    client_token and ClientSessionService.authenticate_request(
+                        client_token,
+                        request.headers.get("X-Client-Installation", ""),
+                        request.headers.get("X-Client-Platform", ""),
+                        request.headers.get("X-Client-Timestamp", ""),
+                        request.headers.get("X-Client-Request-Id", ""),
+                        request.headers.get("X-Client-Signature", ""),
+                        request.method,
+                        request.path,
+                        b"" if request.mimetype == "multipart/form-data"
+                        else request.get_data(cache=True),
+                    )
+                )
+                if not client_authenticated:
                     raise SecurityException('Client', 'Not Authenticated')
 
                 if is_required:
-                    token = request.headers.get('x-access-key', "")
+                    authorization = request.headers.get("Authorization", "")
+                    token = (
+                        authorization.removeprefix("Bearer ").strip()
+                        if authorization.startswith("Bearer ")
+                        else request.headers.get('x-access-key', "")
+                    )
                     if is_auth_mandatory and token == "":
                         raise SecurityException('User Token', 'Not found')
 

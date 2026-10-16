@@ -1,0 +1,83 @@
+@if (player(); as currentPlayer) {
+
+<div class="banner">
+  <div class="player-name">{{ currentPlayer.name }}</div>
+
+  <app-image
+    [id]="currentPlayer.dp"
+    [icon]="Icon.PERSON"
+    [size]="80"
+    [alt]="currentPlayer.name + '-display-picture'">
+  </app-image>
+
+  <div class="details">
+    <div class="sub">{{ currentPlayer.positions.join(', ') }}</div>
+    <div>{{ currentPlayer.location }}</div>
+  </div>
+
+  <div class="bio space-around">
+    <div><b>{{ currentPlayer.age }}</b> yrs</div>
+    <div><b>{{ currentPlayer.height }}</b> in cm</div>
+    <div><b>{{ currentPlayer.weight }}</b> in kg</div>
+  </div>
+</div>
+
+@if (tabContent.length > 1) {
+<div class="tab-container">
+  @for (tab of tabContent; let i = $index; track i) {
+  <div
+    class="tab full"
+    [ngClass]="{ selected: selectedTabIndex() === i }"
+    role="button"
+    tabindex="0"
+    (click)="onTabSelect(i)"
+    (keyup.enter)="onTabSelect(i)"
+    (keyup.space)="onTabSelect(i)"
+  >
+    {{ tab }}
+  </div>
+  }
+</div>
+}
+
+@switch (selectedTabIndex()) {
+@case (0) {
+<div class="container scrollable">
+
+</div>
+}
+
+<!-- Tab 1 -->
+@case (1) {
+<div class="container scrollable">
+
+</div>
+}
+
+<!-- Tab 2 -->
+@case (2) {
+<div class="container scrollable">
+  
+</div>
+}
+
+}
+
+} @else {
+
+<div class="warning-layout">
+  <div class="warning-panel">
+    <div class="profile-mark" aria-hidden="true">
+      <span class="profile-head"></span>
+      <span class="profile-shoulders"></span>
+    </div>
+
+    <div class="warning-copy">
+      <p class="eyebrow">PLAYER PROFILE</p>
+      <h1>Player not found</h1>
+      <p class="description">We couldn't find a profile matching this page.</p>
+    </div>
+  </div>
+</div>
+
+}

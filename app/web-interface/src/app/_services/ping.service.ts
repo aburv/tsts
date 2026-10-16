@@ -1,22 +1,22 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Config } from '../config';
 
 function getPingUrl(): string {
-  return Config.getDomain() + 'ping/';
+  return Config.getNameSpace() + 'ping/';
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class PingService {
-  static isServerDown = signal<boolean>(false);
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) { }
+  static isServerDown = signal<boolean>(false);
 
   ping(): void {
     const url = getPingUrl();
-    this.http.post(url, Config.getHeaders()).subscribe({
+    this.http.post(url, {}, Config.getHeaders()).subscribe({
       next: () => {
         PingService.isServerDown.set(false);
       },

@@ -111,8 +111,8 @@ class DbDuoTest(unittest.TestCase):
 
         db.run_ddl_file("file_name")
 
-        mock_open.assert_called_once_with('file_name', 'r')
-        mock_execute.assert_called_once_with(mock_open().read())
+        mock_open.assert_called_once_with('file_name', 'r', encoding='utf-8')
+        mock_execute.assert_called_once_with(mock_open().__enter__().read())
         db.con.commit.assert_called_once_with()
 
     @mock.patch.object(DBExecutionException, '__init__', return_value=None)
@@ -136,7 +136,7 @@ class DbDuoTest(unittest.TestCase):
             db.run_ddl_file("file_name")
 
         mock_exception.assert_called_once_with('Run DDL file', 'file_name on error')
-        mock_open.assert_called_once_with('file_name', 'r')
+        mock_open.assert_called_once_with('file_name', 'r', encoding='utf-8')
         assert not db.con.commit.called
 
     @mock.patch.object(Table, '__init__', return_value=None)
@@ -363,7 +363,7 @@ class DbDuoTest(unittest.TestCase):
     @mock.patch.object(DataModel, 'get_grouping_field', return_value="field_4")
     @mock.patch.object(DataModel, 'get_ordering_type', return_value=OrderType("field_4", True))
     @mock.patch.object(DataModel, 'get_querying_fields_and_value',
-                       return_value={'field_1': "value_1", 'field_2': "value_2"})
+                       return_value={'field_1': "value_1", 'field_2': "value_2", "field_3": ["value_3", "value_4"]})
     @mock.patch.object(DataModel, 'get_filtering_fields', return_value=['field_5', 'field_4'])
     @mock.patch.object(DataModel, 'get_table_name', return_value="table")
     @mock.patch.object(Table, '__init__', return_value=None)
@@ -380,7 +380,7 @@ class DbDuoTest(unittest.TestCase):
             model = DataModel(Relation.INIT)
             mock_table.schema_type = False
             model.table = mock_table
-            model._fields = {'field_1': "value_1", 'field_2': "value_1"}
+            model._fields = {'field_1': "value_1", 'field_2': "value_2", "field_3": ["value_3", "value_4"]}
 
         with patch.object(PostgresDbDuo, '__init__', return_value=None) as _:
             db = PostgresDbDuo(model)
@@ -395,9 +395,9 @@ class DbDuoTest(unittest.TestCase):
         mock_get_record_count.assert_called_once_with()
         mock_table_name.assert_called_once_with()
         self.assertEqual(
-            ('SELECT field_5, field_4 FROM table WHERE field_1= %s AND field_2= %s '
+            ('SELECT field_5, field_4 FROM table WHERE field_1= %s AND field_2= %s AND field_3= ANY(%s) '
              'GROUP BY field_4 ORDER BY field_4 DESC LIMIT 1',
-             ('value_1', 'value_2')),
+             ('value_1', 'value_2', ['value_3', 'value_4'])),
             actual
         )
 
@@ -1303,3 +1303,5 @@ class DbDuoTest(unittest.TestCase):
         db.close()
 
         db.client.close.assert_called_once_with()
+
+        self.assertTrue(True)

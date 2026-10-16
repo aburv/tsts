@@ -4,7 +4,7 @@ from unittest.mock import call
 
 from src.config import Relation
 from src.data import DataModel
-from src.user_id.data import UserIDData
+from src.user_id.data import UserIDData, UserIDFilterType
 
 
 class UserIDDataTest(unittest.TestCase):
@@ -30,10 +30,10 @@ class UserIDDataTest(unittest.TestCase):
         with mock.patch.object(UserIDData, '__init__', return_value=None):
             data = UserIDData()
 
-        data.on_select({}, "f_type")
+        data.on_select({}, UserIDFilterType.DEFAULT)
 
         mock_set.assert_called_once_with({}, False)
-        self.assertEqual(data._filter_type, "f_type")
+        self.assertEqual(data._filter_type, UserIDFilterType.DEFAULT)
 
     @mock.patch.object(DataModel, 'add_field')
     def test_should_add_user_id_on_add_insert_fields(self, mock_add_field):
@@ -53,7 +53,7 @@ class UserIDDataTest(unittest.TestCase):
     def test_should_return_user_id_querying_fields_when_filter_type_is_none_on_get_querying_fields(self):
         with mock.patch.object(UserIDData, '__init__', return_value=None):
             id_data = UserIDData()
-            id_data._filter_type = None
+            id_data._filter_type = UserIDFilterType.DEFAULT
 
         actual = id_data.get_querying_fields()
 
@@ -62,7 +62,7 @@ class UserIDDataTest(unittest.TestCase):
     def test_should_return_user_id_querying_fields_when_filter_type_is_id_on_get_querying_fields(self):
         with mock.patch.object(UserIDData, '__init__', return_value=None):
             id_data = UserIDData()
-            id_data._filter_type = "id"
+            id_data._filter_type = UserIDFilterType.ID
 
         actual = id_data.get_querying_fields()
 
@@ -71,7 +71,7 @@ class UserIDDataTest(unittest.TestCase):
     def test_should_return_user_id_filtering_fields_when_filter_type_is_none_on_get_filtering_fields(self):
         with mock.patch.object(UserIDData, '__init__', return_value=None):
             id_data = UserIDData()
-            id_data._filter_type = None
+            id_data._filter_type = UserIDFilterType.DEFAULT
         actual = id_data.get_filtering_fields()
 
         self.assertEqual(actual, ["val", "type"])
@@ -79,7 +79,8 @@ class UserIDDataTest(unittest.TestCase):
     def test_should_return_user_id_filtering_fields_when_filter_type_is_id_on_get_filtering_fields(self):
         with mock.patch.object(UserIDData, '__init__', return_value=None):
             id_data = UserIDData()
-            id_data._filter_type = "id"
+            id_data._filter_type = UserIDFilterType.ID
+
         actual = id_data.get_filtering_fields()
 
         self.assertEqual(actual, ['t_user'])
@@ -87,7 +88,8 @@ class UserIDDataTest(unittest.TestCase):
     def test_should_return_one_when_filter_type_is_id_on_get_record_count(self):
         with mock.patch.object(UserIDData, '__init__', return_value=None):
             id_data = UserIDData()
-            id_data._filter_type = "id"
+            id_data._filter_type = UserIDFilterType.ID
+
         actual = id_data.get_record_count()
 
         self.assertEqual(actual, 1)

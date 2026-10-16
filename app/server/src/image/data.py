@@ -3,12 +3,35 @@ Image Data
 """
 import io
 import zlib
+from enum import Enum
 
 from PIL import Image
 from werkzeug.datastructures.file_storage import FileStorage
 
 from src.config import Relation
-from src.data import DataModel
+from src.data import DataModel, FilterMeta
+
+
+class ImageSize(Enum):
+    """
+    Image Size
+    """
+    _80 = FilterMeta(querying_fields=['id'], filtering_fields=["one"], record_count=1)
+    _160 = FilterMeta(querying_fields=['id'], filtering_fields=["two"], record_count=1)
+    _320 = FilterMeta(querying_fields=['id'], filtering_fields=["three"], record_count=1)
+    DEFAULT = FilterMeta(querying_fields=['id'], filtering_fields=["c_original"], record_count=1)
+
+    @staticmethod
+    def to_enum(value: str | None):
+        """
+        Convert value to enum
+        """
+        if value is None or value == "":
+            return ImageSize.DEFAULT
+        try:
+            return ImageSize[f"_{value}"]
+        except KeyError:
+            return ImageSize.DEFAULT
 
 
 class ImageData(DataModel):
@@ -37,7 +60,7 @@ class ImageData(DataModel):
         }
         self.set_data(data, True)
 
-    def on_select(self, data: dict, _filter_type: str):
+    def on_select(self, data: dict, _filter_type: ImageSize):
         """
         sets on select data
         """
@@ -57,22 +80,6 @@ class ImageData(DataModel):
 
     def get_audit_payload(self) -> dict:
         return {}
-
-    def get_filtering_fields(self) -> list:
-        f_field = "c_original"
-        if self._filter_type == "80":
-            f_field = "one"
-        elif self._filter_type == "160":
-            f_field = "two"
-        elif self._filter_type == "320":
-            f_field = "three"
-        return [f_field]
-
-    def get_querying_fields(self) -> list:
-        return ['id']
-
-    def get_record_count(self) -> int | None:
-        return 1
 
     @staticmethod
     def resize_and_compress(image: Image, size: tuple | None) -> bytes:

@@ -14,6 +14,7 @@ export enum Icon {
 
 @Component({
   selector: 'app-icon',
+  standalone: true,
   imports:[
     CommonModule
   ],

@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Config } from '../config';
 
 function getAuthUrl(): string {
-  return Config.getDomain() + 'auth/';
+  return Config.getNameSpace() + 'auth/';
 }
 
 
@@ -12,7 +12,7 @@ function getAuthUrl(): string {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
 
   signIn(userLoginData: any): Observable<any> {
     return this.http.post(getAuthUrl() + 'login', { data: userLoginData }, Config.getHeaders());

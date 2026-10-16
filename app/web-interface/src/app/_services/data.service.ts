@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Config } from '../config';
 import { Observable, catchError, of, switchMap } from 'rxjs';
@@ -9,16 +9,14 @@ import { UserDataService } from './UserData.service';
   providedIn: 'root',
 })
 export class DataService {
-  constructor(
-    private http: HttpClient,
-    private pingService: PingService,
-    private userData: UserDataService
-  ) { }
+  private http = inject(HttpClient);
+  private pingService = inject(PingService);
+  private userData = inject(UserDataService);
 
   get(path: string): Observable<any> {
-    const url = Config.getDomain() + path;
+    const url = Config.getNameSpace() + path;
     if (PingService.isServerDown()) {
-      return of('');
+      return of(null);
     }
 
     return this.http.get(url, Config.getHeaders()).pipe(
@@ -34,7 +32,11 @@ export class DataService {
               })
             );
           }
-          if (error.status === 404 || error.status === 0) {
+          if (
+            (error.status === 404 || error.status === 0) 
+            &&
+            !(error.error && error.error.error &&
+            error.error.error.type === "RecordNotFoundException")) {
             this.pingService.ping();
             return of('');
           }
@@ -46,7 +48,7 @@ export class DataService {
 
   post(url: string, data: any): Observable<any> {
     if (!PingService.isServerDown()) {
-      return this.http.post(Config.getDomain() + url, { data }, Config.getHeaders());
+      return this.http.post(Config.getNameSpace() + url, { data }, Config.getHeaders());
     }
     return of(null)
   }

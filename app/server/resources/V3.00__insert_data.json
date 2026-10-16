@@ -1,0 +1,11 @@
+{
+  "general": {
+    "gender": ["Male", "Female"]
+  },
+  "player": {
+    "shoe_size": ["5 (39)", "6 (40)", "7 (41)", "8 (42)", "9 (43)", "10 (44)", "11 (46)", "12 (47)", "13 (48)"],
+    "jersey_size": ["xS (36)", "S (38)", "M (39-40)", "L (42)", "xL (44)", "xxL (46)"],
+    "blood_group": ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+    "position": ["Striker", "Tekong", "Feeder"]
+  }
+}

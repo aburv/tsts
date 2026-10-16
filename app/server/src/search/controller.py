@@ -13,7 +13,7 @@ SEARCH_BLUEPRINT = Blueprint('search', __name__)
 
 @SEARCH_BLUEPRINT.route("/<text>", methods=["GET"])
 @validate(is_auth_mandatory=False)
-@get_if_cached(api_key="search")
+@get_if_cached(api_key="search", user_specific=False, needs_user=False)
 def get_data(text: str, user_id: str | None) -> APIResponse:
     """
     :return:

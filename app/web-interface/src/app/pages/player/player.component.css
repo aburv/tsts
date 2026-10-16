@@ -1,0 +1,160 @@
+.warning-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 28px;
+    box-sizing: border-box;
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--primary) 6%, transparent), transparent 42%),
+        var(--mild-bg);
+}
+
+.warning-panel {
+    width: min(100%, 500px);
+    padding: 42px 36px 36px;
+    background: var(--bg);
+    border: 1px solid var(--less-bright);
+    border-radius: 18px;
+    box-shadow: 0 18px 45px color-mix(in srgb, var(--dark) 10%, transparent);
+    text-align: center;
+}
+
+.profile-mark {
+    position: relative;
+    width: 102px;
+    height: 102px;
+    margin: 0 auto 28px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--primary) 13%, var(--bg));
+    box-shadow: 10px 12px 0 color-mix(in srgb, var(--primary) 18%, var(--bg));
+}
+
+.profile-head,
+.profile-shoulders {
+    position: absolute;
+    display: block;
+    background: var(--primary);
+}
+
+.profile-head {
+    top: 23px;
+    left: 39px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+}
+
+.profile-shoulders {
+    bottom: 20px;
+    left: 25px;
+    width: 53px;
+    height: 28px;
+    border-radius: 28px 28px 12px 12px;
+}
+
+.warning-copy .eyebrow {
+    margin: 0 0 10px;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.warning-copy h1 {
+    margin: 0;
+    color: var(--dark);
+    font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.08;
+    font-weight: 700;
+}
+
+.warning-copy .description {
+    max-width: 340px;
+    margin: 16px auto 0;
+    color: var(--less-dark);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.banner {
+    background-color: var(--bg);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    margin: 5px;
+}
+
+.player-name {
+    width: inherit;
+    margin: 5px;
+    padding: 5px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.center {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.space-around {
+    display: flex;
+    justify-content: space-around;
+}
+
+.bio {
+    width: stretch;
+    font-size: medium;
+}
+
+.details {
+    margin-top: 10px;
+    text-align: center;
+}
+
+
+.sub {
+    font-size: 18px;
+}
+
+
+.container {
+    height: calc(100% - 260px);
+}
+
+.scrollable {
+    overflow-y: scroll;
+}
+
+.tab-container {
+    display: flex;
+    margin: 3px;
+    justify-content: center;
+    background-color: var(--bright);
+    border-radius: 20px;
+}
+
+.tab {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tab.full {
+    width: calc(100%)
+}
+
+.tab.selected {
+    font-weight: bold;
+    background-color: var(--primary);
+    color: var(--bright);
+    cursor: default;
+}

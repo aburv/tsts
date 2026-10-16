@@ -97,42 +97,9 @@ struct SplashScreen: View {
             }
             .offset(y: offset)
             
-            if(user == nil && needsSignIn) {
+            if(errorMessage == "") {
                 Spacer()
                 
-                Button {
-                    doGoogleAuth()
-                } label: {
-                    HStack {
-                        Image("icGoogle")
-                            .resizable()
-                            .frame(width: dimen.buttonIconSize, height: dimen.buttonIconSize)
-                        
-                        Text("Sign In")
-                            .font(.system(size: dimen.buttonTextSize))
-                    }
-                }
-                .buttonStyle(
-                    ScalingButton(
-                        backgroundColor: Color(.white),
-                        color: Color(.black),
-                        border: Color(.white),
-                        cornerRadius: dimen.buttonIconSize
-                    )
-                )
-                
-                Button {
-                    withAnimation(.spring()) {
-                        self.screen = .HOME
-                    }
-                } label: {
-                    Text("Skip")
-                        .font(.system(size: dimen.buttonTextSize))
-                        .foregroundStyle(Color(.white))
-                }
-            }
-            
-            if(errorMessage != "") {
                 Text("Unable to connect Server")
                     .font(.system(size: dimen.warningTextSize))
                     .foregroundColor(Color(.white))
@@ -152,8 +119,42 @@ struct SplashScreen: View {
                     )
                 )
             }
-            
-            if (errorMessage == "" || needsSignIn) {
+            else{
+                if(user == nil && needsSignIn) {
+                    Spacer()
+                    
+                    Button {
+                        doGoogleAuth()
+                    } label: {
+                        HStack {
+                            Image("icGoogle")
+                                .resizable()
+                                .frame(width: dimen.buttonIconSize, height: dimen.buttonIconSize)
+                            
+                            Text("Sign In")
+                                .font(.system(size: dimen.buttonTextSize))
+                        }
+                    }
+                    .buttonStyle(
+                        ScalingButton(
+                            backgroundColor: Color(.white),
+                            color: Color(.black),
+                            border: Color(.white),
+                            cornerRadius: dimen.buttonIconSize
+                        )
+                    )
+                    
+                    Button {
+                        withAnimation(.spring()) {
+                            self.screen = .HOME
+                        }
+                    } label: {
+                        Text("Skip")
+                            .font(.system(size: dimen.buttonTextSize))
+                            .foregroundStyle(Color(.white))
+                    }
+                }
+                
                 Spacer()
             }
             

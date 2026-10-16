@@ -4,7 +4,7 @@ from unittest.mock import call
 
 from src.config import Relation
 from src.data import DataModel
-from src.location.data import LocationData
+from src.location.data import LocationData, LocationFilterType
 
 
 class LocationDataTest(unittest.TestCase):
@@ -44,6 +44,7 @@ class LocationDataTest(unittest.TestCase):
     def test_should_return_one_on_get_record_count(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             data = LocationData()
+            data._filter_type = LocationFilterType.DEFAULT
 
         actual = data.get_record_count()
 
@@ -52,7 +53,7 @@ class LocationDataTest(unittest.TestCase):
     def test_should_return_query_fields_on_get_querying_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             data = LocationData()
-            data._filter_type = ""
+            data._filter_type = LocationFilterType.DEFAULT
 
         actual = data.get_querying_fields()
 
@@ -61,7 +62,7 @@ class LocationDataTest(unittest.TestCase):
     def test_should_return_lat_long_field_when_filter_type_is_point_on_get_querying_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             data = LocationData()
-            data._filter_type = "point"
+            data._filter_type = LocationFilterType.POINT
 
         actual = data.get_querying_fields()
 
@@ -85,15 +86,15 @@ class LocationDataTest(unittest.TestCase):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             data = LocationData()
 
-        data.on_select({}, "")
+        data.on_select({}, LocationFilterType.DEFAULT)
 
         mock_set.assert_called_once_with({}, False)
-        self.assertEqual(data._filter_type, "")
+        self.assertEqual(data._filter_type, LocationFilterType.DEFAULT)
 
     def test_should_return_short_fields_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = LocationData()
-            image_data._filter_type = 'id'
+            image_data._filter_type = LocationFilterType.ID
 
         actual = image_data.get_filtering_fields()
 
@@ -102,7 +103,7 @@ class LocationDataTest(unittest.TestCase):
     def test_should_return_id_field_when_filter_type_is_point_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = LocationData()
-            image_data._filter_type = 'point'
+            image_data._filter_type = LocationFilterType.POINT
 
         actual = image_data.get_filtering_fields()
 
@@ -111,7 +112,7 @@ class LocationDataTest(unittest.TestCase):
     def test_should_return_long_fields_on_get_filtering_fields(self):
         with mock.patch.object(DataModel, '__init__', return_value=None):
             image_data = LocationData()
-            image_data._filter_type = None
+            image_data._filter_type = LocationFilterType.DEFAULT
 
         actual = image_data.get_filtering_fields()
 
