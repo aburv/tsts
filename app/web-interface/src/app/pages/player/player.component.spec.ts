@@ -4,7 +4,7 @@ import { PlayerComponent } from './player.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoaderService } from '../../_services/loader.service';
 import { PlayerService } from '../../_services/player.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { UserDataService } from '../../_services/UserData.service';
 import { Icon } from '../../components/icon/icon.component';
 import { ImageComponent } from '../../components/image/image.component';
