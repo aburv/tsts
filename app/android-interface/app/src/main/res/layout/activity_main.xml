@@ -150,6 +150,57 @@
             android:layout_marginTop="10dp"
             android:background="?attr/mildBackground" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_empty_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/empty_state_icon"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:background="@drawable/bg_empty_search"
+                android:contentDescription="@string/text_search"
+                android:padding="30dp"
+                android:src="@drawable/ic_search"
+                app:tint="?attr/lessDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_no_results"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="38dp"
+                android:text="@string/no_results_found"
+                android:textColor="?attr/dark"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:transitionName="name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/empty_state_icon" />
+
+            <TextView
+                android:id="@+id/text_no_results_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/no_results_search_again"
+                android:textColor="?attr/lessDark"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_no_results" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_search"
             android:layout_width="match_parent"
@@ -157,6 +208,7 @@
             android:background="?attr/mildBackground"
             android:overScrollMode="never"
             android:visibility="gone" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

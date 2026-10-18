@@ -42,6 +42,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import androidx.core.view.isVisible
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -116,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         val closeIcon = binding.icBack
         val searchText = binding.searchInputText
         val searchList = binding.listSearch
+        val emptyState = binding.layoutEmptySearch
 
         profile = binding.icProfile
 
@@ -139,7 +141,7 @@ class MainActivity : AppCompatActivity() {
             Log.i(TAG, "Search Button pressed")
 
             searchLayout.visibility = View.VISIBLE
-            searchList.visibility = View.VISIBLE
+            updateSearchViews(searchList, emptyState, true)
             val circularReveal = ViewAnimationUtils.createCircularReveal(
                 searchLayout,
                 (searchIcon.right + searchIcon.left) / 2,
@@ -152,7 +154,8 @@ class MainActivity : AppCompatActivity() {
             val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.toggleSoftInputFromWindow(
                 searchText.applicationWindowToken,
-                InputMethodManager.SHOW_IMPLICIT, 0
+                InputMethodManager.SHOW_IMPLICIT,
+                0
             )
         }
 
@@ -178,7 +181,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onAnimationStart(animation: Animator) = Unit
                 override fun onAnimationEnd(animation: Animator) {
                     searchLayout.visibility = View.GONE
-                    searchList.visibility = View.GONE
+                    updateSearchViews(searchList, emptyState, false)
                     circularConceal.removeAllListeners()
                 }
             })
@@ -194,6 +197,9 @@ class MainActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable) {
                 searchingValue = s.toString()
                 updateSearchCloseIcon()
+                if (searchLayout.isVisible) {
+                    updateSearchViews(searchList, emptyState, true)
+                }
             }
 
             override fun beforeTextChanged(
@@ -323,6 +329,27 @@ class MainActivity : AppCompatActivity() {
             clearIcon!!.visibility = View.VISIBLE
         } else {
             clearIcon!!.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun updateSearchViews(
+        searchList: androidx.recyclerview.widget.RecyclerView,
+        emptyState: View?,
+        isSearching: Boolean
+    ) {
+        val hasSearchText = searchingValue.isNotBlank()
+        val hasResults = (searchList.adapter?.itemCount ?: 0) > 0
+
+        binding.container.visibility = if (isSearching) View.GONE else View.VISIBLE
+        emptyState?.visibility = if (isSearching && hasSearchText && !hasResults) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+        searchList.visibility = if (isSearching && hasSearchText && hasResults) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 

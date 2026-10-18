@@ -8,6 +8,13 @@
     <string name="text_search">search</string>
     <string name="text_clear">clear</string>
     <string name="text_search_here">Search here</string>
+    <string name="no_results_found">No results found</string>
+    <string name="no_results_search_again">Try searching for another player.</string>
+    <string name="tournament_calendar">Tournament calendar</string>
+    <string name="tournament_board">TOURNAMENT BOARD</string>
+    <string name="no_tournaments_title">Your next match starts here soon.</string>
+    <string name="no_tournaments_subtitle">Stay Tuned</string>
+    <string name="no_tournaments_message">No tournaments are scheduled yet.</string>
 
     <string name="text_sign_in">Sign In</string>
     <string name="text_sign_out">Sign Out</string>
