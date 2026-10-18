@@ -80,7 +80,7 @@ class DeviceData(private val context: Context) {
                 override fun onError(value: String) {}
             })
         } catch (_: Exception) {
-            Log.e("API Call", "Failed in posting device info")
+            Log.e(TAG, "Failed in posting device info")
         }
     }
 }

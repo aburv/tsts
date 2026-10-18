@@ -26,11 +26,6 @@ android {
             )
 
             buildConfigField(
-                "String", "API_KEY",
-                "\"${System.getenv("API_KEY")}\""
-            )
-
-            buildConfigField(
                 "String", "BASE_NAME",
                 "\"${System.getenv("DB")}\""
             )
@@ -49,11 +44,6 @@ android {
             buildConfigField(
                 "String", "API_DOMAIN",
                 "\"${System.getenv("API_DOMAIN")}\""
-            )
-
-            buildConfigField(
-                "String", "API_KEY",
-                "\"${System.getenv("API_KEY")}\""
             )
 
             buildConfigField(
@@ -128,10 +118,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.espresso.contrib)
     androidTestImplementation(libs.androidx.espresso.intents)
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
 }

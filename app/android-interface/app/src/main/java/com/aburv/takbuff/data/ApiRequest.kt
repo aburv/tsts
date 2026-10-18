@@ -17,6 +17,9 @@ import java.io.OutputStreamWriter
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.URL
+import java.security.MessageDigest
+import java.util.UUID
+
 
 open class APIRequest(private val context: Context) {
     companion object {
@@ -45,14 +48,51 @@ open class APIRequest(private val context: Context) {
             ""
         }
 
+        val identity = ClientIdentity(context)
+        val token = identity.getClientToken()
+        val timestamp = (System.currentTimeMillis() / 1000).toString()
+        val requestId = UUID.randomUUID().toString()
+        val bodyHash = MessageDigest.getInstance("SHA-256").digest(body)
+            .joinToString("") { "%02x".format(it) }
+        val canonical = listOf(
+            httpURLConnection.requestMethod,
+            httpURLConnection.url.path,
+            timestamp,
+            requestId,
+            bodyHash,
+            ClientIdentity.PLATFORM,
+            identity.getInstallationId(),
+        ).joinToString("\n")
         httpURLConnection.setRequestProperty(
-            "x-api-key",
-            BuildConfig.API_KEY
+            "x-api-key", 
+            "Client $token"
         )
         httpURLConnection.setRequestProperty(
-            "x-access-key",
-            accessToken
+            "X-Client-Installation", 
+            identity.getInstallationId()
         )
+        httpURLConnection.setRequestProperty(
+            "X-Client-Platform", 
+            ClientIdentity.PLATFORM
+        )
+        httpURLConnection.setRequestProperty(
+            "X-Client-Timestamp", 
+            timestamp
+        )
+        httpURLConnection.setRequestProperty(
+            "X-Client-Request-Id", 
+            requestId
+        )
+        httpURLConnection.setRequestProperty(
+            "X-Client-Signature", 
+            identity.signRequest(canonical)
+        )
+        if (accessToken.isNotEmpty()) {
+            httpURLConnection.setRequestProperty(
+                "x-access-key",
+                accessToken
+            )
+        }
         httpURLConnection.setRequestProperty(
             "Content-Type",
             "application/json"
@@ -74,7 +114,7 @@ open class APIRequest(private val context: Context) {
             url.openConnection()
         } as HttpURLConnection
         httpURLConnection.requestMethod = "POST"
-        setHeaders(httpURLConnection)
+        setHeaders(httpURLConnection, dataString.toByteArray(Charsets.UTF_8))
         httpURLConnection.doInput = true
         httpURLConnection.doOutput = true
         val outputStreamWriter = OutputStreamWriter(httpURLConnection.outputStream)
@@ -133,10 +173,7 @@ open class APIRequest(private val context: Context) {
                 val url = URL("$DOMAIN/ping/")
                 val httpURLConnection = url.openConnection() as HttpURLConnection
                 httpURLConnection.requestMethod = "POST"
-                httpURLConnection.setRequestProperty(
-                    "x-api-key",
-                    BuildConfig.API_KEY
-                )
+                setHeaders(httpURLConnection)
                 httpURLConnection.connect()
                 val responseCode = httpURLConnection.responseCode
                 if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {

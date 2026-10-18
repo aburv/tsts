@@ -40,7 +40,7 @@ class UserData(private val context: Context) {
                 }
             })
         } catch (e: Exception) {
-            data.postValue(null)
+            data.postValue(JSONObject())
             Log.e("Get user data", "Unable to retrieve $e")
         }
     }
