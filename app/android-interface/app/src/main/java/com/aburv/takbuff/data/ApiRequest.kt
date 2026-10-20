@@ -38,7 +38,7 @@ open class APIRequest(private val context: Context) {
         this.dataCall(httpURLConnection, response)
     }
 
-    suspend fun setHeaders(httpURLConnection: HttpURLConnection) {
+    suspend fun setHeaders(httpURLConnection: HttpURLConnection, body: ByteArray = ByteArray(0)) {
         Log.i(TAG, "Set headers")
 
         val userTokens = UserTokenDB(context).getUserToken()

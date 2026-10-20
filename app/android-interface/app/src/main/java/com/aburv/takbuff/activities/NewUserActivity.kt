@@ -201,7 +201,7 @@ class NewUserActivity : AppCompatActivity() {
         heightAnimator.duration = 1000
         heightAnimator.interpolator = LinearInterpolator()
 
-                widthAnimator.addUpdateListener { animation: ValueAnimator ->
+            widthAnimator.addUpdateListener { animation: ValueAnimator ->
             val width = animation.animatedValue as Int
             updateImageViewSize(width, binding.userDp.layoutParams.height)
         }

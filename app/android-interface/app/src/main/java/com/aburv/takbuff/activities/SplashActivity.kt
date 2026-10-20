@@ -115,7 +115,7 @@ class SplashActivity : AppCompatActivity() {
         errorDialog = BottomSheetDialog(this, R.style.AppBottomSheetDialogTheme)
 
         googleErrorView = LayoutInflater.from(this)
-            .inflate(R.layout.layout_bottom_error_dialog, null)
+            .inflate(R.layout.layout_bottom_error_dialog, binding.root, false)
         errorDialog!!.setContentView(googleErrorView!!)
 
         rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
