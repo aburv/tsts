@@ -46,11 +46,11 @@ class PlayerGearServices:
         """
         Check if player is present in db
         """
-        try:
-            self.get_by_id(player_id)
+        self._data.on_select({"player": player_id}, PlayerGearFilterType.IS_PRESENT)
+        records = self._db.get_records()
+        if len(records) == 1:
             return True
-        except RecordNotFoundException as _:
-            return False
+        return False
 
     def search_by_j_name_j_no(self, text: str, _: str) -> list: # pylint: disable=unused-argument
         """

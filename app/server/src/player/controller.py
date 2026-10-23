@@ -42,12 +42,9 @@ def get_actual_1(user_id: str | None) -> Response:
     """
     try:
         player_id = UserServices().get_player_id(user_id)
-        data = {}
-        if player_id is not None:
-            data = PlayerServices().get_user_data(player_id, user_id)
         return ValidResponse(
-            "Retrieved player user data",
-            data
+            "Retrieved is player registered",
+            player_id is not None
         ).get_response_json()
     except APIException as e:
         return e.get_response_json()
@@ -62,15 +59,20 @@ def get_actual_2(user_id: str | None) -> Response:
     """
     try:
         player_id = UserServices().get_player_id(user_id)
-        data = {}
         if player_id is not None:
             data = PlayerGearServices().get_by_id(player_id)
+            return ValidResponse(
+                domain="Retrieved player gear info",
+                detail=player_id,
+                data=data
+            ).get_response_json()
+        raise RecordNotFoundException("Get PlayerData for user", user_id)
+    except APIException as _:
         return ValidResponse(
-            "Retrieved player user data",
-            data
+            domain="Retrieve player gear info",
+            detail=user_id,
+            data={}
         ).get_response_json()
-    except APIException as e:
-        return e.get_response_json()
 
 
 @PLAYER_BLUEPRINT.route("/", methods=["POST"])

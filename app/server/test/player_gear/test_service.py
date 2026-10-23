@@ -103,29 +103,44 @@ class PlayerPositionServiceTest(unittest.TestCase):
         )
         mock_update_record.assert_called_once_with('user_id', 'player_id')
 
-    @mock.patch.object(PlayerGearServices, 'get_by_id')
+    @mock.patch.object(PostgresDbDuo, 'get_records', return_value=[])
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(PlayerGearData, '__init__', return_value=None)
     def test_should_return_false_on_check_presence(self,
-                                                   mock_get_by_id):
-        with mock.patch.object(RecordNotFoundException, '__init__', return_value=None):
-            mock_get_by_id.side_effect = RecordNotFoundException("player", "player_id")
-
+                                                   mock_data,
+                                                   mock_db,
+                                                   mock_get_records):
         with mock.patch.object(PlayerGearServices, '__init__', return_value=None):
             service = PlayerGearServices()
+            service._db = mock_db
+            service._data = mock_data
+            mock_db.get_records = mock_get_records
 
         actual = service.check_presence("player_id")
 
-        mock_get_by_id.assert_called_once_with("player_id")
+        mock_data.on_select.assert_called_once_with({'player': 'player_id'}, PlayerGearFilterType.IS_PRESENT)
+        mock_get_records.assert_called_once_with()
+
         self.assertFalse(actual)
 
-    @mock.patch.object(PlayerGearServices, 'get_by_id')
+    @mock.patch.object(PostgresDbDuo, 'get_records', return_value=[{"id": "player_id"}])
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(PlayerGearData, '__init__', return_value=None)
     def test_should_return_true_on_check_presence(self,
-                                                  mock_get_by_id):
+                                                  mock_data,
+                                                  mock_db,
+                                                  mock_get_records):
         with mock.patch.object(PlayerGearServices, '__init__', return_value=None):
             service = PlayerGearServices()
+            service._db = mock_db
+            service._data = mock_data
+            mock_db.get_records = mock_get_records
 
         actual = service.check_presence("player_id")
 
-        mock_get_by_id.assert_called_once_with("player_id")
+        mock_data.on_select.assert_called_once_with({'player': 'player_id'}, PlayerGearFilterType.IS_PRESENT)
+        mock_get_records.assert_called_once_with()
+
         self.assertTrue(actual)
 
     @mock.patch.object(PostgresDbDuo, 'get_records', return_value=[{"id": "player_id"}])

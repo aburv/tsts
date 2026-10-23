@@ -34,31 +34,40 @@ class FormOptionServiceTest(unittest.TestCase):
         mock_get_records.return_value = [
             {
                 "a.field": "color",
-                "b.id": 1,
-                "b.f_value": "red"
-            },
-            {
-                "a.field": "color",
-                "b.id": 2,
-                "b.f_value": "blue"
+                "options": [
+                    {
+                        "id": 1,
+                        "value": "red"
+                    },
+                    {
+                        "id": 2,
+                        "value": "blue"
+                    },
+                ]
             },
             {
                 "a.field": "shape_s",
-                "b.id": 3,
-                "b.f_value": "rectangle"
+                "options": [
+                    {
+                        "id": 3,
+                        "value": "rectangle"
+                    }
+                ]
             },
             {
                 "a.field": "shape",
-                "b.id": 4,
-                "b.f_value": "square"
-            },
-            {
-                "a.field": "shape",
-                "b.id": 5,
-                "b.f_value": "circle"
+                "options": [
+                    {
+                        "id": 4,
+                        "value": "square"
+                    },
+                    {
+                        "id": 5,
+                        "value": "circle"
+                    }]
             }
         ]
-        mock_get_field_key.side_effect = ['color', 'color', 'shapeS', 'shape', 'shape']
+        mock_get_field_key.side_effect = ['color', 'shapeS', 'shape']
 
         with mock.patch.object(OptionService, '__init__', return_value=None):
             service = OptionService(FormType.PLAYER)
@@ -71,9 +80,7 @@ class FormOptionServiceTest(unittest.TestCase):
         mock_get_records.assert_called_with()
         mock_get_field_key.assert_has_calls([
             call('color'),
-            call('color'),
             call('shape_s'),
-            call('shape'),
             call('shape')
         ])
 

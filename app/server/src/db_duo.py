@@ -6,7 +6,7 @@ from typing import Tuple
 
 import psycopg2
 
-from src.config import Config
+from src.config import Config, Join
 from src.data import DataModel
 from src.logger import LoggerAPI
 from src.responses import DBConnectionException, TableNotFoundException, DBExecutionException, DataValidationException
@@ -56,6 +56,19 @@ class PostgresDbDuo:
         check table presence
         """
         try:
+            if isinstance(self._data.table, Join):
+                table_names = (self._data.table.table1._name, self._data.table.table2._name)
+                conditions = " OR ".join(
+                    f"(table_schema='{self._schema}' and table_name='{table_name}')"
+                    for table_name in table_names
+                )
+                self.client.execute(
+                    f"SELECT COUNT(*) FROM information_schema.tables WHERE {conditions}"
+                )
+                val = self.client.fetchone()
+                self.con.commit()
+                return val[0] == len(table_names) if val is not None else False
+
             self.client.execute(
                 f"SELECT * FROM information_schema.tables WHERE "
                 f"table_schema='{self._schema}' and "
@@ -73,7 +86,9 @@ class PostgresDbDuo:
         """
         records = self.get_records()
         if len(records) > 0:
-            field = self._data.get_filtering_fields()[0]
+            field_key = self._data.get_filtering_fields()[0]
+            field_keys = self._data.get_field_keys()
+            field = field_keys.get(field_key, field_key) if isinstance(field_keys, dict) else field_key
             return records[0][field]
         return None
 
@@ -104,6 +119,11 @@ class PostgresDbDuo:
         fields = self._data.get_filtering_fields()
         if not fields:
             raise DBExecutionException('Retrieve', 'Query fields cannot be empty')
+        filtering_functions = self._data.get_filtering_functions()
+        fields = [
+            f'{filtering_functions[field]} as {field}' if filtering_functions and field in filtering_functions else field
+            for field in fields
+        ]
         query_param: dict = self._data.get_querying_fields_and_value()
         order_type = self._data.get_ordering_type()
         group_by_field = self._data.get_grouping_field()
@@ -121,7 +141,7 @@ class PostgresDbDuo:
                     query_list.append(field + "= %s")
             query += " AND ".join(query_list)
         if group_by_field is not None:
-            query += f" GROUP BY {group_by_field}"
+            query += f" GROUP BY {', '.join(group_by_field)}"
         if order_type is not None:
             query += f" ORDER BY {order_type.field} " + ("DESC" if order_type.is_desc else "ASC")
         if record_count is not None:

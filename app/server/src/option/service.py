@@ -23,16 +23,7 @@ class OptionService:
         data = {}
         for record in records:
             field_type = self.get_field_key(record["a.field"])
-            try:
-                data[field_type].append({
-                    "id": record["b.id"],
-                    "value": record["b.f_value"]
-                })
-            except KeyError:
-                data[field_type] = [{
-                    "id": record["b.id"],
-                    "value": record["b.f_value"]
-                }]
+            data[field_type] = record["options"]
 
         return data
 

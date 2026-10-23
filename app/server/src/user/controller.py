@@ -1,12 +1,15 @@
 """
 User Controller
 """
-from flask import Blueprint, Response
+from flask import Blueprint, Response, request
 
 from src.auth import validate
 from src.caching import get_if_cached
-from src.responses import ValidResponse, APIResponse
+from src.responses import APIException, ValidResponse, APIResponse
 from src.user.service import UserServices
+
+from src.image.service import ImageServices
+
 
 USER_BLUEPRINT = Blueprint('user', __name__)
 
@@ -40,3 +43,28 @@ def set_user_onboarding_done(user_id: str | None) -> Response:
         detail=user_id,
         data=data
     ).get_response_json()
+
+
+@USER_BLUEPRINT.route("/image", methods=["POST"])
+@validate()
+def update_image(user_id: str | None) -> Response:
+    """
+    :return:
+    :rtype:
+    """
+    try:
+        file = request.files['file']
+        image_id = ImageServices().add(file, user_id)
+        UserServices().update_image(image_id, user_id)
+        return ValidResponse(
+            domain="Updated the image",
+            detail=user_id,
+            data=image_id
+        ).get_response_json()
+    except Exception as err:
+        APIException("Update the image", str(err), "", "", is_error=False)
+        return ValidResponse(
+            domain="Update the image",
+            detail=user_id,
+            data=""
+        ).get_response_json()

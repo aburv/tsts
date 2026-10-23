@@ -203,3 +203,20 @@ class UserServiceTest(unittest.TestCase):
         mock_db.get_record_field_value.assert_called_once_with()
 
         self.assertEqual(actual, "value")
+
+    @mock.patch.object(PostgresDbDuo, '__init__', return_value=None)
+    @mock.patch.object(UserData, '__init__', return_value=None)
+    def test_should_update_user_image(self, mock_user_data, mock_db):
+        with mock.patch.object(UserServices, '__init__', return_value=None):
+            service = UserServices()
+            service._data = mock_user_data
+            service._db = mock_db
+
+        actual = service.update_image("image_id", "user_id")
+
+        mock_user_data.on_select.assert_called_once_with(
+            {"id": "user_id", "dp": "image_id", "is_active": True},
+            UserFilterType.IMAGE
+        )
+        mock_db.update_record.assert_called_once_with("user_id", "user_id")
+        self.assertTrue(actual)

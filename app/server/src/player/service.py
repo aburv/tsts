@@ -33,7 +33,7 @@ class PlayerServices:
 
     def update(self, player_id: str, data: dict, u_id: str) -> None:
         """
-        Create and return player id
+        Create and update player id
         """
         data["id"] = player_id
         self._data.on_data(data, PlayerFilterType.ID)

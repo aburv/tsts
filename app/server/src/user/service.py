@@ -96,3 +96,11 @@ class UserServices:
         """
         self._data.on_select({"id": user_id, "is_active": True}, UserFilterType.PLAYER_ID)
         return self._db.get_record_field_value()
+
+    def update_image(self, image_id, user_id) -> bool:
+        """
+        update the image_id to user dp
+        """
+        self._data.on_select({"id": user_id, "dp": image_id, "is_active": True}, UserFilterType.IMAGE)
+        self._db.update_record(user_id, user_id)
+        return True

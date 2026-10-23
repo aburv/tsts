@@ -1,6 +1,7 @@
 import os
 import unittest
 from unittest import mock
+from unittest.mock import call
 
 from src.config import Config, SECRET_KEYS, Table, Relation, Join
 from src.responses import DataValidationException
@@ -132,15 +133,30 @@ class TableTest(unittest.TestCase):
         self.assertEqual(expected, actual)
         self.assertFalse(table.schema_type)
 
+    @mock.patch.object(Config, "_get_secret", return_value="meta")
+    def test_should_return_meta_schema_on_get_schema(self, mock_get_secret):
+        table = Table("tableName", False)
+
+        actual = table.get_schema()
+
+        mock_get_secret.assert_called_once_with("POSTGRES_SCHEMA_META")
+        self.assertEqual("meta", actual)
+
 
 class JoinTest(unittest.TestCase):
-    def test_should_return_join_table_name_on_get_name(self):
-        expected = "table_1 AS a INNER JOIN table_2 AS b ON a.id = b.id"
+    @mock.patch.object(Table, "get_name", side_effect=["table_1", "table_2"])
+    @mock.patch.object(Table, "get_schema", return_value="data")
+    def test_should_return_join_table_name_on_get_name(self, mock_get_schema, mock_get_name):
+        expected = "data.table_1 AS a INNER JOIN data.table_2 AS b ON a.id = b.id"
         table = Join(Table("table_1", True),
                      Table("table_2", True),
                      "id",
                      "id")
+
         actual = table.get_name()
+
+        mock_get_name.assert_has_calls([])
+        mock_get_schema.assert_has_calls([])
         self.assertEqual(expected, actual)
         self.assertTrue(table.schema_type)
 

@@ -121,7 +121,7 @@ class FormOptionDataTest(unittest.TestCase):
         FormOptionData(FormType.PLAYER)
 
         mock_data_model.assert_called_once_with(Relation.OPTION)
-        mock_set_data.assert_called_once_with({'is_active': 'true', 'form': ['player', 'general']}, False)
+        mock_set_data.assert_called_once_with({'is_active': True, 'form': ['player', 'general']}, False)
 
     @mock.patch.object(DataModel, 'set_data', return_value=None)
     @mock.patch.object(DataModel, 'add_field', return_value=None)
@@ -161,7 +161,7 @@ class FormOptionDataTest(unittest.TestCase):
 
         actual = option_data.get_filtering_fields()
 
-        self.assertEqual(actual, ['a.field', 'b.id', 'b.f_value'])
+        self.assertEqual(actual, ['a.field', 'options'])
 
     def test_should_return_fields_on_get_grouping_fields(self):
         with mock.patch.object(FormOptionData, '__init__', return_value=None):

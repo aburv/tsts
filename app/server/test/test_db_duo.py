@@ -4,7 +4,7 @@ from unittest.mock import patch, call
 
 import psycopg2
 
-from src.config import Config, Relation, Table
+from src.config import Config, Join, Relation, Table
 from src.data import DataModel, OrderType
 from src.db_duo import PostgresDbDuo, DBOperationException
 from src.logger import LoggerAPI
@@ -201,6 +201,30 @@ class DbDuoTest(unittest.TestCase):
         mock_exception.assert_called_once_with('Is Table exist', 'table on error')
         assert not db.con.commit.called
 
+    def test_should_return_true_when_join_tables_exist_on_is_table_exist(self):
+        model = mock.Mock()
+        model.table = Join(Table("table_1", True), Table("table_2", True), "id", "id")
+
+        with patch.object(PostgresDbDuo, '__init__', return_value=None):
+            db = PostgresDbDuo(model)
+            db._data = model
+            db._schema = 'schema'
+
+        db.con = mock.Mock()
+        db.client = mock.Mock()
+        db.client.fetchone.return_value = (2,)
+
+        actual = db.is_table_exist()
+
+        self.assertTrue(actual)
+        db.client.execute.assert_called_once_with(
+            "SELECT COUNT(*) FROM information_schema.tables WHERE "
+            "(table_schema='schema' and table_name='table_1') OR "
+            "(table_schema='schema' and table_name='table_2')"
+        )
+        db.client.fetchone.assert_called_once_with()
+        db.con.commit.assert_called_once_with()
+
     @mock.patch.object(Table, '__init__', return_value=None)
     @mock.patch.object(PostgresDbDuo, 'get_records')
     @mock.patch.object(DataModel, 'get_filtering_fields', return_value=["field"])
@@ -218,6 +242,7 @@ class DbDuoTest(unittest.TestCase):
         with mock.patch.object(PostgresDbDuo, '__init__', return_value=None):
             db = PostgresDbDuo(model)
             db._data = model
+            db._data._field_keys = {}
             db._schema = 'schema'
 
         actual = db.get_record_field_value()
@@ -225,6 +250,34 @@ class DbDuoTest(unittest.TestCase):
         mock_get_records.assert_called_once_with()
         mock_get_filtering_fields.assert_called_once_with()
 
+        self.assertEqual(actual, "value")
+
+    @mock.patch.object(Table, '__init__', return_value=None)
+    @mock.patch.object(PostgresDbDuo, 'get_records')
+    @mock.patch.object(DataModel, 'get_filtering_fields', return_value=["field"])
+    @mock.patch.object(DataModel, 'get_field_keys', return_value={"field": "field1"})
+    def test_should_return_value_when_field_keys_is_a_set_on_get_record_field_value(self,
+                                                                                    mock_get_field_keys,
+                                                                                    mock_get_filtering_fields,
+                                                                                    mock_get_records,
+                                                                                    mock_table
+                                                                                    ):
+        mock_get_records.return_value = [{"field1": "value"}]
+        with mock.patch.object(DataModel, '__init__', return_value=None):
+            model = DataModel(Relation.INIT)
+            mock_table.schema_type = False
+            model.table = mock_table
+
+        with mock.patch.object(PostgresDbDuo, '__init__', return_value=None):
+            db = PostgresDbDuo(model)
+            db._data = model
+            db._schema = 'schema'
+
+        actual = db.get_record_field_value()
+
+        mock_get_field_keys.assert_called_once_with()
+        mock_get_records.assert_called_once_with()
+        mock_get_filtering_fields.assert_called_once_with()
         self.assertEqual(actual, "value")
 
     @mock.patch.object(Table, '__init__', return_value=None)
@@ -360,7 +413,7 @@ class DbDuoTest(unittest.TestCase):
         )
 
     @mock.patch.object(DataModel, 'get_record_count', return_value=1)
-    @mock.patch.object(DataModel, 'get_grouping_field', return_value="field_4")
+    @mock.patch.object(DataModel, 'get_grouping_field', return_value=["field_4"])
     @mock.patch.object(DataModel, 'get_ordering_type', return_value=OrderType("field_4", True))
     @mock.patch.object(DataModel, 'get_querying_fields_and_value',
                        return_value={'field_1': "value_1", 'field_2': "value_2", "field_3": ["value_3", "value_4"]})
@@ -402,7 +455,7 @@ class DbDuoTest(unittest.TestCase):
         )
 
     @mock.patch.object(DataModel, 'get_record_count', return_value=1)
-    @mock.patch.object(DataModel, 'get_grouping_field', return_value="field_4")
+    @mock.patch.object(DataModel, 'get_grouping_field', return_value=["field_4"])
     @mock.patch.object(DataModel, 'get_ordering_type', return_value=OrderType("field_4", True))
     @mock.patch.object(DataModel, 'get_querying_fields_and_value',
                        return_value=None)

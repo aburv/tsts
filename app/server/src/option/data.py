@@ -41,8 +41,9 @@ class FormOptionDataFilterType(Enum):
     Option Data Filter Type
     """
     DEFAULT = FilterMeta(
+        filtering_functions={"options": "json_agg(json_build_object('id', b.id, 'value', b.f_value))"},
         querying_fields=["a.form", "a.is_active", "b.is_active"],
-        filtering_fields=["a.field", "b.id", "b.f_value"],
+        filtering_fields=["a.field", "options"],
         grouping_fields=['a.field']
     )
 
@@ -55,7 +56,7 @@ class FormOptionData(DataModel):
     def __init__(self, form: FormType):
         super().__init__(Relation.OPTION)
         self._filter_type = FormOptionDataFilterType.DEFAULT
-        self.set_data({"is_active": 'true', 'form': [form.value, 'general']}, False)
+        self.set_data({"is_active": True, 'form': [form.value, 'general']}, False)
 
     def add_fields(self):
         self.add_field('b.is_active', "is_active", bool)

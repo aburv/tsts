@@ -18,7 +18,7 @@ class PlayerPositionServices:
         """
         Map player to position
         """
-        self._data.on_data({"player": player_id, "position": position_id, "percent": 0})
+        self._data.on_data({"player": player_id, "position": position_id, "percent": 0.0})
         self._db.insert_record(u_id, player_id)
 
     def get_positions(self, player_id: str) -> list:

@@ -56,7 +56,7 @@ class PlayerPositionServiceTest(unittest.TestCase):
 
         service.create_position("player_id", "position", "user_id")
 
-        mock_data.on_data.assert_called_once_with({'player': 'player_id', 'position': 'position', 'percent': 0})
+        mock_data.on_data.assert_called_once_with({'player': 'player_id', 'position': 'position', 'percent': 0.0})
         mock_insert_record.assert_called_once_with('user_id', 'player_id')
 
     @mock.patch.object(PostgresDbDuo, 'update_record', return_value=None)

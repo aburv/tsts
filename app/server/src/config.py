@@ -157,6 +157,14 @@ class Table:
         """
         return self._name
 
+    def get_schema(self) -> str:
+        """
+        :return: table's schema
+        :rtype: str
+        """
+        return Config._get_secret("POSTGRES_SCHEMA") if self.schema_type \
+            else Config._get_secret("POSTGRES_SCHEMA_META")
+
 
 class Join(Table):
     """
@@ -175,9 +183,11 @@ class Join(Table):
         :return: table name
         :rtype: str
         """
-        return (f"{self.table1.get_name()} AS a "
+        table1_name = self.table1.get_schema() + '.' + self.table1.get_name()
+        table2_name = self.table1.get_schema() + '.' + self.table2.get_name()
+        return (f"{table1_name} AS a "
                 f"INNER JOIN "
-                f"{self.table2.get_name()} AS b "
+                f"{table2_name} AS b "
                 f"ON "
                 f"a.{self.key1} = b.{self.key2}")
 

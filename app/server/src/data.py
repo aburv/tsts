@@ -28,6 +28,7 @@ class FilterMeta(NamedTuple):
     """
     querying_fields: List[str]
     filtering_fields: List[str]
+    filtering_functions: Optional[dict[str, str]] = None
     grouping_fields: Optional[List[str]] = None
     record_count: Optional[int] = None
 
@@ -42,11 +43,12 @@ class DataModel:
     _has_id: bool
     _is_a_record: bool
 
-    _filter_type: Optional[Enum] = None
+    _filter_type: Optional[Enum] = None  # Subclass-specific Enum
 
     def __init__(self, relation: Relation, has_id: bool = True, is_a_record: bool = True):
         self.table = relation.value
         self._fields = {}
+        self._field_keys = {}
         self._has_id = has_id
         self._is_a_record = is_a_record
 
@@ -116,6 +118,20 @@ class DataModel:
             return self._filter_type.value.filtering_fields
         return []
 
+    def get_field_keys(self) -> dict | None:
+        """
+        Subset of Fields to be retrieved from db
+        """
+        return self._field_keys
+    
+    def get_filtering_functions(self) -> dict[str, str] | None:
+        """
+        Functions to apply to fields retrieved from db
+        """
+        if self._filter_type:
+            return self._filter_type.value.filtering_functions
+        return None
+
     def get_grouping_field(self) -> List[str] | None:
         """
         Subset of Fields to get group by
@@ -154,7 +170,7 @@ class DataModel:
             for data_item in data:
                 record = {}
                 for index, field in enumerate(fields):
-                    record[field] = data_item[index]
+                    record[self._field_keys.get(field, field)] = data_item[index]
                 records.append(record)
         return records
 
@@ -170,6 +186,7 @@ class DataModel:
         """
         add the field to data
         """
+        self._field_keys[name] = key
         try:
             value = self._data[key]
             if isinstance(value, f_type):

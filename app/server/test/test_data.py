@@ -246,6 +246,17 @@ class DataModelTest(unittest.TestCase):
         mock_filter_fields.assert_called_once_with()
         self.assertEqual(expected, actual)
 
+    def test_should_frame_records_with_add_field_keys(self):
+        model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
+        model._filter_type = mock.Mock(value=mock.Mock(filtering_fields=['d_id', 'd_name']))
+        model._data = {'deviceId': 'device_id', 'deviceName': 'device_name'}
+        model.add_field('d_id', 'deviceId', str)
+        model.add_field('d_name', 'deviceName', str)
+
+        actual = model.frame_records([('id', 'name')])
+
+        self.assertEqual([{'deviceId': 'id', 'deviceName': 'name'}], actual)
+
     def test_should_return_empty_list_on_get_querying_fields(self):
         model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
 
@@ -259,6 +270,15 @@ class DataModelTest(unittest.TestCase):
         actual = model.get_filtering_fields()
 
         self.assertEqual([], actual)
+
+    def test_should_return_filtering_functions_when_filter_type_is_set(self):
+        filtering_functions = {"field": "MAX(field)"}
+        model = DataModel(Relation.INIT, has_id=False, is_a_record=False)
+        model._filter_type = mock.Mock(value=mock.Mock(filtering_functions=filtering_functions))
+
+        actual = model.get_filtering_functions()
+
+        self.assertEqual(filtering_functions, actual)
 
     def test_should_return_none_on_get_record_count(self):
         model = DataModel(Relation.INIT, has_id=False, is_a_record=False)

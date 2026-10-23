@@ -68,10 +68,8 @@ class PlayerControllerTest(unittest.TestCase):
 
         self.assertEqual(actual_response.data, b'{"data":"player_data"}\n')
 
-    @mock.patch.object(ValidResponse, 'get_response_json', return_value={'data': 'player_data'})
+    @mock.patch.object(ValidResponse, 'get_response_json', return_value={'data': True})
     @mock.patch.object(ValidResponse, '__init__', return_value=None)
-    @mock.patch.object(PlayerServices, '__init__', return_value=None)
-    @mock.patch.object(PlayerServices, 'get_user_data', return_value='player_data')
     @mock.patch.object(UserServices, '__init__', return_value=None)
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
@@ -85,8 +83,6 @@ class PlayerControllerTest(unittest.TestCase):
                                                                       mock_auth_services,
                                                                       mock_get_player_id,
                                                                       mock_user_service,
-                                                                      mock_get_user_data,
-                                                                      mock_service_init,
                                                                       mock_response_init,
                                                                       mock_response
                                                                       ):
@@ -104,18 +100,14 @@ class PlayerControllerTest(unittest.TestCase):
         mock_token.assert_called_once_with('token')
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
-        mock_service_init.assert_called_once_with()
         mock_get_player_id.assert_called_once_with('user_id')
         mock_user_service.assert_called_once_with()
-        mock_get_user_data.assert_called_once_with('player_id', 'user_id')
-        mock_response_init.assert_called_once_with('Retrieved player user data', 'player_data')
+        mock_response_init.assert_called_once_with('Retrieved is player registered', True)
         mock_response.assert_called_once_with()
 
-        self.assertEqual(actual_response.data, b'{"data":"player_data"}\n')
+        self.assertEqual(actual_response.data, b'{"data":true}\n')
 
-    @mock.patch.object(APIException, 'get_response_json', return_value={'data': 'player_data'})
-    @mock.patch.object(PlayerServices, '__init__', return_value=None)
-    @mock.patch.object(PlayerServices, 'get_user_data', return_value='player_data')
+    @mock.patch.object(APIException, 'get_response_json', return_value={'data': "error"})
     @mock.patch.object(UserServices, '__init__', return_value=None)
     @mock.patch.object(UserServices, 'get_player_id', return_value='player_id')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
@@ -129,13 +121,11 @@ class PlayerControllerTest(unittest.TestCase):
                                                                  mock_auth_services,
                                                                  mock_get_player_id,
                                                                  mock_user_service,
-                                                                 mock_get_user_data,
-                                                                 mock_service_init,
                                                                  mock_response
                                                                  ):
         mock_authenticate_request.return_value = True
         with mock.patch.object(APIException, '__init__', return_value=None):
-            mock_get_user_data.side_effect = APIException(
+            mock_get_player_id.side_effect = APIException(
                 "message",
                 "content",
                 "type",
@@ -155,13 +145,11 @@ class PlayerControllerTest(unittest.TestCase):
         mock_token.assert_called_once_with('token')
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
         mock_auth_services.assert_called_once_with()
-        mock_service_init.assert_called_once_with()
         mock_get_player_id.assert_called_once_with('user_id')
         mock_user_service.assert_called_once_with()
-        mock_get_user_data.assert_called_once_with('player_id', 'user_id')
         mock_response.assert_called_once_with()
 
-        self.assertEqual(actual_response.data, b'{"data":"player_data"}\n')
+        self.assertEqual(actual_response.data, b'{"data":"error"}\n')
 
     @mock.patch.object(ValidResponse, 'get_response_json', return_value={'data': 'player_data'})
     @mock.patch.object(ValidResponse, '__init__', return_value=None)
@@ -203,12 +191,15 @@ class PlayerControllerTest(unittest.TestCase):
         mock_get_player_id.assert_called_once_with('user_id')
         mock_user_service.assert_called_once_with()
         mock_get_by_id.assert_called_once_with('player_id')
-        mock_response_init.assert_called_once_with('Retrieved player user data', 'player_data')
+        mock_response_init.assert_called_once_with(
+            domain='Retrieved player gear info', detail='player_id', data='player_data'
+        )
         mock_response.assert_called_once_with()
 
         self.assertEqual(actual_response.data, b'{"data":"player_data"}\n')
 
-    @mock.patch.object(APIException, 'get_response_json', return_value={'data': 'player_data'})
+    @mock.patch.object(ValidResponse, 'get_response_json', return_value={'data': ''})
+    @mock.patch.object(ValidResponse, '__init__', return_value=None)
     @mock.patch.object(PlayerGearServices, '__init__', return_value=None)
     @mock.patch.object(PlayerGearServices, 'get_by_id', return_value='player_data')
     @mock.patch.object(UserServices, '__init__', return_value=None)
@@ -226,6 +217,7 @@ class PlayerControllerTest(unittest.TestCase):
                                                                  mock_user_service,
                                                                  mock_get_by_id,
                                                                  mock_service_init,
+                                                                 mock_response_init,
                                                                  mock_response
                                                                  ):
         mock_authenticate_request.return_value = True
@@ -254,8 +246,55 @@ class PlayerControllerTest(unittest.TestCase):
         mock_get_player_id.assert_called_once_with('user_id')
         mock_user_service.assert_called_once_with()
         mock_get_by_id.assert_called_once_with('player_id')
+        mock_response_init.assert_called_once_with(
+            domain='Retrieve player gear info', detail='user_id', data={}
+        )
         mock_response.assert_called_once_with()
+        self.assertEqual(actual_response.data, b'{"data":""}\n')
 
+    @mock.patch.object(ValidResponse, 'get_response_json', return_value={'data': 'player_data'})
+    @mock.patch.object(ValidResponse, '__init__', return_value=None)
+    @mock.patch.object(RecordNotFoundException, '__init__', return_value=None)
+    @mock.patch.object(UserServices, '__init__', return_value=None)
+    @mock.patch.object(UserServices, 'get_player_id', return_value=None)
+    @mock.patch.object(AuthServices, '__init__', return_value=None)
+    @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
+    @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
+    def test_should_return_empty_data_when_player_is_not_found_on_get_actual_2(self,
+                                                                               mock_get_tokens,
+                                                                               mock_authenticate_request,
+                                                                               mock_validate_token,
+                                                                               mock_auth_init,
+                                                                               mock_get_player_id,
+                                                                               mock_user_init,
+                                                                               mock_exception_init,
+                                                                               mock_response_init,
+                                                                               mock_response):
+        mock_authenticate_request.return_value = True
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.get(
+                "/api/player/actual/2",
+                headers={
+                    'x-api-key': 'Client test_key',
+                    'x-access-key': "token"
+                }
+            )
+
+        mock_authenticate_request.assert_called_once_with(
+            'test_key', '', '', '', '', '', 'GET', '/api/player/actual/2', b''
+        )
+        mock_get_tokens.assert_called_once_with("token")
+        mock_auth_init.assert_called_once_with()
+        mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
+        mock_user_init.assert_called_once_with()
+        mock_get_player_id.assert_called_once_with('user_id')
+        mock_exception_init.assert_called_once_with('Get PlayerData for user', 'user_id')
+        mock_response_init.assert_called_once_with(
+            domain='Retrieve player gear info', detail='user_id', data={}
+        )
+        mock_response.assert_called_once_with()
         self.assertEqual(actual_response.data, b'{"data":"player_data"}\n')
 
     @mock.patch.object(ValidResponse, 'get_response_json', return_value={'data': 'player_data'})

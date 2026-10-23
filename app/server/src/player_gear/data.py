@@ -20,6 +20,10 @@ class PlayerGearFilterType(Enum):
         querying_fields=["t_player"],
         filtering_fields=["p_jersey_name", "p_jersey_number", "p_jersey_size", "p_shoe_size"],
         record_count=1)
+    IS_PRESENT = FilterMeta(
+        querying_fields=["t_player"],
+        filtering_fields=["t_player"],
+        record_count=1)
 
 
 class PlayerGearData(DataModel):

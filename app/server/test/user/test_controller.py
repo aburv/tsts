@@ -1,11 +1,15 @@
 import unittest
+from io import BytesIO
 from unittest import mock
+
+from werkzeug.datastructures import FileStorage
 
 from src.config import Config
 from src.client.service import ClientSessionService
 from src.responses import ValidResponse, APIException, APIResponse, CachedResponse
 from src.services.auth_service import AuthServices
 from src.user.service import UserServices
+from src.image.service import ImageServices
 from test.test_app_config import get_app
 
 
@@ -243,3 +247,104 @@ class UserControllerTest(unittest.TestCase):
         mock_response_init.assert_called_once_with(domain='Done user onboarding', detail='user_id', data='t')
         mock_response.assert_called_once_with()
         self.assertEqual(expected_response_data, actual_response.data)
+
+    @mock.patch.object(ValidResponse, 'get_response_json', return_value={"data": ""})
+    @mock.patch.object(ValidResponse, '__init__', return_value=None)
+    @mock.patch.object(APIException, '__init__', return_value=None)
+    @mock.patch.object(ImageServices, 'add', return_value='image_id')
+    @mock.patch.object(ImageServices, '__init__', return_value=None)
+    @mock.patch.object(UserServices, 'update_image', return_value=True)
+    @mock.patch.object(UserServices, '__init__', return_value=None)
+    @mock.patch.object(ClientSessionService, 'authenticate_request', return_value=True)
+    @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
+    @mock.patch.object(AuthServices, '__init__', return_value=None)
+    @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
+    def test_should_return_empty_response_when_update_image_fails(self,
+                                                                  mock_get_tokens,
+                                                                  mock_auth_service,
+                                                                  mock_validate_token,
+                                                                  mock_authenticate_request,
+                                                                  mock_user_init,
+                                                                  mock_update,
+                                                                  mock_image_init,
+                                                                  mock_add,
+                                                                  mock_exception,
+                                                                  mock_response_init,
+                                                                  mock_response):
+        mock_update.side_effect = Exception("error")
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post(
+                '/api/user/image',
+                headers={'x-api-key': 'Client test_key', 'x-access-key': 'token'},
+                data={'file': (BytesIO(b'image'), 'image.png')},
+                content_type='multipart/form-data'
+            )
+        mock_authenticate_request.assert_called_once_with(
+            'test_key', '', '', '', '', '', 'POST', '/api/user/image', b''
+        )
+        mock_get_tokens.assert_called_once_with('token')
+        mock_auth_service.assert_called_once_with()
+        mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
+        mock_image_init.assert_called_once_with()
+        mock_add.assert_called_once()
+        args, _ = mock_add.call_args
+        self.assertIsInstance(args[0], FileStorage)
+        self.assertEqual(args[1], 'user_id')
+        mock_user_init.assert_called_once_with()
+        mock_update.assert_called_once_with('image_id', 'user_id')
+        mock_exception.assert_called_once_with('Update the image', 'error', '', '', is_error=False)
+        mock_response_init.assert_called_once_with(
+            domain='Update the image', detail='user_id', data=""
+        )
+        mock_response.assert_called_once_with()
+        self.assertEqual(b'{"data":""}\n', actual_response.data)
+
+    @mock.patch.object(ValidResponse, 'get_response_json', return_value={"data": "image_id"})
+    @mock.patch.object(ValidResponse, '__init__', return_value=None)
+    @mock.patch.object(ImageServices, 'add', return_value='image_id')
+    @mock.patch.object(ImageServices, '__init__', return_value=None)
+    @mock.patch.object(UserServices, 'update_image', return_value=True)
+    @mock.patch.object(UserServices, '__init__', return_value=None)
+    @mock.patch.object(ClientSessionService, 'authenticate_request', return_value=True)
+    @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
+    @mock.patch.object(AuthServices, '__init__', return_value=None)
+    @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
+    def test_should_return_image_id_when_update_image_succeeds(self,
+                                                               mock_get_tokens,
+                                                               mock_auth_service,
+                                                               mock_validate_token,
+                                                               mock_authenticate_request,
+                                                               mock_user_init,
+                                                               mock_update,
+                                                               mock_image_init,
+                                                               mock_add,
+                                                               mock_response_init,
+                                                               mock_response
+                                                               ):
+        app = get_app()
+        with app.test_client() as c:
+            actual_response = c.post(
+                '/api/user/image',
+                headers={'x-api-key': 'Client test_key', 'x-access-key': 'token'},
+                data={'file': (BytesIO(b'image'), 'image.png')},
+                content_type='multipart/form-data'
+            )
+        mock_authenticate_request.assert_called_once_with(
+            'test_key', '', '', '', '', '', 'POST', '/api/user/image', b''
+        )
+        mock_get_tokens.assert_called_once_with('token')
+        mock_auth_service.assert_called_once_with()
+        mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
+        mock_image_init.assert_called_once_with()
+        mock_add.assert_called_once()
+        args, _ = mock_add.call_args
+        self.assertIsInstance(args[0], FileStorage)
+        self.assertEqual(args[1], 'user_id')
+        mock_user_init.assert_called_once_with()
+        mock_update.assert_called_once_with('image_id', 'user_id')
+        mock_response_init.assert_called_once_with(
+            domain='Updated the image', detail='user_id', data='image_id'
+        )
+        mock_response.assert_called_once_with()
+        self.assertEqual(b'{"data":"image_id"}\n', actual_response.data)

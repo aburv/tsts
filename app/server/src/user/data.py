@@ -17,6 +17,11 @@ class UserFilterType(Enum):
         filtering_fields=["u_name", "dp"],
         record_count=1
     )
+    IMAGE = FilterMeta(
+        querying_fields=["id", "is_active"],
+        filtering_fields=["dp"],
+        record_count=1
+    )
     DEFAULT = FilterMeta(
         querying_fields=[],
         filtering_fields=[]
