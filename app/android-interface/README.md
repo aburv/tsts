@@ -4,9 +4,9 @@
 
    MinSDK : Android API V34
 
-   Kotlin -V2.0.21
+   Kotlin -V2.4.20
 
-   Gradle -V8.11.1
+   Gradle -V9.8.0
 
 ## Development server
 

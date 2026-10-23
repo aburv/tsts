@@ -17,7 +17,7 @@ import org.json.JSONObject
 class DeviceData(private val context: Context) {
     companion object {
         private const val TAG = "App-Device"
-        private const val NAMESPACE: String = "device/"
+        private const val NAMESPACE: String = "device"
     }
 
     fun isDeviceRegistered() {
@@ -39,7 +39,7 @@ class DeviceData(private val context: Context) {
         val isTablet = context.resources.getBoolean(R.bool.isTablet)
         val deviceId =
             Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-        val path = "${NAMESPACE}register"
+        val path = "${NAMESPACE}/register"
         val data = JSONObject()
         val otherDetails = arrayOf(
             Build.VERSION.SDK_INT.toString(),

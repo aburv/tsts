@@ -81,6 +81,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@string/google_icon"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_google"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/text_google"

@@ -45,17 +45,31 @@ class GAuthService(private val context: Context) {
 
                 val googleIdTokenCredential = handleSignIn(result)
                 launch(Dispatchers.Main) {
-                    response.onUser(googleIdTokenCredential!!)
+                    if (googleIdTokenCredential != null) {
+                        response.onUser(googleIdTokenCredential)
+                    } else {
+                        response.onError("Unexpected Google credential")
+                    }
                 }
             } catch (e: NoCredentialException) {
-                Log.i(TAG, "NoCredentialException $e")
-                response.onError("No Google user logged in")
+                Log.i(
+                    TAG,
+                    "NoCredentialException: no Google credential matched client ID " +
+                            BuildConfig.G_CLIENT_ID
+                )
+                launch(Dispatchers.Main) {
+                    response.onError("Unable to get Google User")
+                }
             } catch (e: GetCredentialException) {
                 Log.i(TAG, "GetCredentialException $e")
-                response.onError("Unexpected Error on Google Login")
+                launch(Dispatchers.Main) {
+                    response.onError("Unexpected Error on Google Login")
+                }
             } catch (e: Exception) {
                 Log.i(TAG, "Exception $e")
-                response.onError("Unexpected Error on Google Login ")
+                launch(Dispatchers.Main) {
+                    response.onError("Unexpected Error on Google Login")
+                }
             }
         }
     }
@@ -81,4 +95,3 @@ interface GoogleAuthResponse {
     fun onUser(googleUser: GoogleIdTokenCredential)
     fun onError(message: String)
 }
-

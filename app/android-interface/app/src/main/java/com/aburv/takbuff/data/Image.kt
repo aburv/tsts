@@ -10,6 +10,7 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.Log
+import android.util.LruCache
 import androidx.core.graphics.createBitmap
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -21,20 +22,37 @@ import java.net.URL
 class Image(private val context: Context) : APIRequest(context) {
 
     companion object {
-        private const val TAG = "App-Device"
-        private const val NAMESPACE: String = "image/"
+        private const val TAG = "App-IMAGE"
+        private const val NAMESPACE: String = "image"
+        private const val CACHE_SIZE_KB = 8 * 1024
+        private val bitmapCache = object : LruCache<String, Bitmap>(CACHE_SIZE_KB) {
+            override fun sizeOf(key: String, value: Bitmap): Int {
+                return value.byteCount / 1024
+            }
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun load(id: String, size: String, data: SetImage) {
         val path = "$DOMAIN/$NAMESPACE/$id/$size"
-        Log.i(TAG, "Get $path")
+        Log.i(TAG, "Get $NAMESPACE/$id/$size")
+        bitmapCache.get(path)?.let { bitmap ->
+            Log.i(TAG, "Cache hit $path")
+            GlobalScope.launch(Dispatchers.Main) {
+                data.set(bitmap)
+            }
+            return
+        }
+
         GlobalScope.launch(Dispatchers.IO) {
             val url = URL(path)
             val httpURLConnection = url.openConnection() as HttpURLConnection
             setHeaders(httpURLConnection)
             httpURLConnection.connect()
             val bitmap = BitmapFactory.decodeStream(httpURLConnection.inputStream)
+            if (bitmap != null) {
+                bitmapCache.put(path, bitmap)
+            }
             launch(Dispatchers.Main) {
                 data.set(bitmap)
             }

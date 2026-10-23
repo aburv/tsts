@@ -30,16 +30,25 @@ interface DeviceDao {
 @Database(entities = [AppDevice::class], version = 1)
 abstract class AppDeviceData : RoomDatabase() {
     abstract fun deviceDao(): DeviceDao
+
+    companion object {
+        @Volatile
+        private var instance: AppDeviceData? = null
+
+        fun getInstance(context: Context): AppDeviceData =
+            instance ?: synchronized(this) {
+                instance ?: databaseBuilder(
+                    context.applicationContext,
+                    AppDeviceData::class.java,
+                    BuildConfig.BASE_NAME
+                ).build().also { instance = it }
+            }
+    }
 }
 
 class DeviceDB(context: Context) {
 
-    private val connection = databaseBuilder(
-        context,
-        AppDeviceData::class.java,
-        BuildConfig.BASE_NAME
-    )
-        .build()
+    private val connection = AppDeviceData.getInstance(context)
 
     suspend fun getDevices(): List<AppDevice> = connection.deviceDao().getDevices()
 

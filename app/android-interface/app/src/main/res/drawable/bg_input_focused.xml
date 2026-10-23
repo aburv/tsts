@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Outline Color and Stroke Width -->
+    <stroke
+        android:width="2dp"
+        android:color="?attr/primary" />                  <!-- Outline thickness -->
+
+    <!-- Background color of the EditText -->
+    <solid android:color="?attr/mildBackground" />
+
+    <!-- Optional: Rounded corners for the outline -->
+    <corners android:radius="8dp" />
+</shape>

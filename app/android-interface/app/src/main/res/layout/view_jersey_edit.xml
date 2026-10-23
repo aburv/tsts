@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/jersey_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_shirt_back">
+
+    <EditText
+        android:id="@+id/jersey_name"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="65dp"
+        android:autofillHints=""
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:hint="@string/text_jersey_name"
+        android:inputType="textCapCharacters"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="?attr/bright"
+        android:textColorHint="?attr/lessBright"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/jersey_number"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:autofillHints=""
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:hint="@string/text_jersey_number"
+        android:inputType="number"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:textColor="?attr/bright"
+        android:textColorHint="?attr/lessBright"
+        android:textSize="100sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/jersey_name" />
+</androidx.constraintlayout.widget.ConstraintLayout>

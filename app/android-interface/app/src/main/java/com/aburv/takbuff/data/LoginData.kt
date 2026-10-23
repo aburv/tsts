@@ -16,7 +16,7 @@ import org.json.JSONObject
 class Auth(private val context: Context) {
     companion object {
         private const val TAG = "App-LoginData"
-        private const val NAMESPACE: String = "auth/"
+        private const val NAMESPACE: String = "auth"
     }
 
     suspend fun login(
@@ -31,7 +31,7 @@ class Auth(private val context: Context) {
         val deviceDb = DeviceDB(context)
         val userTokenDb = UserTokenDB(context)
         val userDb = UserDB(context)
-        val path = "${NAMESPACE}login"
+        val path = "${NAMESPACE}/login"
 
         val locationData = JSONObject()
         if (location != null) {
@@ -140,7 +140,7 @@ class Auth(private val context: Context) {
 
     suspend fun refreshToken() {
         Log.i(TAG, "Login Call")
-        val path = "${NAMESPACE}refresh_token"
+        val path = "${NAMESPACE}/refresh_token"
         try {
             APIRequest(context).get(path, object : Response {
                 override fun onData(value: String) {

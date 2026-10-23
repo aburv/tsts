@@ -46,7 +46,6 @@
             android:id="@+id/layout_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             app:layout_constraintBottom_toTopOf="@id/steps"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,12 +55,25 @@
                 android:id="@+id/user_dp"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                android:background="@drawable/bg_profile_placeholder"
                 android:contentDescription="@string/profile"
                 android:transitionName="dp"
                 app:layout_constraintBottom_toTopOf="@id/user_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/edit_dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_primary_button"
+                android:contentDescription="@string/edit_profile_picture"
+                android:padding="8dp"
+                android:src="@drawable/ic_edit"
+                app:layout_constraintBottom_toBottomOf="@id/user_dp"
+                app:layout_constraintEnd_toEndOf="@id/user_dp"
+                app:tint="?attr/bright" />
 
             <TextView
                 android:id="@+id/user_name"
@@ -81,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="?attr/dark"
                 android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_name" />
@@ -103,10 +116,10 @@
         android:id="@+id/button"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_margin="50dp"
+        android:layout_margin="40dp"
         android:background="@drawable/bg_primary_button"
         android:contentDescription="@string/next_step"
-        android:padding="10dp"
+        android:padding="12dp"
         android:src="@drawable/ic_right_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

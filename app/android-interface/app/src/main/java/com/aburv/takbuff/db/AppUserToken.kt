@@ -38,15 +38,25 @@ interface UserTokenDao {
 @Database(entities = [AppUserToken::class], version = 1)
 abstract class AppUserTokenData : RoomDatabase() {
     abstract fun userTokenDao(): UserTokenDao
+
+    companion object {
+        @Volatile
+        private var instance: AppUserTokenData? = null
+
+        fun getInstance(context: Context): AppUserTokenData =
+            instance ?: synchronized(this) {
+                instance ?: databaseBuilder(
+                    context.applicationContext,
+                    AppUserTokenData::class.java,
+                    BuildConfig.BASE_NAME + "+_1"
+                ).build().also { instance = it }
+            }
+    }
 }
 
 class UserTokenDB(context: Context) {
 
-    private val connection = databaseBuilder(
-        context,
-        AppUserTokenData::class.java,
-        BuildConfig.BASE_NAME + "+_1"
-    ).build()
+    private val connection = AppUserTokenData.getInstance(context)
 
     suspend fun getUserToken(): List<AppUserToken> = connection.userTokenDao().getUserToken()
 

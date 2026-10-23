@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair as UtilPair
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.aburv.takbuff.R
 import com.aburv.takbuff.data.Auth
 import com.aburv.takbuff.data.AuthUtil
@@ -42,6 +44,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.core.view.isVisible
 
 class MainActivity : AppCompatActivity() {
@@ -124,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         errorDialog = BottomSheetDialog(this, R.style.AppBottomSheetDialogTheme)
 
         googleErrorView = LayoutInflater.from(this)
-            .inflate(R.layout.layout_bottom_error_dialog, null)
+            .inflate(R.layout.layout_bottom_error_dialog, binding.root, false)
         errorDialog!!.setContentView(googleErrorView!!)
 
         loadingRotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
@@ -151,12 +154,9 @@ class MainActivity : AppCompatActivity() {
             circularReveal.duration = 300
             circularReveal.start()
 
-            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.toggleSoftInputFromWindow(
-                searchText.applicationWindowToken,
-                InputMethodManager.SHOW_IMPLICIT,
-                0
-            )
+            searchText.requestFocus()
+            WindowCompat.getInsetsController(window, searchText)
+                .show(WindowInsetsCompat.Type.ime())
         }
 
         closeIcon.setOnClickListener {
@@ -189,7 +189,6 @@ class MainActivity : AppCompatActivity() {
 
         clearIcon!!.setOnClickListener {
             Log.i(TAG, "Clear Button pressed")
-
             searchText.text.clear()
         }
 
@@ -242,7 +241,8 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "On Back pressed")
                     finishAffinity()
                 }
-            })
+            }
+        )
 
         binding.appIcon.setOnClickListener {
             navigateToDashboard()
@@ -254,11 +254,21 @@ class MainActivity : AppCompatActivity() {
         val locationData: Pair<String, String>? = if (location != null)
             Pair(location!!.latitude.toString(), location!!.longitude.toString())
         else null
+        val googleSubject = AuthUtil.parseToken(googleUser.idToken)
+            ?.let { AuthUtil.getData(it, "sub") }
+        val displayName = googleUser.displayName
+        if (displayName.isNullOrBlank() || googleSubject.isNullOrBlank()) {
+            withContext(Main) {
+                onGoogleErrorDialog("Google did not return the required account information")
+            }
+            return
+        }
+
         authData!!.login(
-            googleUser.displayName!!,
+            displayName,
             googleUser.profilePictureUri.toString(),
             googleUser.id,
-            AuthUtil.getData(AuthUtil.parseToken(googleUser.idToken)!!, "sub")!!,
+            googleSubject,
             locationData,
             object : LoginResponse {
                 override fun onNewUser() {

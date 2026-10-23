@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
+import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.net.ConnectException
 import java.net.HttpURLConnection
@@ -23,8 +24,8 @@ import java.util.UUID
 
 open class APIRequest(private val context: Context) {
     companion object {
-        private const val TAG: String = "App-Request"
-        internal const val DOMAIN: String = "${BuildConfig.API_DOMAIN}/api"
+        private const val TAG = "App-Request"
+        internal const val DOMAIN = "${BuildConfig.API_DOMAIN}/api"
     }
 
     suspend fun get(path: String, response: Response) {
@@ -103,12 +104,15 @@ open class APIRequest(private val context: Context) {
         )
     }
 
-    suspend fun post(path: String, data: JSONObject, response: Response) {
-        Log.i(TAG, "POST $path $data")
-
+    suspend fun post(
+        path: String,
+        data: JSONObject,
+        response: Response,
+        transformDataString: (JSONObject) -> String = { it.toString() }
+    ) {
         val body = JSONObject()
         body.put("data", data)
-        val dataString = body.toString()
+        val dataString = transformDataString(body)
         val url = URL("$DOMAIN/$path")
         val httpURLConnection = withContext(Dispatchers.IO) {
             url.openConnection()
@@ -123,6 +127,37 @@ open class APIRequest(private val context: Context) {
             outputStreamWriter.flush()
         }
         this.dataCall(httpURLConnection, response)
+    }
+
+    suspend fun upload(
+        path: String,
+        fileName: String,
+        content: ByteArray,
+        response: Response
+    ) {
+        val boundary = "----Takbuff${UUID.randomUUID()}"
+        val body = buildMultipartBody(boundary, fileName, content)
+        val url = URL("$DOMAIN/$path")
+        val connection = withContext(Dispatchers.IO) {
+            url.openConnection()
+        } as HttpURLConnection
+        connection.requestMethod = "POST"
+        connection.doInput = true
+        connection.doOutput = true
+        setHeaders(connection)
+        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+        withContext(Dispatchers.IO) {
+            connection.outputStream.use { output: OutputStream -> output.write(body) }
+        }
+        dataCall(connection, response)
+    }
+
+    private fun buildMultipartBody(boundary: String, fileName: String, content: ByteArray): ByteArray {
+        val prefix = "--$boundary\r\n" +
+            "Content-Disposition: form-data; name=\"file\"; filename=\"$fileName\"\r\n" +
+            "Content-Type: image/jpeg\r\n\r\n"
+        val suffix = "\r\n--$boundary--\r\n"
+        return prefix.toByteArray(Charsets.UTF_8) + content + suffix.toByteArray(Charsets.UTF_8)
     }
 
     @OptIn(DelicateCoroutinesApi::class)

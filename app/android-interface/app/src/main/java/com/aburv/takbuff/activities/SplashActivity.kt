@@ -26,7 +26,8 @@ import com.aburv.takbuff.data.LocationData
 import com.aburv.takbuff.data.LoginResponse
 import com.aburv.takbuff.data.UserData
 import com.aburv.takbuff.databinding.ActivitySplashBinding
-import com.aburv.takbuff.db.UserTokenDB
+import com.aburv.takbuff.db.AppUser
+import com.aburv.takbuff.db.UserDB
 import com.aburv.takbuff.services.GAuthService
 import com.aburv.takbuff.services.GoogleAuthResponse
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -34,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.core.util.Pair as UtilPair
 
 
@@ -73,6 +75,7 @@ class SplashActivity : AppCompatActivity() {
     private var userSignInLayout: ConstraintLayout? = null
 
     private var rotate: Animation? = null
+    private var signInLoadingAnimation: Animation? = null
     private var moveUp: ObjectAnimator? = null
     private var hide: ObjectAnimator? = null
 
@@ -120,6 +123,7 @@ class SplashActivity : AppCompatActivity() {
 
         rotate = AnimationUtils.loadAnimation(this, R.anim.rotate)
         rotate!!.fillAfter = true
+        signInLoadingAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate)
         hide = ObjectAnimator.ofFloat(appSubtitle, View.ALPHA, FULL_OPACITY, ZERO_OPACITY)
         hide!!.duration = SUB_TITLE_HIDE_DURATION
         moveUp = ObjectAnimator.ofFloat(infoLayout, View.TRANSLATION_Y, MOVE_UP_Y_COORDINATE)
@@ -136,9 +140,11 @@ class SplashActivity : AppCompatActivity() {
 
         signInButton.setOnClickListener {
             Log.i(TAG, "Sign in Button pressed")
+            showSignInLoading()
             GAuthService(this).auth(object : GoogleAuthResponse {
                 override fun onUser(googleUser: GoogleIdTokenCredential) {
                     Log.i(TAG, "On Google User $googleUser")
+
                     CoroutineScope(Dispatchers.Default).launch {
                         appLogin(googleUser)
                     }
@@ -146,6 +152,7 @@ class SplashActivity : AppCompatActivity() {
 
                 override fun onError(message: String) {
                     Log.i(TAG, "On Google User Error $message")
+                    resetSignInLoading()
                     onGoogleErrorDialog(message)
                 }
 
@@ -154,6 +161,9 @@ class SplashActivity : AppCompatActivity() {
 
         skipButton.setOnClickListener {
             Log.i(TAG, "Skip Button pressed")
+            CoroutineScope(Dispatchers.Default).launch {
+                UserDB(this@SplashActivity).insertUser(AppUser(true, "", "", "", ""))
+            }
             navigateMain()
         }
 
@@ -230,11 +240,9 @@ class SplashActivity : AppCompatActivity() {
             Log.i(TAG, "Device Registration")
             deviceData!!.isDeviceRegistered()
             Log.i(TAG, "Check for user")
-            hasUser = UserTokenDB(this).getUserToken().isNotEmpty()
+            hasUser = UserDB(this).getUsers().isNotEmpty()
             Log.i(TAG, "User Status $hasUser")
             if (hasUser) {
-                Log.i(TAG, "Refresh User token")
-                authData!!.refreshToken()
                 Log.i(TAG, "Get User data")
                 userData!!.getUserdata()
             } else {
@@ -249,14 +257,25 @@ class SplashActivity : AppCompatActivity() {
     private suspend fun appLogin(googleUser: GoogleIdTokenCredential) {
         Log.i(TAG, "Login api Start")
         val locationData: kotlin.Pair<String, String>? = if (location != null)
-            kotlin.Pair(location!!.latitude.toString(), location!!.longitude.toString())
+            Pair(location!!.latitude.toString(), location!!.longitude.toString())
         else null
 
+        val googleSubject = AuthUtil.parseToken(googleUser.idToken)
+            ?.let { AuthUtil.getData(it, "sub") }
+        val displayName = googleUser.displayName
+        if (displayName.isNullOrBlank() || googleSubject.isNullOrBlank()) {
+            withContext(Dispatchers.Main) {
+                resetSignInLoading()
+                onGoogleErrorDialog("Google did not return the required account information")
+            }
+            return
+        }
+
         authData!!.login(
-            googleUser.displayName!!,
+            displayName,
             googleUser.profilePictureUri.toString(),
             googleUser.id,
-            AuthUtil.getData(AuthUtil.parseToken(googleUser.idToken)!!, "sub")!!,
+            googleSubject,
             locationData,
             object : LoginResponse {
                 override fun onNewUser() {
@@ -271,7 +290,8 @@ class SplashActivity : AppCompatActivity() {
 
                 override fun onError(message: String) {
                     Log.i(TAG, "Error on user: $message")
-                    onError(message)
+                    resetSignInLoading()
+                    this@SplashActivity.onError(message)
                 }
             })
     }
@@ -287,6 +307,22 @@ class SplashActivity : AppCompatActivity() {
                 }
             }, WAIT_FOR_CALL_DURATION
         )
+    }
+
+    private fun showSignInLoading() {
+        binding.imageGoogleIcon.setImageResource(R.drawable.ic_loading_spinner)
+        binding.imageGoogleIcon.startAnimation(signInLoadingAnimation!!)
+        binding.textGoogle.visibility = View.GONE
+        binding.buttonSkip.visibility = View.GONE
+        binding.buttonGoogleSignIn.isClickable = false
+    }
+
+    private fun resetSignInLoading() {
+        binding.imageGoogleIcon.clearAnimation()
+        binding.imageGoogleIcon.setImageResource(R.drawable.ic_google)
+        binding.textGoogle.visibility = View.VISIBLE
+        binding.buttonSkip.visibility = View.VISIBLE
+        binding.buttonGoogleSignIn.isClickable = true
     }
 
     private fun onError(message: String) {

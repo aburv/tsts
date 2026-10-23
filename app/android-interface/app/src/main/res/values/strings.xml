@@ -25,4 +25,41 @@
     <string name="google_icon">google_icon</string>
     <string name="profile">profile</string>
     <string name="next_step">next_step</string>
+
+    <string name="text_you_are">You are a</string>
+    <string name="text_player">Player</string>
+
+    <string name="name">Name</string>
+    <string name="text_name_hint">Your name here</string>
+    <string name="weight">Weight</string>
+    <string name="text_weight_hint">in kg</string>
+    <string name="text_kg">kg</string>
+    <string name="height">Height</string>
+    <string name="text_height_hint">in cm</string>
+    <string name="text_cm">cm</string>
+    <string name="dob">Birth Date</string>
+    <string name="text_date_placeholder">dd/mm/yyyy</string>
+    <string name="text_image">image</string>
+    <string name="edit_profile_picture">Edit profile picture</string>
+    <string name="change_image">Choose a different image</string>
+    <string name="confirm_image">Use this image</string>
+    <string name="player_image">Player profile photo</string>
+    <string name="social_app_not_installed">That app is not installed</string>
+    <string name="share_whatsapp">Share to WhatsApp</string>
+    <string name="share_facebook">Share to Facebook</string>
+    <string name="share_instagram">Share to Instagram</string>
+    <string name="share_snapchat">Share to Snapchat</string>
+    <string name="share_type_status">Status</string>
+    <string name="share_type_post">Post</string>
+    <string name="share_type_story">Story</string>
+
+    <string name="text_jersey_name">Name Here</string>
+    <string name="text_jersey_number">00</string>
+    <string name="text_jersey_size">Jersey size</string>
+    <string name="text_shoe_size">Shoe size</string>
+    <string name="text_position">Position</string>
+    <string name="text_moto">One Life One Game</string>
+    <string name="text_image_picker_subtitle">Position your photo inside the square</string>
+    <string name="text_image_picker_title">Choose a profile picture</string>
+    <string name="text_share_on">Share on</string>
 </resources>

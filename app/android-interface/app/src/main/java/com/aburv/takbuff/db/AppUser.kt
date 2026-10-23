@@ -36,15 +36,25 @@ interface UserDao {
 @Database(entities = [AppUser::class], version = 1)
 abstract class AppUserData : RoomDatabase() {
     abstract fun userDao(): UserDao
+
+    companion object {
+        @Volatile
+        private var instance: AppUserData? = null
+
+        fun getInstance(context: Context): AppUserData =
+            instance ?: synchronized(this) {
+                instance ?: databaseBuilder(
+                    context.applicationContext,
+                    AppUserData::class.java,
+                    BuildConfig.BASE_NAME + "_2"
+                ).build().also { instance = it }
+            }
+    }
 }
 
 class UserDB(context: Context) {
 
-    private val connection = databaseBuilder(
-        context,
-        AppUserData::class.java,
-        BuildConfig.BASE_NAME + "_2"
-    ).build()
+    private val connection = AppUserData.getInstance(context)
 
     suspend fun getUsers(): List<AppUser> = connection.userDao().getUsers()
 

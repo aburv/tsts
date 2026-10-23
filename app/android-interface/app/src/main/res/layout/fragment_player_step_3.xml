@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
+
+    <com.aburv.takbuff.customViews.JerseyEditView
+        android:id="@+id/jersey_layout"
+        android:layout_width="250dp"
+        android:layout_height="220dp"
+        app:layout_constraintBottom_toTopOf="@id/label_jersey_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/label_jersey_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/text_jersey_size"
+        android:textColor="?attr/dark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/list_jersey_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/jersey_layout" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_jersey_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/label_shoe_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_jersey_size" />
+
+    <TextView
+        android:id="@+id/label_shoe_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/text_shoe_size"
+        android:textColor="?attr/dark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/list_shoe_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_jersey_size" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_shoe_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/label_position"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_shoe_size" />
+
+    <TextView
+        android:id="@+id/label_position"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/text_position"
+        android:textColor="?attr/dark"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/list_position"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_shoe_size" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_position"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_position" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
