@@ -12,6 +12,7 @@ from src.secret_manager import SecretStore
 from src.config import Config, SECRET_KEYS
 from src.app_check import PING_BLUEPRINT
 from src.caching import Caching
+from src.client.controller import CLIENT_BLUEPRINT
 from src.device.controller import DEVICE_BLUEPRINT
 from src.image.controller import IMAGE_BLUEPRINT
 from src.logger import LoggerAPI
@@ -26,13 +27,13 @@ def assign_request_id():
     """
     Assign request ID
     """
-    g.start_time = time.perf_counter()  # pragma: no cover
-    request_id = str(uuid.uuid4())  # pragma: no cover
-    g.request_id = request_id  # pragma: no cover
+    g.start_time = time.perf_counter()
+    request_id = str(uuid.uuid4())
+    g.request_id = request_id
 
     LoggerAPI().info_entry(
         f"{g.request_id} - {request.remote_addr} - {request.method} {request.path}"
-    )  # pragma: no cover
+    )
 
 
 class App:
@@ -47,38 +48,40 @@ class App:
         """
         Setup App settings
         """
-        self._app.logger.propagate = False  # pragma: no cover
+        self._app.logger.propagate = False
 
-        logging.getLogger('flask').setLevel(logging.ERROR)  # pragma: no cover
-        logging.getLogger('werkzeug').setLevel(logging.ERROR)  # pragma: no cover
+        logging.getLogger('flask').setLevel(logging.ERROR)
+        logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
-        LoggerAPI().info_entry("Logger initialized and setting request id before all request")  # pragma: no cover
+        LoggerAPI().info_entry("Logger initialized and setting request id before all request")
 
-        self._app.before_request(assign_request_id)  # pragma: no cover
+        self._app.before_request(assign_request_id)
 
-        LoggerAPI().info_entry("Secret store are setting")  # pragma: no cover
+        LoggerAPI().info_entry("Secret store are setting")
 
-        provider = Config.create_secret_provider()  # pragma: no cover
-        secret_names = [name.strip() for name in os.getenv("SECRET_NAMES", "").split(",") if
-                        name.strip()]  # pragma: no cover
-        if not secret_names:  # pragma: no cover
-            if os.getenv("SECRET_PROVIDER", "").strip().lower() != "env":  # pragma: no cover
-                raise ValueError("SECRET_NAMES must list the configured JSON secrets")  # pragma: no cover
-            secret_names = list(SECRET_KEYS)  # pragma: no cover
-        secret_store = SecretStore(provider, secret_names=secret_names)  # pragma: no cover
-        Config.set_secret_store(secret_store)  # pragma: no cover
-        Config.validate_secret_store()  # pragma: no cover
-        self._app.config["SECRET_STORE"] = secret_store  # pragma: no cover
+        provider = Config.create_secret_provider()
+        secret_names = [name.strip()
+                        for name in os.getenv("SECRET_NAMES", "").split(",")
+                        if name.strip()]
+        if not secret_names:
+            if os.getenv("SECRET_PROVIDER", "").strip().lower() != "env":
+                raise ValueError("SECRET_NAMES must list the configured JSON secrets")
+            secret_names = list(SECRET_KEYS)
+        secret_store = SecretStore(provider, secret_names=secret_names)
+        Config.set_secret_store(secret_store)
+        Config.validate_secret_store()
+        self._app.config["SECRET_STORE"] = secret_store
 
-        LoggerAPI().info_entry("Initializing cache")  # pragma: no cover
+        LoggerAPI().info_entry("Initializing cache")
 
-        Caching.init_cache(self._app)  # pragma: no cover
+        Caching.init_cache(self._app)
 
     def _set_routes(self):
         """
         Setup routes
         """
         self._app.register_blueprint(PING_BLUEPRINT, url_prefix="/api/ping")
+        self._app.register_blueprint(CLIENT_BLUEPRINT, url_prefix="/api/client")
 
         self._app.register_blueprint(USER_BLUEPRINT, url_prefix="/api/user")
         self._app.register_blueprint(LOGIN_BLUEPRINT, url_prefix="/api/auth")
@@ -95,12 +98,12 @@ class App:
         """
         Configuring app with cors, blueprints and cache
         """
-        self._set_up()  # pragma: no cover
+        self._set_up()
 
-        self._set_routes()  # pragma: no cover
+        self._set_routes()
 
     def get_app(self):
         """
         Get app instance
         """
-        return self._app  # pragma: no cover
+        return self._app

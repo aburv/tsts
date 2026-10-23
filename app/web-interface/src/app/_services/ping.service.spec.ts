@@ -22,7 +22,7 @@ describe('PingService', () => {
     });
 
     it('Should emit false on isServerDown 200 status on ping call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
@@ -42,7 +42,7 @@ describe('PingService', () => {
     });
 
     it('Should emit true on isServerDown on 404 status on ping call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.post.and.returnValue(throwError(() => { return { status: 404, statusText: "Not Found" } }));
@@ -61,7 +61,7 @@ describe('PingService', () => {
     });
 
     it('Should emit true on isServerDown on 0 status on ping call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.post.and.returnValue(throwError(() => { return { status: 0, statusText: "Not Found" } }));
@@ -80,7 +80,7 @@ describe('PingService', () => {
     });
 
     it('Should emit false on isServerDown other than 404,0 status errors  on ping call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         httpSpy.post.and.returnValue(throwError(() => { return { status: 401, statusText: "Not Found" } }));

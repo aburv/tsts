@@ -32,7 +32,7 @@ export class ImageService {
     delete headers.headers['content-type']
 
     if (!PingService.isServerDown()) {
-      return this.http.post((Config.getDomain() + "image/add"), formData, headers)
+      return this.http.post((Config.getNameSpace() + "image/add"), formData, headers)
     }
     return of(null)
   }
@@ -53,7 +53,7 @@ export class ImageService {
   }
 
   get(id: string, size: string): Observable<ArrayBuffer> {
-    const url = Config.getDomain() + 'image/' + id + "/" + size;
+    const url = Config.getNameSpace() + 'image/' + id + "/" + size;
 
     return this.getAndCachedImage(url);
   }

@@ -12,8 +12,7 @@ SECRET_KEYS = (
     "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "POSTGRES_HOST",
     "POSTGRES_PORT", "POSTGRES_SCHEMA_META", "POSTGRES_SCHEMA", "REDIS_USER",
     "REDIS_PASSWORD", "REDIS_HOST", "REDIS_PORT", "BROKER_HOST", "BROKER_PORT",
-    "AUTH_HOST", "AUTH_PORT", "SEPARATOR", "WEB_CLIENT_KEY", "ANDROID_CLIENT_KEY",
-    "IOS_CLIENT_KEY", "KEY",
+    "AUTH_HOST", "AUTH_PORT", "SEPARATOR"
 )
 
 
@@ -35,6 +34,11 @@ class Config:
 
     @classmethod
     def set_secret_store(cls, secret_store: SecretStore) -> None:
+        """
+        :param secret_store:
+        :type secret_store: SecretStore | None
+        :return:
+        """
         cls._secret_store = secret_store
         cls._secret_store_is_explicit = True
 
@@ -49,6 +53,9 @@ class Config:
 
     @classmethod
     def validate_secret_store(cls) -> None:
+        """
+        Validate secret store
+        """
         if cls._secret_store is None:
             raise RuntimeError("Secret store has not been configured")
         missing = [key for key in SECRET_KEYS if not cls._secret_store.contains(key)]
@@ -57,6 +64,11 @@ class Config:
 
     @classmethod
     def _get_secret(cls, secret_name: str) -> str:
+        """
+        :param secret_name:
+        :type secret_name: str
+        :return:
+        """
         secret_store = cls._get_configured_store()
         if secret_store is not None:
             return secret_store.get(secret_name)
@@ -125,19 +137,6 @@ class Config:
             return (tokens[0]), (tokens[1])
         except Exception as e:
             raise DataValidationException("Invalid Tokens ", f"{token} {e}") from e
-
-    @staticmethod
-    def get_api_keys() -> list:
-        """
-        :return:
-        :rtype:
-        """
-        return [
-            Config._get_secret("WEB_CLIENT_KEY"),
-            Config._get_secret("ANDROID_CLIENT_KEY"),
-            Config._get_secret("IOS_CLIENT_KEY"),
-            Config._get_secret("KEY")
-        ]
 
 
 class Table:

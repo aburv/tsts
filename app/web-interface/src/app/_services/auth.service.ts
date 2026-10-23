@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Config } from '../config';
 
 function getAuthUrl(): string {
-  return Config.getDomain() + 'auth/';
+  return Config.getNameSpace() + 'auth/';
 }
 
 

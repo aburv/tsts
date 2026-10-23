@@ -14,6 +14,8 @@ import { LoaderService } from './_services/loader.service';
 import { PingService } from './_services/ping.service';
 import { DeviceService } from './_services/device.service';
 import { SearchService } from './_services/search.service';
+import { AuthUserService } from './_services/auth-user.service';
+import { UserDataService } from './_services/UserData.service';
 import { Config } from './config';
 import { Icon } from './components/icon/icon.component';
 
@@ -29,6 +31,17 @@ describe('AppComponent', () => {
   ]);
   deviceService.sendDeviceDetails.and.returnValue()
   deviceService.getDeviceId.and.returnValue('test-device-id');
+
+  const authUserService = jasmine.createSpyObj('AuthUserService', [
+    'getLoggedUser',
+  ]);
+  authUserService.getLoggedUser.and.returnValue(of(null));
+
+  const userDataService = jasmine.createSpyObj('UserDataService', [
+    'autoSignIn',
+    'getUser',
+  ]);
+  userDataService.autoSignIn.and.returnValue(of(false));
 
   const searchService = jasmine.createSpyObj('SearchService', [
     'get'
@@ -73,6 +86,8 @@ describe('AppComponent', () => {
     userService.getUserData.calls.reset();
     deviceService.sendDeviceDetails.calls.reset();
     deviceService.getDeviceId.calls.reset();
+    authUserService.getLoggedUser.calls.reset();
+    userDataService.autoSignIn.calls.reset();
     themeService.initTheme.calls.reset();
     themeService.setTheme.calls.reset();
     searchService.get.calls.reset();
@@ -102,6 +117,14 @@ describe('AppComponent', () => {
       {
         provide: DeviceService,
         useValue: deviceService
+      },
+      {
+        provide: AuthUserService,
+        useValue: authUserService,
+      },
+      {
+        provide: UserDataService,
+        useValue: userDataService,
       },
       {
         provide: SearchService,
@@ -288,6 +311,15 @@ describe('AppComponent', () => {
 
     expect(app.searchText()).toBe('');
     expect(app.isSearching()).toBe(false);
+  });
+
+  it('Should return false when there are no search results', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    app.searchResult.set(null);
+
+    expect(app.isResultsNonEmpty()).toBeFalse();
   });
 
   it('Should navigate to dashboard', () => {

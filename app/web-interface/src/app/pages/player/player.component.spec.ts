@@ -4,7 +4,7 @@ import { PlayerComponent } from './player.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoaderService } from '../../_services/loader.service';
 import { PlayerService } from '../../_services/player.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { UserDataService } from '../../_services/UserData.service';
 import { Icon } from '../../components/icon/icon.component';
 import { ImageComponent } from '../../components/image/image.component';
@@ -104,6 +104,24 @@ describe('PlayerComponent', () => {
 
     generateTabSpy.calls.reset();
     getMyPlayerIdSpy.calls.reset();
+  });
+
+  it('Should clear the player when getInfo returns no data', () => {
+    playerService.getInfo.and.returnValue(of({}));
+    spyOn(component, 'isMyPlayerProfile').and.returnValue(false);
+
+    component.ngOnInit();
+
+    expect(component.player()).toBeNull();
+  });
+
+  it('Should clear the player when getInfo fails', () => {
+    playerService.getInfo.and.returnValue(throwError(() => new Error('failed')));
+    spyOn(component, 'isMyPlayerProfile').and.returnValue(false);
+
+    component.ngOnInit();
+
+    expect(component.player()).toBeNull();
   });
 
   it('Should return true if playerId is same as my playerId on ', () => {

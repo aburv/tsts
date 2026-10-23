@@ -2,6 +2,7 @@ import unittest
 from unittest import mock
 
 from src.config import Config
+from src.client.service import ClientSessionService
 from src.responses import ValidResponse, APIException, APIResponse, CachedResponse
 from src.search.service import SearchServices
 from src.services.auth_service import AuthServices
@@ -17,7 +18,7 @@ class SearchControllerTest(unittest.TestCase):
     @mock.patch.object(SearchServices, 'search', return_value=[])
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
@@ -25,7 +26,7 @@ class SearchControllerTest(unittest.TestCase):
                                                                                mock_cache_set,
                                                                                mock_cache_get,
                                                                                mock_get_tokens,
-                                                                               mock_secret_config,
+                                                                               mock_authenticate_request,
                                                                                mock_validate_token,
                                                                                mock_auth_service,
                                                                                mock_search,
@@ -36,14 +37,14 @@ class SearchControllerTest(unittest.TestCase):
                                                                                ):
         mock_cache_get.return_value = None
 
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         expected_response_data = b'[]\n'
 
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get("/api/search/text",
                                     headers={
-                                        'x-api-key': 'test_key',
+                                        'x-api-key': 'Client test_key',
                                         'x-access-key': 'token',
                                     },
                                     )
@@ -52,7 +53,8 @@ class SearchControllerTest(unittest.TestCase):
         mock_cache_set.assert_called_once_with('myapp:search/text:text/user_id:user_id', [], timeout=60)
         mock_search.assert_called_once_with('text', 'user_id')
         mock_service_init.assert_called_once_with()
-        mock_secret_config.assert_called_once_with()
+        
+        
         mock_get_tokens.assert_called_once_with('token')
         mock_auth_service.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
@@ -68,7 +70,7 @@ class SearchControllerTest(unittest.TestCase):
     @mock.patch.object(SearchServices, 'search', return_value=[])
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
@@ -76,7 +78,7 @@ class SearchControllerTest(unittest.TestCase):
                                                                                    mock_cache_set,
                                                                                    mock_cache_get,
                                                                                    mock_get_tokens,
-                                                                                   mock_secret_config,
+                                                                                   mock_authenticate_request,
                                                                                    mock_validate_token,
                                                                                    mock_auth_service,
                                                                                    mock_search,
@@ -88,14 +90,14 @@ class SearchControllerTest(unittest.TestCase):
         mock_cache_get.side_effect = Exception("Cache get error")
         mock_cache_set.side_effect = Exception("Cache get error")
 
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         expected_response_data = b'[]\n'
 
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get("/api/search/text",
                                     headers={
-                                        'x-api-key': 'test_key',
+                                        'x-api-key': 'Client test_key',
                                         'x-access-key': 'token',
                                     },
                                     )
@@ -104,7 +106,7 @@ class SearchControllerTest(unittest.TestCase):
         mock_cache_set.assert_called_once_with('myapp:search/text:text/user_id:user_id', [], timeout=60)
         mock_search.assert_called_once_with('text', 'user_id')
         mock_service_init.assert_called_once_with()
-        mock_secret_config.assert_called_once_with()
+         
         mock_get_tokens.assert_called_once_with('token')
         mock_auth_service.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
@@ -119,7 +121,7 @@ class SearchControllerTest(unittest.TestCase):
     @mock.patch.object(SearchServices, 'search')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
@@ -127,7 +129,7 @@ class SearchControllerTest(unittest.TestCase):
                                                                                 mock_cache_set,
                                                                                 mock_cache_get,
                                                                                 mock_get_tokens,
-                                                                                mock_secret_config,
+                                                                                mock_authenticate_request,
                                                                                 mock_validate_token,
                                                                                 mock_auth_service,
                                                                                 mock_search,
@@ -137,21 +139,21 @@ class SearchControllerTest(unittest.TestCase):
                                                                                 ):
         mock_cache_get.return_value = []
 
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         expected_response_data = b'[]\n'
 
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get("/api/search/text",
                                     headers={
-                                        'x-api-key': 'test_key',
+                                        'x-api-key': 'Client test_key',
                                         'x-access-key': 'token',
                                     },
                                     )
 
         mock_cache_get.assert_called_once_with('myapp:search/text:text/user_id:user_id')
         assert not mock_cache_set.called
-        mock_secret_config.assert_called_once_with()
+        
         mock_get_tokens.assert_called_once_with('token')
         mock_auth_service.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
@@ -166,13 +168,13 @@ class SearchControllerTest(unittest.TestCase):
     @mock.patch.object(SearchServices, 'search')
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     @mock.patch('flask_caching.Cache.get')
     def test_should_return_api_error_response_on_search_by_text(self,
                                                                 mock_cache_get,
                                                                 mock_get_tokens,
-                                                                mock_secret_config,
+                                                                mock_authenticate_request,
                                                                 mock_validate_token,
                                                                 mock_auth_service,
                                                                 mock_search,
@@ -180,7 +182,7 @@ class SearchControllerTest(unittest.TestCase):
                                                                 mock_response
                                                                 ):
         mock_cache_get.return_value = None
-        mock_secret_config.return_value = ['test_key']
+        mock_authenticate_request.return_value = True
         with mock.patch.object(APIException, "__init__", return_value=None):
             mock_search.side_effect = APIException(
                 "msg",
@@ -194,13 +196,13 @@ class SearchControllerTest(unittest.TestCase):
         with app.test_client() as c:
             actual_response = c.get("/api/search/text",
                                     headers={
-                                        'x-api-key': 'test_key',
+                                        'x-api-key': 'Client test_key',
                                         'x-access-key': 'token'
                                     },
                                     )
 
         mock_cache_get.assert_called_once_with('myapp:search/text:text/user_id:user_id')
-        mock_secret_config.assert_called_once_with()
+        
         mock_get_tokens.assert_called_once_with('token')
         mock_auth_service.assert_called_once_with()
         mock_validate_token.assert_called_once_with('id_token', 'access_token', '', '', '')
@@ -216,7 +218,7 @@ class SearchControllerTest(unittest.TestCase):
     @mock.patch.object(SearchServices, 'search', return_value=[])
     @mock.patch.object(AuthServices, '__init__', return_value=None)
     @mock.patch.object(AuthServices, 'validate_token', return_value="user_id")
-    @mock.patch.object(Config, 'get_api_keys')
+    @mock.patch.object(ClientSessionService, 'authenticate_request')
     @mock.patch.object(Config, 'get_tokens', return_value=("id_token", "access_token"))
     @mock.patch('flask_caching.Cache.get')
     @mock.patch('flask_caching.Cache.set')
@@ -224,7 +226,7 @@ class SearchControllerTest(unittest.TestCase):
                                                                                         mock_cache_set,
                                                                                         mock_cache_get,
                                                                                         mock_get_tokens,
-                                                                                        mock_secret_config,
+                                                                                        mock_authenticate_request,
                                                                                         mock_validate_token,
                                                                                         mock_auth_service,
                                                                                         mock_search_results,
@@ -235,19 +237,19 @@ class SearchControllerTest(unittest.TestCase):
                                                                                         ):
         mock_cache_get.return_value = None
 
-        mock_secret_config.return_value = 'test_key'
+        mock_authenticate_request.return_value = 'test_key'
         expected_response_data = b'response_json'
 
         app = get_app()
         with app.test_client() as c:
             actual_response = c.get(
                 "/api/search/tt",
-                headers={'x-api-key': 'test_key'},
+                headers={'x-api-key': 'Client test_key'},
             )
 
         mock_cache_get.assert_called_once_with('myapp:search/text:tt')
         mock_cache_set.assert_called_once_with('myapp:search/text:tt', {}, timeout=60)
-        mock_secret_config.assert_called_once_with()
+        
         assert not mock_get_tokens.called
         assert not mock_auth_service.called
         assert not mock_validate_token.called

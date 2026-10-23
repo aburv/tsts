@@ -14,7 +14,7 @@ export class DataService {
   private userData = inject(UserDataService);
 
   get(path: string): Observable<any> {
-    const url = Config.getDomain() + path;
+    const url = Config.getNameSpace() + path;
     if (PingService.isServerDown()) {
       return of(null);
     }
@@ -48,7 +48,7 @@ export class DataService {
 
   post(url: string, data: any): Observable<any> {
     if (!PingService.isServerDown()) {
-      return this.http.post(Config.getDomain() + url, { data }, Config.getHeaders());
+      return this.http.post(Config.getNameSpace() + url, { data }, Config.getHeaders());
     }
     return of(null)
   }

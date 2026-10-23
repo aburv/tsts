@@ -22,7 +22,7 @@ describe('AuthService', () => {
     });
 
     it('Should make a post call on signIn call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
@@ -45,7 +45,7 @@ describe('AuthService', () => {
     });
 
     it('Should make a get call on refreshToken call', () => {
-        spyOn(Config, 'getDomain').and.returnValue('https://localhost/api/');
+        spyOn(Config, 'getNameSpace').and.returnValue('https://localhost/api/');
         spyOn(Config, 'getHeaders').and.returnValue({ headers: { header: 'header' } });
 
         const responseData = { 'data': [] };
